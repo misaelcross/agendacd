@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Dashboard } from './pages/Dashboard'
 import { ProposalView } from './pages/ProposalView'
@@ -7,8 +7,6 @@ import { supabase } from './lib/supabase'
 const SETTINGS_ID = '550e8400-e29b-41d4-a716-446655440000'
 
 function App() {
-  const [systemName, setSystemName] = useState('Propostas CD')
-
   useEffect(() => {
     async function loadSettings() {
       try {
@@ -21,7 +19,6 @@ function App() {
         if (data && !error) {
           // Apply System Name
           if (data.system_name) {
-            setSystemName(data.system_name)
             document.title = data.system_name
           }
 
