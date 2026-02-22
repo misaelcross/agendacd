@@ -200,7 +200,7 @@ export function ProposalView() {
 
             <div className="absolute inset-0 pointer-events-none z-0">
                 <img
-                    src="https://img.freepik.com/free-photo/abstract-blurred-background-with-vibrant-orange-red-blue-hues_272375-26294.jpg?t=st=1771678444~exp=1771682044~hmac=7d1697ee0648133e8d61ada0d3b3346b4817ef0c325769921565e9bf144caff4&w=2000"
+                    src="https://images.unsplash.com/photo-1700585295276-f272574889d5?q=80&w=985&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="background"
                     className="w-full h-full object-cover opacity-10 -z-1"
                 />
