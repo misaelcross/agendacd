@@ -11,7 +11,9 @@ import {
     RocketLaunch,
     ChatCircleDots,
     CheckCircle,
-    Receipt
+    Receipt,
+    CaretUp,
+    CaretDown
 } from '@phosphor-icons/react'
 // @ts-ignore
 import html2pdf from 'html2pdf.js'
@@ -44,6 +46,7 @@ export function ProposalView() {
     const [loading, setLoading] = useState(true)
     const [logoUrl, setLogoUrl] = useState<string | null>(null)
     const [isExporting, setIsExporting] = useState(false)
+    const [isSummaryExpanded, setIsSummaryExpanded] = useState(false)
 
     useEffect(() => {
         async function fetchData() {
@@ -206,8 +209,8 @@ export function ProposalView() {
                 />
             </div>
 
-            <div className="w-full max-w-7xl px-6 py-12 relative z-10">
-                <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-16 mx-auto">
+            <div className="w-full max-w-7xl px-6 py-6 md:py-12 relative z-10 pb-32 lg:pb-12">
+                <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 md:mb-16 mx-auto">
                     <div className="flex items-center gap-3">
                         {logoUrl ? (
                             <img src={logoUrl} alt="Logo" className="h-10 w-auto object-contain" />
@@ -228,27 +231,34 @@ export function ProposalView() {
                         )}
                     </div>
 
-                    <div className="flex gap-4 p-1 rounded-full border border-white/10 bg-black/40 backdrop-blur-md">
-                        <a href="https://wa.me/+5515998074956" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 hover:bg-white/5 rounded-full transition-colors">
+                    <div className="flex gap-2 md:gap-4 p-1 rounded-full border border-white/10 bg-black/40 backdrop-blur-md">
+                        <a href="https://wa.me/+5515998074956" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-3 md:px-4 py-2 hover:bg-white/5 rounded-full transition-colors hidden md:flex">
                             <WhatsappLogo size={20} className="text-orange-500" />
                             <span className="text-sm font-medium text-neutral-300">15 99807-4956</span>
                         </a>
-                        <a href="mailto:contato@conversao.digital" className="flex items-center gap-2 px-4 py-2 hover:bg-white/5 rounded-full transition-colors">
+                        <a href="https://wa.me/+5515998074956" target="_blank" rel="noreferrer" className="flex md:hidden items-center justify-center w-10 h-10 hover:bg-white/5 rounded-full transition-colors">
+                            <WhatsappLogo size={20} className="text-orange-500" />
+                        </a>
+
+                        <a href="mailto:contato@conversao.digital" className="flex items-center gap-2 px-3 md:px-4 py-2 hover:bg-white/5 rounded-full transition-colors hidden md:flex">
                             <EnvelopeSimple size={20} className="text-orange-500" />
                             <span className="text-sm font-medium text-neutral-300">contato@conversao.digital</span>
+                        </a>
+                        <a href="mailto:contato@conversao.digital" className="flex md:hidden items-center justify-center w-10 h-10 hover:bg-white/5 rounded-full transition-colors">
+                            <EnvelopeSimple size={20} className="text-orange-500" />
                         </a>
                     </div>
                 </header>
 
-                <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 mx-auto">
+                <div className="mb-8 md:mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 mx-auto">
                     <div>
-                        <div className="flex items-center gap-3 mb-2">
-                            <h1 className="text-4xl font-bold text-white tracking-tight">Seu Orçamento</h1>
-                            <span className="bg-white/10 text-neutral-300 text-xs px-2.5 py-1 rounded-full font-medium h-fit self-center">
+                        <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-2">
+                            <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight leading-none">Seu Orçamento</h1>
+                            <span className="bg-white/10 text-neutral-300 text-[10px] md:text-xs px-2 py-0.5 md:py-1 rounded-full font-medium h-fit self-center">
                                 #{proposal.id.split('-')[0]}
                             </span>
                         </div>
-                        <p className="text-neutral-500 font-medium text-lg">{items.length} {items.length === 1 ? 'Item selecionado' : 'Itens selecionados'}</p>
+                        <p className="text-neutral-500 font-medium text-sm md:text-lg">{items.length} {items.length === 1 ? 'Item selecionado' : 'Itens selecionados'}</p>
                     </div>
                 </div>
 
@@ -258,20 +268,20 @@ export function ProposalView() {
                     {/* First Column: Structural Info + Services */}
                     <div className="lg:col-span-8 flex flex-col gap-8">
 
-                        {/* Structural Info (Horizontal Row) - Backgrounds Removed */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="p-6 border border-white/10 rounded-2xl flex flex-col justify-center">
-                                <p className="text-[10px] text-neutral-500 mb-1 uppercase tracking-widest font-bold">Cliente</p>
-                                <p className="text-base font-medium text-neutral-200 truncate">{proposal.client_name}</p>
+                        {/* Structural Info (Horizontal Row/Compact Grid) */}
+                        <div className="border border-white/10 rounded-2xl grid grid-cols-2 lg:grid-cols-3 divide-x divide-y lg:divide-y-0 divide-white/5 bg-[#121212]/50">
+                            <div className="p-4 flex flex-col justify-center col-span-2 lg:col-span-1">
+                                <p className="text-[9px] md:text-[10px] text-neutral-500 mb-1 uppercase tracking-widest font-bold">Cliente</p>
+                                <p className="text-sm md:text-base font-medium text-neutral-200 truncate">{proposal.client_name}</p>
                             </div>
-                            <div className="p-6 border border-white/10 rounded-2xl flex flex-col justify-center">
-                                <p className="text-[10px] text-neutral-500 mb-1 uppercase tracking-widest font-bold">Data do Pedido</p>
-                                <p className="text-base font-medium text-neutral-200">{formatDate(proposal.created_at)}</p>
-                                <p className="text-[10px] text-neutral-600 mt-1 italic">Válido até {formatDate(proposal.valid_until)}</p>
+                            <div className="p-4 flex flex-col justify-center border-t-0 lg:border-l">
+                                <p className="text-[9px] md:text-[10px] text-neutral-500 mb-1 uppercase tracking-widest font-bold">Data do Pedido</p>
+                                <p className="text-sm md:text-base font-medium text-neutral-200">{formatDate(proposal.created_at)}</p>
+                                <p className="text-[9px] md:text-[10px] text-neutral-600 mt-0.5 italic">Válido até {formatDate(proposal.valid_until)}</p>
                             </div>
-                            <div className="p-6 border border-white/10 rounded-2xl flex flex-col justify-center">
-                                <p className="text-[10px] text-neutral-500 mb-1 uppercase tracking-widest font-bold">Data de Entrega</p>
-                                <p className="text-base font-medium text-neutral-200">{proposal.delivery_time || 'A combinar'}</p>
+                            <div className="p-4 flex flex-col justify-center">
+                                <p className="text-[9px] md:text-[10px] text-neutral-500 mb-1 uppercase tracking-widest font-bold">Data de Entrega</p>
+                                <p className="text-sm md:text-base font-medium text-neutral-200">{proposal.delivery_time || 'A combinar'}</p>
                             </div>
                         </div>
 
@@ -281,28 +291,29 @@ export function ProposalView() {
                             {items.length > 0 ? items.map((item, index) => {
                                 const style = getServiceIcon(item.title);
                                 return (
-                                    <div key={index} className="border border-white/5 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row gap-8 hover:border-white/10 hover:bg-white/[0.02] transition-all group lg:items-center">
-                                        <div className={`w-28 h-28 md:w-32 md:h-32 ${style.bg} rounded-3xl flex items-center justify-center shrink-0 border border-white/5 shadow-inner group-hover:scale-105 transition-transform`}>
-                                            <style.icon size={56} className={`${style.color}`} weight="duotone" />
+                                    <div key={index} className="border border-white/5 rounded-2xl md:rounded-3xl p-4 md:p-8 flex flex-row gap-4 md:gap-8 hover:border-white/10 hover:bg-white/[0.02] transition-all group lg:items-center">
+                                        <div className={`w-14 h-14 md:w-32 md:h-32 ${style.bg} rounded-xl md:rounded-3xl flex items-center justify-center shrink-0 border border-white/5 shadow-inner group-hover:scale-105 transition-transform`}>
+                                            <style.icon size={28} className={`md:hidden ${style.color}`} weight="duotone" />
+                                            <style.icon size={56} className={`hidden md:block ${style.color}`} weight="duotone" />
                                         </div>
 
-                                        <div className="flex-1">
-                                            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-3">
-                                                <h3 className="text-2xl font-semibold text-white group-hover:text-orange-400 transition-colors tracking-tight">{item.title}</h3>
-                                                <div className="text-right">
-                                                    <div className="text-2xl font-bold text-white">{formatCurrency(item.price)}</div>
-                                                    <span className={`text-[10px] uppercase tracking-widest font-bold ${item.type === 'Mensal' ? 'text-blue-400' : 'text-green-400'}`}>
+                                        <div className="flex-1 flex flex-col justify-center">
+                                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-1 md:gap-4 mb-2 md:mb-3">
+                                                <h3 className="text-lg md:text-2xl font-semibold text-white group-hover:text-orange-400 transition-colors tracking-tight leading-tight">{item.title}</h3>
+                                                <div className="text-left md:text-right flex items-center gap-2 md:block">
+                                                    <div className="text-lg md:text-2xl font-bold text-white leading-tight">{formatCurrency(item.price)}</div>
+                                                    <span className={`text-[9px] md:text-[10px] uppercase tracking-widest font-bold ${item.type === 'Mensal' ? 'text-blue-400' : 'text-green-400'} mt-0.5`}>
                                                         {item.type}
                                                     </span>
                                                 </div>
                                             </div>
 
-                                            <div className="text-neutral-400 text-sm leading-relaxed max-w-2xl">
+                                            <div className="text-neutral-400 text-xs md:text-sm leading-relaxed max-w-2xl">
                                                 {item.description.split('\n').map((line, i) => {
                                                     const isBullet = line.trim().startsWith('-') || line.trim().startsWith('•')
                                                     return (
-                                                        <p key={i} className={isBullet ? "flex gap-2 mb-1" : "mb-1 text-neutral-500"}>
-                                                            {isBullet && <span className="text-orange-500/50">•</span>}
+                                                        <p key={i} className={isBullet ? "flex gap-2 mb-0.5 md:mb-1" : "mb-0.5 md:mb-1"}>
+                                                            {isBullet && <span className="text-orange-500/50 pt-0.5 md:pt-0">•</span>}
                                                             <span>{line.replace(/^[-•]\s*/, '')}</span>
                                                         </p>
                                                     )
@@ -338,8 +349,8 @@ export function ProposalView() {
                         </div>
                     </div>
 
-                    {/* Second Column: Financial Summary (Sticky) - BACKGROUND KEPT */}
-                    <div className="lg:col-span-4 lg:sticky lg:top-8 self-start flex flex-col gap-6">
+                    {/* Second Column: Financial Summary (Sticky Desktop) - Hidden on Mobile */}
+                    <div className="hidden lg:flex lg:col-span-4 lg:sticky lg:top-8 self-start flex-col gap-6">
 
                         {/* Financial Summary Box */}
                         <div className="p-8 border border-white/10 rounded-3xl bg-gradient-to-br from-[#121212] to-black shadow-2xl relative overflow-hidden">
@@ -401,6 +412,56 @@ export function ProposalView() {
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {/* Mobile Sticky Action Footer */}
+            <div data-html2canvas-ignore="true" className={`fixed bottom-0 left-0 right-0 border-t border-white/10 bg-black/90 backdrop-blur-xl lg:hidden z-40 transition-all duration-300 ease-in-out ${isSummaryExpanded ? 'pb-8 pt-6 px-6' : 'pb-8 pt-5 px-5 h-[100px]'}`}>
+                {/* Expand/Collapse Toggle Button */}
+                <button
+                    onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
+                    className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-6 bg-black/80 backdrop-blur-md border border-white/10 border-b-0 rounded-t-xl flex items-center justify-center text-neutral-400 active:text-white"
+                >
+                    {isSummaryExpanded ? <CaretDown size={20} weight="bold" /> : <CaretUp size={20} weight="bold" />}
+                </button>
+
+                {/* Expanded Content */}
+                {isSummaryExpanded && (
+                    <div className="mb-6 pt-2 space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <div className="space-y-3 pt-2">
+                            <div className="flex justify-between items-center text-xs">
+                                <span className="text-neutral-500 uppercase tracking-widest font-bold">Investimento Único</span>
+                                <span className="font-semibold text-neutral-200">{formatCurrency(subtotalUnico)}</span>
+                            </div>
+                            <div className="flex justify-between items-center text-xs">
+                                <span className="text-neutral-500 uppercase tracking-widest font-bold">Investimento Mensal</span>
+                                <span className="font-semibold text-neutral-200">{formatCurrency(subtotalMensal)}</span>
+                            </div>
+                        </div>
+
+                        <div className="pt-4 border-t border-white/5 space-y-3">
+                            <p className="text-[9px] text-neutral-500 uppercase tracking-widest font-bold">Formas de Pagamento</p>
+                            <div className="flex items-center gap-3">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span className="text-[11px] text-neutral-400">Pix (5% de desconto à vista)</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                                <span className="text-[11px] text-neutral-400">Cartão de Crédito em até 5x</span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <div className={`flex items-center justify-between gap-4 ${isSummaryExpanded ? 'pt-4 border-t border-white/5' : ''}`}>
+                    <div className="flex flex-col">
+                        <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-bold">Total</span>
+                        <span className="text-2xl font-bold text-white tracking-tight">{formatCurrency(total)}</span>
+                    </div>
+                    <button className="bg-orange-600 hover:bg-orange-700 active:scale-95 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all flex-1 max-w-[200px] shadow-lg shadow-orange-500/20">
+                        <CheckCircle size={20} weight="bold" />
+                        Contratar
+                    </button>
                 </div>
             </div>
         </div>

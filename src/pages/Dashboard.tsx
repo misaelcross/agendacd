@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Plus, Eye, Pencil, Trash, Gear, Export } from '@phosphor-icons/react'
+import { Plus, Eye, Pencil, Trash, Gear, Export, CaretDown, CaretUp } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Button } from '../components/ui/Button'
@@ -39,6 +39,19 @@ export function Dashboard() {
     const [isDeleting, setIsDeleting] = useState(false)
     const [isExportModalOpen, setIsExportModalOpen] = useState(false)
     const [proposalToExport, setProposalToExport] = useState<string | null>(null)
+    const [expandedAccordions, setExpandedAccordions] = useState<Set<string>>(new Set())
+
+    const toggleAccordion = (id: string) => {
+        setExpandedAccordions(prev => {
+            const newSet = new Set(prev)
+            if (newSet.has(id)) {
+                newSet.delete(id)
+            } else {
+                newSet.add(id)
+            }
+            return newSet
+        })
+    }
 
     function handleDelete(id: string) {
         setProposalToDelete(id)
@@ -101,11 +114,11 @@ export function Dashboard() {
                         className="gap-2"
                     >
                         <Gear size={20} />
-                        Configurações
+                        <span className="hidden md:inline">Configurações</span>
                     </Button>
                     <Button onClick={() => setIsModalOpen(true)} className="gap-2 bg-orange-600 hover:bg-orange-700">
                         <Plus size={20} weight="bold" />
-                        Nova Proposta
+                        <span className="hidden sm:inline">Nova Proposta</span>
                     </Button>
                 </div>
             </header>
@@ -127,78 +140,176 @@ export function Dashboard() {
                             </Button>
                         </div>
                     ) : (
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left border-collapse">
-                                <thead>
-                                    <tr className="border-b border-neutral-800 bg-neutral-800/30">
-                                        <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-widest">Cliente</th>
-                                        <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-widest">Projeto</th>
-                                        <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-widest">Data</th>
-                                        <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-widest">Valor</th>
-                                        <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-widest text-right">Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-neutral-800/50">
-                                    {proposals.map((proposal) => (
-                                        <tr key={proposal.id} className="hover:bg-neutral-800/30 transition-all group">
-                                            <td className="px-6 py-4 font-semibold text-neutral-100 group-hover:text-orange-400">
-                                                {proposal.client_name}
-                                            </td>
-                                            <td className="px-6 py-4 text-neutral-400">
-                                                {proposal.project_title}
-                                            </td>
-                                            <td className="px-6 py-4 text-neutral-500 text-sm">
-                                                {format(new Date(proposal.created_at), 'dd/MM/yyyy')}
-                                            </td>
-                                            <td className="px-6 py-4 text-neutral-100 font-bold">
-                                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                                                    proposal.items && proposal.items.length > 0
-                                                        ? proposal.items.reduce((sum, item) => sum + Number(item.price), 0)
-                                                        : proposal.value
-                                                )}
-                                            </td>
-                                            <td className="px-6 py-4 text-right flex justify-end gap-1">
-                                                <Link to={`/proposal/${proposal.id}`}>
-                                                    <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 p-2" title="Visualizar">
-                                                        <Eye size={20} weight="bold" />
-                                                    </Button>
-                                                </Link>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 p-2"
-                                                    onClick={() => {
-                                                        setProposalToExport(proposal.id)
-                                                        setIsExportModalOpen(true)
-                                                    }}
-                                                    title="Exportar"
-                                                >
-                                                    <Export size={20} weight="bold" />
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="text-purple-500 hover:text-purple-400 hover:bg-purple-500/10 p-2"
-                                                    onClick={() => handleEdit(proposal)}
-                                                    title="Editar"
-                                                >
-                                                    <Pencil size={20} weight="bold" />
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="text-red-500 hover:text-red-400 hover:bg-red-500/10 p-2"
-                                                    onClick={() => handleDelete(proposal.id)}
-                                                    title="Excluir"
-                                                >
-                                                    <Trash size={20} weight="bold" />
-                                                </Button>
-                                            </td>
+                        <>
+                            {/* Desktop Table View */}
+                            <div className="hidden md:block overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="border-b border-neutral-800 bg-neutral-800/30">
+                                            <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-widest">Cliente</th>
+                                            <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-widest">Projeto</th>
+                                            <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-widest">Data</th>
+                                            <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-widest">Valor</th>
+                                            <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-widest text-right">Ações</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody className="divide-y divide-neutral-800/50">
+                                        {proposals.map((proposal) => (
+                                            <tr key={proposal.id} className="hover:bg-neutral-800/30 transition-all group">
+                                                <td className="px-6 py-4 font-semibold text-neutral-100 group-hover:text-orange-400">
+                                                    {proposal.client_name}
+                                                </td>
+                                                <td className="px-6 py-4 text-neutral-400">
+                                                    {proposal.project_title}
+                                                </td>
+                                                <td className="px-6 py-4 text-neutral-500 text-sm">
+                                                    {format(new Date(proposal.created_at), 'dd/MM/yyyy')}
+                                                </td>
+                                                <td className="px-6 py-4 text-neutral-100 font-bold">
+                                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                                                        proposal.items && proposal.items.length > 0
+                                                            ? proposal.items.reduce((sum, item) => sum + Number(item.price), 0)
+                                                            : proposal.value
+                                                    )}
+                                                </td>
+                                                <td className="px-6 py-4 text-right flex justify-end gap-1">
+                                                    <Link to={`/proposal/${proposal.id}`}>
+                                                        <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 p-2" title="Visualizar">
+                                                            <Eye size={20} weight="bold" />
+                                                        </Button>
+                                                    </Link>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 p-2"
+                                                        onClick={() => {
+                                                            setProposalToExport(proposal.id)
+                                                            setIsExportModalOpen(true)
+                                                        }}
+                                                        title="Exportar"
+                                                    >
+                                                        <Export size={20} weight="bold" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="text-purple-500 hover:text-purple-400 hover:bg-purple-500/10 p-2"
+                                                        onClick={() => handleEdit(proposal)}
+                                                        title="Editar"
+                                                    >
+                                                        <Pencil size={20} weight="bold" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="text-red-500 hover:text-red-400 hover:bg-red-500/10 p-2"
+                                                        onClick={() => handleDelete(proposal.id)}
+                                                        title="Excluir"
+                                                    >
+                                                        <Trash size={20} weight="bold" />
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Mobile Accordion View */}
+                            <div className="md:hidden divide-y divide-neutral-800/50">
+                                {proposals.map((proposal) => {
+                                    const isExpanded = expandedAccordions.has(proposal.id)
+                                    const totalValue = proposal.items && proposal.items.length > 0
+                                        ? proposal.items.reduce((sum, item) => sum + Number(item.price), 0)
+                                        : proposal.value
+
+                                    return (
+                                        <div key={proposal.id} className="bg-neutral-900/30">
+                                            {/* Accordion Header - Always Visible */}
+                                            <button
+                                                onClick={() => toggleAccordion(proposal.id)}
+                                                className="w-full px-4 py-4 flex items-center justify-between hover:bg-neutral-800/30 transition-all"
+                                            >
+                                                <div className="flex-1 text-left">
+                                                    <p className="font-semibold text-neutral-100">{proposal.client_name}</p>
+                                                    <p className="text-sm text-neutral-500">{proposal.project_title}</p>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <span className="text-sm font-bold text-orange-400">
+                                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalValue)}
+                                                    </span>
+                                                    {isExpanded ? (
+                                                        <CaretUp size={20} className="text-neutral-500" />
+                                                    ) : (
+                                                        <CaretDown size={20} className="text-neutral-500" />
+                                                    )}
+                                                </div>
+                                            </button>
+
+                                            {/* Accordion Content - Expanded */}
+                                            {isExpanded && (
+                                                <div className="px-4 py-4 space-y-3">
+                                                    <div className="grid grid-cols-2 gap-3 text-sm">
+                                                        <div>
+                                                            <p className="text-neutral-500 text-xs uppercase tracking-wider mb-1">Data</p>
+                                                            <p className="text-neutral-300">{format(new Date(proposal.created_at), 'dd/MM/yyyy')}</p>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-neutral-500 text-xs uppercase tracking-wider mb-1">Valor Total</p>
+                                                            <p className="text-neutral-100 font-bold">
+                                                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalValue)}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Action Buttons */}
+                                                    <div className="flex gap-2 pt-2">
+                                                        <Link to={`/proposal/${proposal.id}`} className="min-w-[50%]">
+                                                            <Button variant="outline" size="sm" className="w-full gap-2 text-blue-400 border-blue-500/30 hover:bg-blue-500/10">
+                                                                <Eye size={18} weight="bold" />
+                                                                Ver
+                                                            </Button>
+                                                        </Link>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="flex-1 gap-2 text-neutral-400 border-neutral-700 hover:bg-neutral-800"
+                                                            onClick={() => {
+                                                                setProposalToExport(proposal.id)
+                                                                setIsExportModalOpen(true)
+                                                            }}
+                                                        >
+                                                            <Export size={18} weight="bold" />
+                                                            Exportar
+                                                        </Button>
+                                                    </div>
+                                                    <div className="flex gap-2">
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="flex-1 gap-2 text-purple-400 border-purple-500/30 hover:bg-purple-500/10"
+                                                            onClick={() => handleEdit(proposal)}
+                                                        >
+                                                            <Pencil size={18} weight="bold" />
+                                                            Editar
+                                                        </Button>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="flex-1 gap-2 text-red-400 border-red-500/30 hover:bg-red-500/10"
+                                                            onClick={() => handleDelete(proposal.id)}
+                                                        >
+                                                            <Trash size={18} weight="bold" />
+                                                            Excluir
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </>
                     )}
                 </div>
             </main>
