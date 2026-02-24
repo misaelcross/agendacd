@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { ArrowLeft, User, Briefcase, MagicWand, ArrowRight, CreditCard, CheckCircle } from '@phosphor-icons/react'
+import { ArrowLeft, User, Briefcase, ArrowRight, CreditCard, CheckCircle } from '@phosphor-icons/react'
 
 export function ContractForm() {
     const { proposalId } = useParams()
@@ -39,25 +39,7 @@ export function ContractForm() {
         'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
     ]
 
-    const fillFakeData = () => {
-        const fakes = [
-            { "nome": "Lourenço Fim", "cpf": "15647329675", "telefone": "55967211567", "cep": "96010610", "logradouro": "Rua Gomes Carneiro", "numero": "897", "bairro": "Centro", "localidade": "Pelotas", "uf": "RS" },
-            { "nome": "Alexander Bragato", "cpf": "93786371407", "telefone": "38991672218", "cep": "88095420", "logradouro": "Rua Libório Soncini", "numero": "993", "bairro": "Jardim Atlântico", "localidade": "Florianópolis", "uf": "SC" },
-            { "nome": "Clara Orechio", "cpf": "67721522633", "telefone": "57931737451", "cep": "60170001", "logradouro": "Avenida Desembargador Moreira", "numero": "945", "bairro": "Aldeota", "localidade": "Fortaleza", "uf": "CE" }
-        ]
-        const random = fakes[Math.floor(Math.random() * fakes.length)]
 
-        setType('pf')
-        setName(random.nome)
-        setDocumentNumber(maskCPF(random.cpf))
-        setPhone(maskPhone(random.telefone))
-        setCep(maskCEP(random.cep))
-        setAddress(random.logradouro)
-        setAddressNumber(random.numero)
-        setNeighborhood(random.bairro)
-        setCity(random.localidade)
-        setStateUF(random.uf)
-    }
 
     useEffect(() => {
         async function loadProposal() {
@@ -341,15 +323,7 @@ export function ContractForm() {
                                     </div>
                                 </div>
 
-                                <div className="mb-6 flex justify-end">
-                                    <button
-                                        type="button"
-                                        onClick={fillFakeData}
-                                        className="flex items-center gap-2 text-[10px] font-bold text-orange-500/70 hover:text-orange-500 bg-orange-500/5 px-3 py-1.5 rounded-lg border border-orange-500/20 hover:border-orange-500/40 transition-all"
-                                    >
-                                        <MagicWand size={14} /> AUTO-PREENCHER (DEV)
-                                    </button>
-                                </div>
+
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
