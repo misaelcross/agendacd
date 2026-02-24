@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import {
     WhatsappLogo,
@@ -42,6 +42,7 @@ const SETTINGS_ID = '550e8400-e29b-41d4-a716-446655440000'
 
 export function ProposalView() {
     const { id } = useParams()
+    const navigate = useNavigate()
     const [proposal, setProposal] = useState<Proposal | null>(null)
     const [loading, setLoading] = useState(true)
     const [logoUrl, setLogoUrl] = useState<string | null>(null)
@@ -54,18 +55,34 @@ export function ProposalView() {
             setLoading(true)
 
             try {
+                // Determine if 'id' is a full UUID or a short ID
+                const isShortId = !id.includes('-');
+
+                let proposalPromise: Promise<any>;
+                if (isShortId) {
+                    proposalPromise = supabase.rpc('get_proposal_by_short_id', { p_short_id: id });
+                } else {
+                    proposalPromise = supabase.from('proposals').select('*').eq('id', id).single();
+                }
+
                 // Fetch proposal and settings in parallel
                 const [proposalRes, settingsRes] = await Promise.all([
-                    supabase.from('proposals').select('*').eq('id', id).single(),
+                    proposalPromise,
                     supabase.from('settings').select('logo_url').eq('id', SETTINGS_ID).single()
                 ])
 
                 if (!proposalRes.error && proposalRes.data) {
-                    setProposal(proposalRes.data as Proposal)
+                    // If using RPC, data is an array, so take the first element
+                    const proposalData = isShortId ? proposalRes.data[0] : proposalRes.data;
+                    setProposal(proposalData as Proposal);
+                } else if (proposalRes.error) {
+                    console.error('Error fetching proposal:', proposalRes.error);
                 }
 
                 if (!settingsRes.error && settingsRes.data) {
                     setLogoUrl(settingsRes.data.logo_url)
+                } else if (settingsRes.error) {
+                    console.error('Error fetching settings:', settingsRes.error);
                 }
             } catch (error) {
                 console.error('Error fetching data:', error)
@@ -375,11 +392,18 @@ export function ProposalView() {
                                 </div>
 
                                 <div className="flex flex-col gap-3 pt-4">
-                                    <button className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all group active:scale-[0.98]">
+                                    <button
+                                        onClick={() => navigate(`/proposta/${id}/contratar`)}
+                                        className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all group active:scale-[0.98]">
                                         <CheckCircle size={22} weight="bold" />
                                         Quero Contratar Agora
                                     </button>
-                                    <button className="w-full bg-white/5 border border-white/10 hover:bg-white/10 text-neutral-300 font-semibold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
+                                    <button
+                                        onClick={() => {
+                                            const wppMessage = encodeURIComponent(`Olá, quero negociar o valor da proposta: ${window.location.origin}/proposta/${id?.split('-')[0]}`);
+                                            window.open(`https://wa.me/5515997891687?text=${wppMessage}`, '_blank');
+                                        }}
+                                        className="w-full bg-white/5 border border-white/10 hover:bg-white/10 text-neutral-300 font-semibold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
                                         <ChatCircleDots size={22} />
                                         Negociar Proposta
                                     </button>
@@ -458,7 +482,9 @@ export function ProposalView() {
                         <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-bold">Total</span>
                         <span className="text-2xl font-bold text-white tracking-tight">{formatCurrency(total)}</span>
                     </div>
-                    <button className="bg-orange-600 hover:bg-orange-700 active:scale-95 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all flex-1 max-w-[200px] shadow-lg shadow-orange-500/20">
+                    <button
+                        onClick={() => navigate(`/proposta/${id}/contratar`)}
+                        className="bg-orange-600 hover:bg-orange-700 active:scale-95 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all flex-1 max-w-[200px] shadow-lg shadow-orange-500/20">
                         <CheckCircle size={20} weight="bold" />
                         Contratar
                     </button>

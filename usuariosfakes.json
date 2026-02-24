@@ -1,0 +1,59 @@
+{
+    "nome": "Lourenço Fim",
+    "sexo": "Masculino",
+    "email": "lourenco_fim@globo.com",
+    "dataNascimento": "1958-05-09",
+    "signo": "Touro",
+    "cpf": "15647329675",
+    "rg": "7154555100",
+    "nomePai": "Gabriel Fim",
+    "nomeMae": "Gabriela Doimo",
+    "telefone": "55967211567",
+    "cep": "96010610",
+    "logradouro": "Rua Gomes Carneiro",
+    "numero": "897",
+    "complemento": "",
+    "bairro": "Centro",
+    "localidade": "Pelotas",
+    "uf": "RS"
+}
+
+{
+    "nome": "Alexander Bragato",
+    "sexo": "Masculino",
+    "email": "alexander_bragato@globo.com",
+    "dataNascimento": "1959-01-18",
+    "signo": "Capricórnio",
+    "cpf": "93786371407",
+    "rg": "2775734900",
+    "nomePai": "Marco Bragato",
+    "nomeMae": "Sara Falqueto",
+    "telefone": "38991672218",
+    "cep": "88095420",
+    "logradouro": "Rua Libório Soncini",
+    "numero": "993",
+    "complemento": "",
+    "bairro": "Jardim Atlântico",
+    "localidade": "Florianópolis",
+    "uf": "SC"
+}
+
+{
+    "nome": "Clara Orechio",
+    "sexo": "Feminino",
+    "email": "clara_orechio@terra.com.br",
+    "dataNascimento": "1992-05-08",
+    "signo": "Touro",
+    "cpf": "67721522633",
+    "rg": "6331456300",
+    "nomePai": "Thiago Orechio",
+    "nomeMae": "Bárbara Boge",
+    "telefone": "57931737451",
+    "cep": "60170001",
+    "logradouro": "Avenida Desembargador Moreira",
+    "numero": "945",
+    "complemento": "de 901 a 2119 - lado ímpar",
+    "bairro": "Aldeota",
+    "localidade": "Fortaleza",
+    "uf": "CE"
+}

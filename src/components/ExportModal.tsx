@@ -13,7 +13,7 @@ export function ExportModal({ isOpen, onClose, proposalId }: ExportModalProps) {
 
     if (!isOpen || !proposalId) return null
 
-    const proposalUrl = `${window.location.origin}/proposal/${proposalId}`
+    const proposalUrl = `${window.location.origin}/proposta/${proposalId?.split('-')[0]}`
 
     function handleCopyLink() {
         navigator.clipboard.writeText(proposalUrl)

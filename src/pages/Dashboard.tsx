@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Plus, Eye, Pencil, Trash, Gear, Export, CaretDown, CaretUp } from '@phosphor-icons/react'
+import { useState, useEffect } from 'react'
+import { Plus, MagnifyingGlass, Funnel, DotsThreeVertical, CheckCircle, Clock, Trash, PencilSimple, Eye, NotePencil, Warning, Handshake, Info, Export, CaretDown, CaretUp, LinkSimple, Pencil, Gear } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Button } from '../components/ui/Button'
@@ -41,6 +41,12 @@ export function Dashboard() {
     const [proposalToExport, setProposalToExport] = useState<string | null>(null)
     const [expandedAccordions, setExpandedAccordions] = useState<Set<string>>(new Set())
 
+    const handleCopyLink = (id: string) => {
+        const shortId = id.split('-')[0]
+        const link = `${window.location.origin}/proposta/${shortId}`
+        navigator.clipboard.writeText(link)
+        alert('Link da proposta copiado!')
+    }
     const toggleAccordion = (id: string) => {
         setExpandedAccordions(prev => {
             const newSet = new Set(prev)
@@ -173,11 +179,20 @@ export function Dashboard() {
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4 text-right flex justify-end gap-1">
-                                                    <Link to={`/proposal/${proposal.id}`}>
+                                                    <Link to={`/proposta/${proposal.id.split('-')[0]}`} target="_blank" rel="noopener noreferrer">
                                                         <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 p-2" title="Visualizar">
                                                             <Eye size={20} weight="bold" />
                                                         </Button>
                                                     </Link>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 p-2"
+                                                        onClick={() => handleCopyLink(proposal.id)}
+                                                        title="Copiar Link"
+                                                    >
+                                                        <LinkSimple size={20} weight="bold" />
+                                                    </Button>
                                                     <Button
                                                         variant="ghost"
                                                         size="sm"
@@ -264,12 +279,28 @@ export function Dashboard() {
 
                                                     {/* Action Buttons */}
                                                     <div className="flex gap-2 pt-2">
-                                                        <Link to={`/proposal/${proposal.id}`} className="min-w-[50%]">
+                                                        <a
+                                                            href={`/proposta/${proposal.id.split('-')[0]}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="min-w-[50%]"
+                                                        >
                                                             <Button variant="outline" size="sm" className="w-full gap-2 text-blue-400 border-blue-500/30 hover:bg-blue-500/10">
                                                                 <Eye size={18} weight="bold" />
                                                                 Ver
                                                             </Button>
-                                                        </Link>
+                                                        </a>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="flex-1 gap-2 text-neutral-400 border-neutral-700 hover:bg-neutral-800"
+                                                            onClick={() => handleCopyLink(proposal.id)}
+                                                        >
+                                                            <LinkSimple size={18} weight="bold" />
+                                                            Copiar Link
+                                                        </Button>
+                                                    </div>
+                                                    <div className="flex gap-2">
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
@@ -282,8 +313,6 @@ export function Dashboard() {
                                                             <Export size={18} weight="bold" />
                                                             Exportar
                                                         </Button>
-                                                    </div>
-                                                    <div className="flex gap-2">
                                                         <Button
                                                             variant="outline"
                                                             size="sm"

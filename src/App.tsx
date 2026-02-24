@@ -2,7 +2,14 @@ import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Dashboard } from './pages/Dashboard'
 import { ProposalView } from './pages/ProposalView'
+import { Login } from './pages/Login'
+import { ResetPassword } from './pages/ResetPassword'
+import { UpdatePassword } from './pages/UpdatePassword'
+import { ContractForm } from './pages/ContractForm'
+import { ContractSign } from './pages/ContractSign'
 import { supabase } from './lib/supabase'
+import { AuthProvider } from './contexts/AuthContext'
+import { ProtectedRoute } from './components/ProtectedRoute'
 
 const SETTINGS_ID = '550e8400-e29b-41d4-a716-446655440000'
 
@@ -42,12 +49,31 @@ function App() {
   }, [])
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/proposal/:id" element={<ProposalView />} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Rotas Públicas */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/update-password" element={<UpdatePassword />} />
+
+          {/* A tela de visualizar a proposta pelo Cliente não requer login do Admin */}
+          <Route path="/proposta/:id" element={<ProposalView />} />
+          <Route path="/proposta/:proposalId/contratar" element={<ContractForm />} />
+          <Route path="/proposta/:contractId/assinar" element={<ContractSign />} />
+
+          {/* Rotas Protegidas (Apenas Admin logado) */}
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
 
