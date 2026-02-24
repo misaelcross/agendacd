@@ -58,7 +58,7 @@ export function ProposalView() {
                 // Determine if 'id' is a full UUID or a short ID
                 const isShortId = !id.includes('-');
 
-                let proposalPromise: Promise<any>;
+                let proposalPromise: any;
                 if (isShortId) {
                     proposalPromise = supabase.rpc('get_proposal_by_short_id', { p_short_id: id });
                 } else {

@@ -127,12 +127,11 @@ export function ContractSign() {
             // 4. Gerar o PDF Assinado e subir pro Storage do Supabase silenciosamente
             setIsGeneratingPdf(true)
             try {
-                const asPdf = pdf([])
-                asPdf.updateContainer(<ContractPDF contract={updatedContract} proposal={updatedContract.proposals} />)
+                const asPdf = pdf(<ContractPDF contract={updatedContract} proposal={updatedContract.proposals} />)
                 const blob = await asPdf.toBlob()
 
                 // Upload to storage
-                const fileName = `${contract.id}_signed.pdf`
+                const fileName = `${contract.id} _signed.pdf`
                 const { error: uploadError } = await supabase.storage
                     .from('contracts')
                     .upload(fileName, blob, {
@@ -224,8 +223,7 @@ export function ContractSign() {
         } else {
             // Caso dê bug e o URL não tenha salvado, gerar na hora para download
             setIsGeneratingPdf(true)
-            const asPdf = pdf([])
-            asPdf.updateContainer(<ContractPDF contract={contract} proposal={contract.proposals} />)
+            const asPdf = pdf(<ContractPDF contract={contract} proposal={contract.proposals} />)
             const blob = await asPdf.toBlob()
             const url = URL.createObjectURL(blob)
             window.open(url, '_blank')
@@ -270,7 +268,7 @@ export function ContractSign() {
                     </button>
 
                     <button
-                        onClick={() => navigate(`/proposta/${contract.proposal_id.split('-')[0]}`)}
+                        onClick={() => navigate(`/ proposta / ${contract.proposal_id.split('-')[0]} `)}
                         className="w-full bg-transparent border border-white/10 hover:bg-white/5 text-neutral-300 font-medium py-3 px-6 rounded-xl transition-all"
                     >
                         Voltar para Proposta

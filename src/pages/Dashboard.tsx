@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, MagnifyingGlass, Funnel, DotsThreeVertical, CheckCircle, Clock, Trash, PencilSimple, Eye, NotePencil, Warning, Handshake, Info, Export, CaretDown, CaretUp, LinkSimple, Pencil, Gear } from '@phosphor-icons/react'
+import { Plus, Eye, Export, CaretDown, CaretUp, LinkSimple, Pencil, Gear, Trash } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Button } from '../components/ui/Button'
