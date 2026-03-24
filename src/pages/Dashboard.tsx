@@ -40,6 +40,7 @@ interface Contract {
     id: string
     contractor_email: string
     contractor_name: string
+    status?: string
     created_at: string
     signed_at?: string | null
     signed_pdf_url?: string | null
@@ -141,7 +142,7 @@ export function Dashboard() {
 
     const getSignedContracts = (proposal: Proposal): Contract[] => {
         return (proposal.contracts || [])
-            .filter((contract) => Boolean(contract.signed_pdf_url))
+            .filter((contract) => Boolean(contract.signed_at) || contract.status === 'active' || Boolean(contract.signed_pdf_url))
             .sort((a, b) => new Date((b.signed_at || b.created_at)).getTime() - new Date((a.signed_at || a.created_at)).getTime())
     }
 
@@ -186,6 +187,7 @@ export function Dashboard() {
                     id,
                     contractor_email,
                     contractor_name,
+                    status,
                     created_at,
                     signed_at,
                     signed_pdf_url,
@@ -218,6 +220,7 @@ export function Dashboard() {
                         id,
                         contractor_email,
                         contractor_name,
+                        status,
                         created_at,
                         signed_at,
                         signed_pdf_url,
@@ -419,16 +422,20 @@ export function Dashboard() {
                                                                                                 Assinado em {formatDateTime(contract.signed_at || contract.created_at)}
                                                                                             </p>
                                                                                         </div>
-                                                                                        <a
-                                                                                            href={contract.signed_pdf_url || '#'}
-                                                                                            target="_blank"
-                                                                                            rel="noopener noreferrer"
-                                                                                        >
-                                                                                            <Button variant="outline" size="sm" className="gap-2 whitespace-nowrap">
-                                                                                                <DownloadSimple size={16} weight="bold" />
-                                                                                                Baixar PDF
-                                                                                            </Button>
-                                                                                        </a>
+                                                                                        {contract.signed_pdf_url ? (
+                                                                                            <a
+                                                                                                href={contract.signed_pdf_url}
+                                                                                                target="_blank"
+                                                                                                rel="noopener noreferrer"
+                                                                                            >
+                                                                                                <Button variant="outline" size="sm" className="gap-2 whitespace-nowrap">
+                                                                                                    <DownloadSimple size={16} weight="bold" />
+                                                                                                    Baixar PDF
+                                                                                                </Button>
+                                                                                            </a>
+                                                                                        ) : (
+                                                                                            <span className="text-xs text-neutral-500">PDF ainda não disponível</span>
+                                                                                        )}
                                                                                     </div>
                                                                                 ))}
                                                                             </div>
@@ -583,17 +590,21 @@ export function Dashboard() {
                                                                             <p className="text-xs text-orange-400 mt-1">
                                                                                 Assinado em {formatDateTime(contract.signed_at || contract.created_at)}
                                                                             </p>
-                                                                            <a
-                                                                                href={contract.signed_pdf_url || '#'}
-                                                                                target="_blank"
-                                                                                rel="noopener noreferrer"
-                                                                                className="inline-block mt-2"
-                                                                            >
-                                                                                <Button variant="outline" size="sm" className="gap-2">
-                                                                                    <DownloadSimple size={16} weight="bold" />
-                                                                                    Baixar PDF
-                                                                                </Button>
-                                                                            </a>
+                                                                            {contract.signed_pdf_url ? (
+                                                                                <a
+                                                                                    href={contract.signed_pdf_url}
+                                                                                    target="_blank"
+                                                                                    rel="noopener noreferrer"
+                                                                                    className="inline-block mt-2"
+                                                                                >
+                                                                                    <Button variant="outline" size="sm" className="gap-2">
+                                                                                        <DownloadSimple size={16} weight="bold" />
+                                                                                        Baixar PDF
+                                                                                    </Button>
+                                                                                </a>
+                                                                            ) : (
+                                                                                <p className="text-xs text-neutral-500 mt-2">PDF ainda não disponível</p>
+                                                                            )}
                                                                         </div>
                                                                     ))}
                                                                 </div>

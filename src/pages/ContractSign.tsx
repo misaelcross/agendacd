@@ -143,7 +143,14 @@ export function ContractSign() {
                     // Pegar URL Pública e atualizar o contrato
                     const { data: urlData } = supabase.storage.from('contracts').getPublicUrl(fileName)
                     if (urlData.publicUrl) {
-                        await supabase.from('contracts').update({ signed_pdf_url: urlData.publicUrl }).eq('id', contract.id)
+                        const { data: savePdfResult, error: savePdfError } = await supabase.rpc('set_signed_pdf_url', {
+                            p_contract_id: contract.id,
+                            p_signed_pdf_url: urlData.publicUrl
+                        })
+
+                        if (savePdfError || !savePdfResult) {
+                            console.error('Erro ao salvar signed_pdf_url no banco:', savePdfError)
+                        }
 
                         // Enviar e-mail automático com o PDF assinado
                         try {
