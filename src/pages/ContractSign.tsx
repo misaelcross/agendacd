@@ -149,6 +149,7 @@ export function ContractSign() {
                         try {
                             await supabase.functions.invoke('send-contract-email', {
                                 body: {
+                                    contractId: contract.id,
                                     email: contract.contractor_email,
                                     clientName: contract.contractor_name || 'Cliente',
                                     pdfUrl: urlData.publicUrl

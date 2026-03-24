@@ -1,9 +1,11 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
+const INTERNAL_COPY_EMAIL = 'contato@conversao.digital'
 
 serve(async (req) => {
   // 1. Resposta ao Preflight (CORS) do navegador
@@ -13,7 +15,7 @@ serve(async (req) => {
 
   try {
     const payload = await req.json()
-    const { email, token, clientName, pdfUrl } = payload
+    const { email, token, clientName, pdfUrl, contractId } = payload
 
     console.log(`Iniciando envio para: ${email}, nome: ${clientName}, modo: ${pdfUrl ? 'PDF Assinado' : 'Token'}`)
 
@@ -24,6 +26,12 @@ serve(async (req) => {
       console.error("RESEND_API_KEY não encontrada nas variáveis de ambiente.")
       throw new Error("RESEND_API_KEY is missing from environment variables")
     }
+
+    const SUPABASE_URL = Deno.env.get('SUPABASE_URL')
+    const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+    const supabaseAdmin = SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY
+      ? createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+      : null
 
     let subject = 'Conversão Digital - Seu Token para Assinar Contrato';
     let htmlContent = `
@@ -69,12 +77,45 @@ serve(async (req) => {
       `;
     }
 
+    const persistEmailLog = async (params: {
+      status: 'accepted' | 'failed'
+      resendEmailId?: string | null
+      errorMessage?: string | null
+      providerResponse?: unknown
+    }) => {
+      if (!supabaseAdmin) {
+        console.warn('Supabase admin client indisponível para persistir log de email.')
+        return
+      }
+
+      const { error: logError } = await supabaseAdmin.from('resend_email_logs').insert({
+        contract_id: contractId || null,
+        recipient_email: email,
+        subject,
+        template_type: pdfUrl ? 'signed_pdf' : 'token',
+        provider: 'resend',
+        resend_email_id: params.resendEmailId || null,
+        status: params.status,
+        error_message: params.errorMessage || null,
+        provider_response: params.providerResponse || null,
+      })
+
+      if (logError) {
+        console.error('Falha ao gravar log de email:', logError)
+      }
+    }
+
     // 2. Enviar email via Resend
-    const resendPayload = {
+    const resendPayload: Record<string, unknown> = {
       from: 'Conversão Digital <vendas@conversao.digital>',
       to: email,
       subject: subject,
       html: htmlContent,
+    }
+
+    // Para contratos assinados, enviamos uma cópia interna em BCC.
+    if (pdfUrl && email !== INTERNAL_COPY_EMAIL) {
+      resendPayload.bcc = INTERNAL_COPY_EMAIL
     }
 
     console.log("Enviando requisição para Resend API...")
@@ -91,10 +132,20 @@ serve(async (req) => {
 
     if (!response.ok) {
       console.error("Resend API falhou:", data)
+      await persistEmailLog({
+        status: 'failed',
+        errorMessage: typeof data === 'string' ? data : JSON.stringify(data),
+        providerResponse: data
+      })
       throw new Error(JSON.stringify(data))
     }
 
     console.log("Email enviado com sucesso:", data)
+    await persistEmailLog({
+      status: 'accepted',
+      resendEmailId: data?.id || null,
+      providerResponse: data
+    })
 
     return new Response(JSON.stringify({ success: true, data }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

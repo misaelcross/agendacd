@@ -194,6 +194,12 @@ COMMENT ON COLUMN contracts.status IS 'Status do contrato: pending, active, comp
 COMMENT ON COLUMN contracts.signature_token IS 'Token de 6 dígitos para validação da assinatura';
 ```
 
+## Migration adicional (log real do Resend)
+
+Execute também a migration abaixo para persistir os eventos reais de envio de e-mail:
+
+`supabase/migrations/20260324_create_resend_email_logs.sql`
+
 ## Como Executar
 
 1. Acesse o Supabase Dashboard
