@@ -3,7 +3,7 @@ import { Modal } from './ui/Modal'
 import { Input } from './ui/Input'
 import { Button } from './ui/Button'
 import { supabase } from '../lib/supabase'
-import { Image, FloppyDisk, Globe, Desktop } from '@phosphor-icons/react'
+import { Image, FloppyDisk, Globe, Desktop, Robot, Key } from '@phosphor-icons/react'
 
 interface SettingsModalProps {
     isOpen: boolean
@@ -16,6 +16,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     const [logoUrl, setLogoUrl] = useState('')
     const [faviconUrl, setFaviconUrl] = useState('')
     const [systemName, setSystemName] = useState('')
+    const [geminiApiKey, setGeminiApiKey] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const [isSaving, setIsSaving] = useState(false)
 
@@ -30,7 +31,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         try {
             const { data, error } = await supabase
                 .from('settings')
-                .select('logo_url, favicon_url, system_name')
+                .select('logo_url, favicon_url, system_name, gemini_api_key')
                 .eq('id', SETTINGS_ID)
                 .single()
 
@@ -42,6 +43,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 setLogoUrl(data.logo_url || '')
                 setFaviconUrl(data.favicon_url || '')
                 setSystemName(data.system_name || '')
+                setGeminiApiKey(data.gemini_api_key || '')
             }
         } catch (error) {
             console.error('Error fetching settings:', error)
@@ -60,6 +62,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     logo_url: logoUrl,
                     favicon_url: faviconUrl,
                     system_name: systemName,
+                    gemini_api_key: geminiApiKey,
                     updated_at: new Date().toISOString()
                 })
 
@@ -149,7 +152,29 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     </div>
                 </div>
 
-                <div className="pt-6 flex justify-end gap-3 border-t border-neutral-800">
+                {/* AI Section */}
+                <div className="pt-6 border-t border-neutral-800 space-y-4">
+                    <div className="flex items-center gap-2 mb-1">
+                        <Robot size={16} className="text-orange-500" />
+                        <span className="text-sm font-semibold text-neutral-300">Inteligência Artificial</span>
+                    </div>
+                    <Input
+                        label="Chave API do Gemini"
+                        placeholder="AIza..."
+                        value={geminiApiKey}
+                        onChange={(e) => setGeminiApiKey(e.target.value)}
+                        type="password"
+                        icon={<Key size={18} className="text-neutral-500" />}
+                    />
+                    <p className="text-xs text-neutral-600">
+                        Obtenha sua chave em{' '}
+                        <a href="https://aistudio.google.com" target="_blank" rel="noopener noreferrer" className="text-orange-500/70 hover:text-orange-500">
+                            aistudio.google.com
+                        </a>
+                    </p>
+                </div>
+
+                <div className="pt-4 flex justify-end gap-3 border-t border-neutral-800">
                     <Button type="button" variant="ghost" onClick={onClose}>
                         Cancelar
                     </Button>

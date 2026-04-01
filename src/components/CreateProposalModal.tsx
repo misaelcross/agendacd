@@ -125,8 +125,9 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
 
             console.log('Payload for Supabase:', payload)
 
-            const { data: result, error } = initialData
-                ? await supabase.from('proposals').update(payload).eq('id', initialData.id).select()
+            const isEditing = initialData && initialData.id && initialData.id.length > 0
+            const { data: result, error } = isEditing
+                ? await supabase.from('proposals').update(payload).eq('id', initialData!.id).select()
                 : await supabase.from('proposals').insert([payload]).select()
 
             if (error) {

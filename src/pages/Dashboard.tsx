@@ -7,7 +7,10 @@ import { ConfirmModal } from '../components/ui/ConfirmModal'
 import { CreateProposalModal } from '../components/CreateProposalModal'
 import { SettingsModal } from '../components/SettingsModal'
 import { ExportModal } from '../components/ExportModal'
+import { NewProposalSelectionModal } from '../components/NewProposalSelectionModal'
+import { AIChatModal } from '../components/AIChatModal'
 import { format } from 'date-fns'
+import type { ProposalData } from '../types/proposal'
 
 interface ProposalItem {
     title: string
@@ -68,6 +71,8 @@ interface ResendEmailLog {
 export function Dashboard() {
     const [proposals, setProposals] = useState<Proposal[]>([])
     const [loading, setLoading] = useState(true)
+    const [isSelectionModalOpen, setIsSelectionModalOpen] = useState(false)
+    const [isAIChatOpen, setIsAIChatOpen] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isSettingsOpen, setIsSettingsOpen] = useState(false)
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -177,6 +182,58 @@ export function Dashboard() {
         setIsModalOpen(true)
     }
 
+    function handleNewProposal() {
+        setIsSelectionModalOpen(true)
+    }
+
+    function handleSelectAI() {
+        setIsSelectionModalOpen(false)
+        setIsAIChatOpen(true)
+    }
+
+    function handleSelectManual() {
+        setIsSelectionModalOpen(false)
+        setEditingProposal(null)
+        setIsModalOpen(true)
+    }
+
+    async function handleAIApprove(data: ProposalData) {
+        const deliveryDays = parseInt(data.delivery_time) || 7
+        const payload = {
+            client_name: data.client_name,
+            project_title: data.project_title,
+            delivery_time: `${deliveryDays} dias úteis`,
+            valid_until: data.valid_until,
+            items: data.items,
+            value: data.items.reduce((acc, item) => acc + item.price, 0),
+            status: 'pending',
+        }
+        const { error } = await supabase.from('proposals').insert([payload])
+        if (error) {
+            alert(`Erro ao criar proposta: ${error.message}`)
+            throw error
+        }
+        setIsAIChatOpen(false)
+        fetchProposals()
+    }
+
+    function handleAIEdit(data: ProposalData) {
+        const deliveryDays = parseInt(data.delivery_time) || 7
+        setEditingProposal({
+            id: '',
+            client_name: data.client_name,
+            project_title: data.project_title,
+            delivery_time: `${deliveryDays} dias úteis`,
+            valid_until: data.valid_until,
+            items: data.items,
+            value: data.items.reduce((acc, item) => acc + item.price, 0),
+            status: 'pending',
+            created_at: new Date().toISOString(),
+        })
+        setIsAIChatOpen(false)
+        setIsModalOpen(true)
+    }
+
     async function fetchProposals() {
         setLoading(true)
         const queryWithLogs = await supabase
@@ -262,7 +319,7 @@ export function Dashboard() {
                         <Gear size={20} />
                         <span className="hidden md:inline">Configurações</span>
                     </Button>
-                    <Button onClick={() => setIsModalOpen(true)} className="gap-2 bg-orange-600 hover:bg-orange-700">
+                    <Button onClick={handleNewProposal} className="gap-2 bg-orange-600 hover:bg-orange-700">
                         <Plus size={20} weight="bold" />
                         <span className="hidden sm:inline">Nova Proposta</span>
                     </Button>
@@ -280,7 +337,7 @@ export function Dashboard() {
                             </div>
                             <h3 className="text-lg font-medium text-neutral-100 mb-1">Nenhuma proposta</h3>
                             <p className="text-neutral-500 mb-4 text-sm">Comece criando sua primeira proposta comercial.</p>
-                            <Button onClick={() => setIsModalOpen(true)} className="gap-2">
+                            <Button onClick={handleNewProposal} className="gap-2">
                                 <Plus size={20} weight="bold" />
                                 Criar Proposta
                             </Button>
@@ -621,6 +678,20 @@ export function Dashboard() {
                     )}
                 </div>
             </main>
+
+            <NewProposalSelectionModal
+                isOpen={isSelectionModalOpen}
+                onClose={() => setIsSelectionModalOpen(false)}
+                onSelectAI={handleSelectAI}
+                onSelectManual={handleSelectManual}
+            />
+
+            <AIChatModal
+                isOpen={isAIChatOpen}
+                onClose={() => setIsAIChatOpen(false)}
+                onApprove={handleAIApprove}
+                onEdit={handleAIEdit}
+            />
 
             <CreateProposalModal
                 isOpen={isModalOpen}
