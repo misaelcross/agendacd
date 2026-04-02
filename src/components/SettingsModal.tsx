@@ -3,11 +3,18 @@ import { Modal } from './ui/Modal'
 import { Input } from './ui/Input'
 import { Button } from './ui/Button'
 import { supabase } from '../lib/supabase'
-import { Image, FloppyDisk, Globe, Desktop, Robot, Key } from '@phosphor-icons/react'
+import { Image, FloppyDisk, Globe, Desktop, Robot, Key, Buildings, Plus, Trash } from '@phosphor-icons/react'
 
 interface SettingsModalProps {
     isOpen: boolean
     onClose: () => void
+}
+
+export interface CompanyProfile {
+    id: string
+    name: string
+    document: string
+    address: string
 }
 
 const SETTINGS_ID = '550e8400-e29b-41d4-a716-446655440000'
@@ -17,6 +24,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     const [faviconUrl, setFaviconUrl] = useState('')
     const [systemName, setSystemName] = useState('')
     const [geminiApiKey, setGeminiApiKey] = useState('')
+    const [companyProfiles, setCompanyProfiles] = useState<CompanyProfile[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [isSaving, setIsSaving] = useState(false)
 
@@ -31,7 +39,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         try {
             const { data, error } = await supabase
                 .from('settings')
-                .select('logo_url, favicon_url, system_name, gemini_api_key')
+                .select('logo_url, favicon_url, system_name, gemini_api_key, company_profiles')
                 .eq('id', SETTINGS_ID)
                 .single()
 
@@ -44,6 +52,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 setFaviconUrl(data.favicon_url || '')
                 setSystemName(data.system_name || '')
                 setGeminiApiKey(data.gemini_api_key || '')
+                setCompanyProfiles(data.company_profiles || [])
             }
         } catch (error) {
             console.error('Error fetching settings:', error)
@@ -63,6 +72,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     favicon_url: faviconUrl,
                     system_name: systemName,
                     gemini_api_key: geminiApiKey,
+                    company_profiles: companyProfiles,
                     updated_at: new Date().toISOString()
                 })
 
@@ -172,6 +182,65 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                             aistudio.google.com
                         </a>
                     </p>
+                </div>
+
+                {/* Perfis de Empresa */}
+                <div className="pt-6 border-t border-neutral-800 space-y-4">
+                    <div className="flex items-center gap-2 mb-1">
+                        <Buildings size={16} className="text-orange-500" />
+                        <span className="text-sm font-semibold text-neutral-300">Perfis da Nossa Empresa (Assinatura PDF)</span>
+                    </div>
+                    {companyProfiles.map((profile, idx) => (
+                        <div key={profile.id} className="p-4 bg-neutral-900 border border-neutral-800 rounded-xl space-y-3 relative group">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setCompanyProfiles(prev => prev.filter(p => p.id !== profile.id))
+                                }}
+                                className="absolute top-2 right-2 p-1.5 text-neutral-500 hover:text-red-500 bg-black/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                                <Trash size={16} />
+                            </button>
+                            <Input
+                                label="Razão Social / Nome"
+                                placeholder="Ex: CONVERSÃO DIGITAL LTDA"
+                                value={profile.name}
+                                onChange={(e) => {
+                                    const newProfiles = [...companyProfiles];
+                                    newProfiles[idx].name = e.target.value;
+                                    setCompanyProfiles(newProfiles);
+                                }}
+                            />
+                            <Input
+                                label="CNPJ / CPF"
+                                placeholder="Ex: 51.523.000/0001-90"
+                                value={profile.document}
+                                onChange={(e) => {
+                                    const newProfiles = [...companyProfiles];
+                                    newProfiles[idx].document = e.target.value;
+                                    setCompanyProfiles(newProfiles);
+                                }}
+                            />
+                            <Input
+                                label="Endereço Completo"
+                                placeholder="Ex: Rua Exemplo, 123, Bairro, Cidade - SP"
+                                value={profile.address}
+                                onChange={(e) => {
+                                    const newProfiles = [...companyProfiles];
+                                    newProfiles[idx].address = e.target.value;
+                                    setCompanyProfiles(newProfiles);
+                                }}
+                            />
+                        </div>
+                    ))}
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setCompanyProfiles([...companyProfiles, { id: crypto.randomUUID(), name: '', document: '', address: '' }])}
+                        className="w-full gap-2 border-dashed"
+                    >
+                        <Plus size={18} /> Adicionar Novo Perfil
+                    </Button>
                 </div>
 
                 <div className="pt-4 flex justify-end gap-3 border-t border-neutral-800">

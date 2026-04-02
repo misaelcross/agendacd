@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -10,6 +10,7 @@ import { SearchableSelect } from './ui/SearchableSelect'
 import { DeliveryTimeInput } from './ui/DeliveryTimeInput'
 import { supabase } from '../lib/supabase'
 import { Plus, Trash, CaretUp, CaretDown, DotsSixVertical } from '@phosphor-icons/react'
+import type { CompanyProfile } from './SettingsModal'
 
 const projectOptions = [
     'Site',
@@ -50,6 +51,21 @@ interface CreateProposalModalProps {
 }
 
 export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }: CreateProposalModalProps) {
+    const [companyProfiles, setCompanyProfiles] = useState<CompanyProfile[]>([])
+    const [selectedProfileId, setSelectedProfileId] = useState<string>('')
+
+    useEffect(() => {
+        async function fetchProfiles() {
+            const { data } = await supabase.from('settings').select('company_profiles').eq('id', '550e8400-e29b-41d4-a716-446655440000').single()
+            if (data?.company_profiles) {
+                setCompanyProfiles(data.company_profiles)
+            }
+        }
+        if (isOpen) {
+            fetchProfiles()
+        }
+    }, [isOpen])
+
     const getTomorrowDate = () => {
         const today = new Date();
         const tomorrow = new Date(today);
@@ -93,6 +109,11 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
                     price: Number(item.price) || 0
                 })) || [{ title: '', description: '', type: 'Único', price: 0 }]
             })
+            if ((initialData as any).company_profile?.id) {
+                setSelectedProfileId((initialData as any).company_profile.id)
+            } else if (companyProfiles.length > 0) {
+                 setSelectedProfileId(companyProfiles[0].id)
+            }
         } else {
             reset({
                 client_name: '',
@@ -101,8 +122,13 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
                 valid_until: getTomorrowDate(),
                 items: [{ title: '', description: '', type: 'Único', price: 0 }]
             })
+            if (companyProfiles.length > 0) {
+                 setSelectedProfileId(companyProfiles[0].id)
+            } else {
+                 setSelectedProfileId('')
+            }
         }
-    }, [initialData, reset, isOpen])
+    }, [initialData, reset, isOpen, companyProfiles])
 
     const { fields, append, remove, move, update } = useFieldArray({
         control,
@@ -113,6 +139,7 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
         console.log('Submitting proposal data:', data)
         try {
             const totalValue = data.items.reduce((acc, item) => acc + item.price, 0)
+            const profile = companyProfiles.find(p => p.id === selectedProfileId)
             const payload = {
                 client_name: data.client_name,
                 project_title: data.project_title,
@@ -121,6 +148,7 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
                 items: data.items,
                 value: totalValue,
                 status: 'pending',
+                company_profile: profile || null
             }
 
             console.log('Payload for Supabase:', payload)
@@ -210,6 +238,23 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
                         {...register('valid_until')}
                         error={errors.valid_until?.message}
                     />
+
+                    {companyProfiles.length > 0 && (
+                        <div className="flex flex-col gap-1 md:col-span-2">
+                            <label className="text-sm font-medium text-neutral-300">Perfil da Empresa (Assinante)</label>
+                            <select
+                                value={selectedProfileId}
+                                onChange={(e) => setSelectedProfileId(e.target.value)}
+                                className="flex h-10 w-full rounded-md border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all"
+                            >
+                                <option value="">Selecione um perfil de assinatura...</option>
+                                {companyProfiles.map(p => (
+                                    <option key={p.id} value={p.id}>{p.name}</option>
+                                ))}
+                            </select>
+                            <p className="text-xs text-neutral-500">Este perfil definirá os dados da empresa (ex: CNPJ) exportados no contrato PDF.</p>
+                        </div>
+                    )}
                 </div>
 
                 <div className="border-t border-neutral-800 pt-6">

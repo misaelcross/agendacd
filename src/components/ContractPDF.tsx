@@ -130,6 +130,13 @@ export function ContractPDF({ contract, proposal }: ContractPDFProps) {
     const formatCurrency = (val: number) =>
         new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val || 0)
 
+    const companyProfile = proposal?.company_profile || contract?.proposals?.company_profile;
+    const companyName = companyProfile?.name || 'CONVERSÃO DIGITAL SOLUÇÕES EM DESIGN LTDA';
+    const companyDocument = companyProfile?.document || '51.523.000/0001-90';
+    const companyAddress = companyProfile?.address || 'Rua Exemplo, 123, Bairro, Cidade - SP';
+    
+    const isCompanyCnpj = companyDocument.replace(/\D/g, '').length > 11;
+
     return (
         <Document>
             <Page size="A4" style={styles.page}>
@@ -137,7 +144,7 @@ export function ContractPDF({ contract, proposal }: ContractPDFProps) {
                 <View style={styles.header}>
                     <View style={{ flex: 1, paddingRight: 20 }}>
                         <Text style={styles.title}>CONTRATO DE PRESTAÇÃO DE SERVIÇOS</Text>
-                        <Text style={styles.subtitle}>CONVERSÃO DIGITAL SOLUÇÕES EM DESIGN LTDA</Text>
+                        <Text style={styles.subtitle}>{companyName}</Text>
                     </View>
                     <View style={{ alignItems: 'flex-end', minWidth: 120 }}>
                         <Text style={{ fontSize: 10 }}>Documento nº: {contract.id.split('-')[0].toUpperCase()}</Text>
@@ -150,7 +157,7 @@ export function ContractPDF({ contract, proposal }: ContractPDFProps) {
 
                     <Text style={[styles.text, { fontWeight: 700, marginBottom: 4 }]}>CONTRATADA:</Text>
                     <Text style={styles.text}>
-                        CONVERSÃO DIGITAL SOLUÇÕES EM DESIGN LTDA, pessoa jurídica de direito privado, inscrita no CNPJ sob o nº 51.523.000/0001-90, com sede na Rua Exemplo, 123, Bairro, Cidade - SP.
+                        {companyName}, {isCompanyCnpj ? 'pessoa jurídica de direito privado' : 'pessoa física'}, inscrit{isCompanyCnpj ? 'a no CNPJ' : 'o(a) no CPF'} sob o nº {companyDocument}, com sede/residência na {companyAddress}.
                     </Text>
 
                     <Text style={[styles.text, { fontWeight: 700, marginBottom: 4, marginTop: 12 }]}>CONTRATANTE:</Text>
@@ -236,8 +243,8 @@ export function ContractPDF({ contract, proposal }: ContractPDFProps) {
                             Data: {formatDate(proposal?.created_at || contract.created_at)}
                         </Text>
                         <Text style={styles.electronicSignatureBold}>
-                            CONVERSÃO DIGITAL SOLUÇÕES EM DESIGN LTDA{'\n'}
-                            CNPJ: 51.523.000/0001-90
+                            {companyName}{'\n'}
+                            {isCompanyCnpj ? 'CNPJ' : 'CPF'}: {companyDocument}
                         </Text>
                     </View>
 
