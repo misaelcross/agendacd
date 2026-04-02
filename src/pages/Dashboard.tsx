@@ -1,5 +1,5 @@
 import { Fragment, useState, useEffect } from 'react'
-import { Plus, Eye, Export, CaretDown, CaretUp, LinkSimple, Pencil, Gear, Trash, DownloadSimple } from '@phosphor-icons/react'
+import { Plus, Eye, Export, CaretDown, CaretUp, LinkSimple, Pencil, Gear, Trash, DownloadSimple, Archive, ArrowCounterClockwise, ChartBar, CurrencyDollar, CheckCircle } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Button } from '../components/ui/Button'
@@ -82,6 +82,7 @@ export function Dashboard() {
     const [isExportModalOpen, setIsExportModalOpen] = useState(false)
     const [proposalToExport, setProposalToExport] = useState<string | null>(null)
     const [expandedAccordions, setExpandedAccordions] = useState<Set<string>>(new Set())
+    const [activeTab, setActiveTab] = useState<'all' | 'archived'>('all')
 
     const handleCopyLink = (id: string) => {
         const shortId = id.split('-')[0]
@@ -149,6 +150,28 @@ export function Dashboard() {
         return (proposal.contracts || [])
             .filter((contract) => Boolean(contract.signed_at) || contract.status === 'active' || Boolean(contract.signed_pdf_url))
             .sort((a, b) => new Date((b.signed_at || b.created_at)).getTime() - new Date((a.signed_at || a.created_at)).getTime())
+    }
+
+    async function handleArchive(id: string) {
+        try {
+            const { error } = await supabase.from('proposals').update({ status: 'archived' }).eq('id', id)
+            if (error) throw error
+            fetchProposals()
+        } catch (error: any) {
+            console.error('Error archiving proposal:', error)
+            alert(`Erro ao arquivar proposta: ${error.message || 'Erro desconhecido'}`)
+        }
+    }
+
+    async function handleRestore(id: string) {
+        try {
+            const { error } = await supabase.from('proposals').update({ status: 'pending' }).eq('id', id)
+            if (error) throw error
+            fetchProposals()
+        } catch (error: any) {
+            console.error('Error restoring proposal:', error)
+            alert(`Erro ao restaurar proposta: ${error.message || 'Erro desconhecido'}`)
+        }
     }
 
     function handleDelete(id: string) {
@@ -306,6 +329,22 @@ export function Dashboard() {
         fetchProposals()
     }, [])
 
+    const filteredProposals = proposals.filter((proposal) => {
+        if (activeTab === 'all') return proposal.status !== 'archived'
+        return proposal.status === 'archived'
+    })
+
+    const totalProposals = filteredProposals.length;
+    
+    const totalValue = filteredProposals.reduce((sum, proposal) => {
+        const value = proposal.items && proposal.items.length > 0
+            ? proposal.items.reduce((acc, item) => acc + Number(item.price), 0)
+            : Number(proposal.value || 0);
+        return sum + value;
+    }, 0);
+
+    const signedProposalsCount = filteredProposals.filter(proposal => getSignedContracts(proposal).length > 0).length;
+
     return (
         <div className="min-h-screen bg-[#0C0A09] text-neutral-100 flex flex-col selection:bg-orange-500/30">
             <header className="bg-black/40 backdrop-blur-md border-b border-neutral-800/50 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
@@ -327,20 +366,80 @@ export function Dashboard() {
             </header>
 
             <main className="flex-1 p-6 max-w-7xl mx-auto w-full">
+                <div className="flex gap-4 mb-6 border-b border-neutral-800">
+                    <button
+                        onClick={() => setActiveTab('all')}
+                        className={`pb-3 px-1 text-sm font-medium transition-colors border-b-2 ${
+                            activeTab === 'all'
+                                ? 'border-orange-500 text-orange-400'
+                                : 'border-transparent text-neutral-400 hover:text-neutral-200'
+                        }`}
+                    >
+                        Todas as propostas
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('archived')}
+                        className={`pb-3 px-1 text-sm font-medium transition-colors border-b-2 ${
+                            activeTab === 'archived'
+                                ? 'border-orange-500 text-orange-400'
+                                : 'border-transparent text-neutral-400 hover:text-neutral-200'
+                        }`}
+                    >
+                        Propostas arquivadas
+                    </button>
+                </div>
+
+                {/* Widgets Section */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="bg-neutral-900/50 rounded-2xl border border-neutral-800/50 p-5 shadow-lg flex flex-col justify-center">
+                        <div className="flex items-center gap-3 text-neutral-400 mb-2">
+                            <ChartBar size={24} className="text-orange-500" weight="duotone" />
+                            <h3 className="text-sm font-medium">Propostas {activeTab === 'all' ? 'Criadas' : 'Arquivadas'}</h3>
+                        </div>
+                        <p className="text-2xl font-bold text-neutral-100">{totalProposals}</p>
+                    </div>
+
+                    <div className="bg-neutral-900/50 rounded-2xl border border-neutral-800/50 p-5 shadow-lg flex flex-col justify-center">
+                        <div className="flex items-center gap-3 text-neutral-400 mb-2">
+                            <CurrencyDollar size={24} className="text-green-500" weight="duotone" />
+                            <h3 className="text-sm font-medium">Valor Total</h3>
+                        </div>
+                        <p className="text-2xl font-bold text-neutral-100">
+                            {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalValue)}
+                        </p>
+                    </div>
+
+                    <div className="bg-neutral-900/50 rounded-2xl border border-neutral-800/50 p-5 shadow-lg flex flex-col justify-center">
+                        <div className="flex items-center gap-3 text-neutral-400 mb-2">
+                            <CheckCircle size={24} className="text-blue-500" weight="duotone" />
+                            <h3 className="text-sm font-medium">Propostas Assinadas</h3>
+                        </div>
+                        <p className="text-2xl font-bold text-neutral-100">{signedProposalsCount}</p>
+                    </div>
+                </div>
+
                 <div className="bg-neutral-900/50 rounded-2xl shadow-2xl border border-neutral-800/50 overflow-hidden backdrop-blur-sm">
                     {loading ? (
                         <div className="p-8 text-center text-neutral-500">Carregando...</div>
-                    ) : proposals.length === 0 ? (
+                    ) : filteredProposals.length === 0 ? (
                         <div className="p-12 text-center flex flex-col items-center">
                             <div className="w-16 h-16 bg-neutral-800 rounded-full flex items-center justify-center mb-4 border border-neutral-700">
-                                <Plus size={32} className="text-neutral-500" />
+                                {activeTab === 'all' ? <Plus size={32} className="text-neutral-500" /> : <Archive size={32} className="text-neutral-500" />}
                             </div>
-                            <h3 className="text-lg font-medium text-neutral-100 mb-1">Nenhuma proposta</h3>
-                            <p className="text-neutral-500 mb-4 text-sm">Comece criando sua primeira proposta comercial.</p>
-                            <Button onClick={handleNewProposal} className="gap-2">
-                                <Plus size={20} weight="bold" />
-                                Criar Proposta
-                            </Button>
+                            <h3 className="text-lg font-medium text-neutral-100 mb-1">
+                                {activeTab === 'all' ? 'Nenhuma proposta' : 'Nenhuma proposta arquivada'}
+                            </h3>
+                            <p className="text-neutral-500 mb-4 text-sm">
+                                {activeTab === 'all' 
+                                    ? 'Comece criando sua primeira proposta comercial.' 
+                                    : 'Nenhuma proposta foi arquivada ainda.'}
+                            </p>
+                            {activeTab === 'all' && (
+                                <Button onClick={handleNewProposal} className="gap-2">
+                                    <Plus size={20} weight="bold" />
+                                    Criar Proposta
+                                </Button>
+                            )}
                         </div>
                     ) : (
                         <>
@@ -362,7 +461,7 @@ export function Dashboard() {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-neutral-800/50">
-                                        {proposals.map((proposal) => {
+                                        {filteredProposals.map((proposal) => {
                                             const isExpanded = expandedAccordions.has(proposal.id)
                                             const emailEvents = getProposalEmailEvents(proposal)
                                             const signedContracts = getSignedContracts(proposal)
@@ -432,15 +531,38 @@ export function Dashboard() {
                                                             >
                                                                 <Pencil size={20} weight="bold" />
                                                             </Button>
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="sm"
-                                                                className="text-red-500 hover:text-red-400 hover:bg-red-500/10 p-2"
-                                                                onClick={() => handleDelete(proposal.id)}
-                                                                title="Excluir"
-                                                            >
-                                                                <Trash size={20} weight="bold" />
-                                                            </Button>
+                                                            {activeTab === 'all' ? (
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    className="text-orange-500 hover:text-orange-400 hover:bg-orange-500/10 p-2"
+                                                                    onClick={() => handleArchive(proposal.id)}
+                                                                    title="Arquivar"
+                                                                >
+                                                                    <Archive size={20} weight="bold" />
+                                                                </Button>
+                                                            ) : (
+                                                                <>
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="sm"
+                                                                        className="text-green-500 hover:text-green-400 hover:bg-green-500/10 p-2"
+                                                                        onClick={() => handleRestore(proposal.id)}
+                                                                        title="Restaurar"
+                                                                    >
+                                                                        <ArrowCounterClockwise size={20} weight="bold" />
+                                                                    </Button>
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="sm"
+                                                                        className="text-red-500 hover:text-red-400 hover:bg-red-500/10 p-2"
+                                                                        onClick={() => handleDelete(proposal.id)}
+                                                                        title="Excluir Permanentemente"
+                                                                    >
+                                                                        <Trash size={20} weight="bold" />
+                                                                    </Button>
+                                                                </>
+                                                            )}
                                                         </td>
                                                     </tr>
                                                     {isExpanded && (
@@ -511,7 +633,7 @@ export function Dashboard() {
 
                             {/* Mobile Accordion View */}
                             <div className="md:hidden divide-y divide-neutral-800/50">
-                                {proposals.map((proposal) => {
+                                {filteredProposals.map((proposal) => {
                                     const isExpanded = expandedAccordions.has(proposal.id)
                                     const emailEvents = getProposalEmailEvents(proposal)
                                     const signedContracts = getSignedContracts(proposal)
@@ -583,11 +705,11 @@ export function Dashboard() {
                                                             Copiar Link
                                                         </Button>
                                                     </div>
-                                                    <div className="flex gap-2">
+                                                    <div className="flex gap-2 flex-wrap">
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
-                                                            className="flex-1 gap-2 text-neutral-400 border-neutral-700 hover:bg-neutral-800"
+                                                            className="flex-1 min-w-[80px] gap-2 text-neutral-400 border-neutral-700 hover:bg-neutral-800"
                                                             onClick={() => {
                                                                 setProposalToExport(proposal.id)
                                                                 setIsExportModalOpen(true)
@@ -599,21 +721,44 @@ export function Dashboard() {
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
-                                                            className="flex-1 gap-2 text-purple-400 border-purple-500/30 hover:bg-purple-500/10"
+                                                            className="flex-1 min-w-[80px] gap-2 text-purple-400 border-purple-500/30 hover:bg-purple-500/10"
                                                             onClick={() => handleEdit(proposal)}
                                                         >
                                                             <Pencil size={18} weight="bold" />
                                                             Editar
                                                         </Button>
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            className="flex-1 gap-2 text-red-400 border-red-500/30 hover:bg-red-500/10"
-                                                            onClick={() => handleDelete(proposal.id)}
-                                                        >
-                                                            <Trash size={18} weight="bold" />
-                                                            Excluir
-                                                        </Button>
+                                                        {activeTab === 'all' ? (
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className="flex-1 min-w-[80px] gap-2 text-orange-400 border-orange-500/30 hover:bg-orange-500/10"
+                                                                onClick={() => handleArchive(proposal.id)}
+                                                            >
+                                                                <Archive size={18} weight="bold" />
+                                                                Arquivar
+                                                            </Button>
+                                                        ) : (
+                                                            <>
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    className="flex-1 min-w-[80px] gap-2 text-green-400 border-green-500/30 hover:bg-green-500/10"
+                                                                    onClick={() => handleRestore(proposal.id)}
+                                                                >
+                                                                    <ArrowCounterClockwise size={18} weight="bold" />
+                                                                    Restaurar
+                                                                </Button>
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    className="flex-1 min-w-[80px] gap-2 text-red-400 border-red-500/30 hover:bg-red-500/10"
+                                                                    onClick={() => handleDelete(proposal.id)}
+                                                                >
+                                                                    <Trash size={18} weight="bold" />
+                                                                    Excluir
+                                                                </Button>
+                                                            </>
+                                                        )}
                                                     </div>
 
                                                     <div className="space-y-3 pt-2">
