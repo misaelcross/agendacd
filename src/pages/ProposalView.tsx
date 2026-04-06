@@ -21,8 +21,9 @@ import html2pdf from 'html2pdf.js'
 interface ProposalItem {
     title: string
     description: string
-    type: 'Único' | 'Mensal'
+    type: 'Pontual' | 'Mensal'
     price: number
+    quantity?: number
 }
 
 interface Proposal {
@@ -180,8 +181,8 @@ export function ProposalView() {
         new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val || 0)
 
     const items = proposal.items || []
-    const subtotalUnico = items.filter(i => i.type === 'Único').reduce((acc, curr) => acc + curr.price, 0)
-    const subtotalMensal = items.filter(i => i.type === 'Mensal').reduce((acc, curr) => acc + curr.price, 0)
+    const subtotalUnico = items.filter(i => i.type === 'Pontual' || i.type === 'Único' as any).reduce((acc, curr) => acc + (curr.price * (curr.quantity || 1)), 0)
+    const subtotalMensal = items.filter(i => i.type === 'Mensal').reduce((acc, curr) => acc + (curr.price * (curr.quantity || 1)), 0)
     const total = items.length > 0 ? (subtotalUnico + subtotalMensal) : proposal.value
 
     const formatDate = (dateString?: string) => {
@@ -316,9 +317,12 @@ export function ProposalView() {
 
                                         <div className="flex-1 flex flex-col justify-center">
                                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-1 md:gap-4 mb-2 md:mb-3">
-                                                <h3 className="text-lg md:text-2xl font-semibold text-white group-hover:text-orange-400 transition-colors tracking-tight leading-tight">{item.title}</h3>
+                                                <h3 className="text-lg md:text-2xl font-semibold text-white group-hover:text-orange-400 transition-colors tracking-tight leading-tight">
+                                                    {item.quantity && item.quantity > 1 && <span className="text-orange-400 mr-2">{item.quantity}x</span>}
+                                                    {item.title}
+                                                </h3>
                                                 <div className="text-left md:text-right flex items-center gap-2 md:block">
-                                                    <div className="text-lg md:text-2xl font-bold text-white leading-tight">{formatCurrency(item.price)}</div>
+                                                    <div className="text-lg md:text-2xl font-bold text-white leading-tight">{formatCurrency(item.price * (item.quantity || 1))}</div>
                                                     <span className={`text-[9px] md:text-[10px] uppercase tracking-widest font-bold ${item.type === 'Mensal' ? 'text-blue-400' : 'text-green-400'} mt-0.5`}>
                                                         {item.type}
                                                     </span>
@@ -382,7 +386,7 @@ export function ProposalView() {
 
                                 <div className="space-y-4 pt-8 border-t border-white/5">
                                     <div className="flex justify-between items-center">
-                                        <span className="text-xs text-neutral-400">Pagamento Único</span>
+                                        <span className="text-xs text-neutral-400">Pagamento Pontual</span>
                                         <span className="text-sm font-semibold text-neutral-200">{formatCurrency(subtotalUnico)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
@@ -454,7 +458,7 @@ export function ProposalView() {
                     <div className="mb-6 pt-2 space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
                         <div className="space-y-3 pt-2">
                             <div className="flex justify-between items-center text-xs">
-                                <span className="text-neutral-500 uppercase tracking-widest font-bold">Investimento Único</span>
+                                <span className="text-neutral-500 uppercase tracking-widest font-bold">Investimento Pontual</span>
                                 <span className="font-semibold text-neutral-200">{formatCurrency(subtotalUnico)}</span>
                             </div>
                             <div className="flex justify-between items-center text-xs">

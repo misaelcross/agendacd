@@ -15,8 +15,9 @@ import type { ProposalData } from '../types/proposal'
 interface ProposalItem {
     title: string
     description: string
-    type: 'Único' | 'Mensal'
+    type: 'Pontual' | 'Mensal'
     price: number
+    quantity?: number
 }
 
 interface Proposal {
@@ -228,7 +229,7 @@ export function Dashboard() {
             delivery_time: `${deliveryDays} dias úteis`,
             valid_until: data.valid_until,
             items: data.items,
-            value: data.items.reduce((acc, item) => acc + item.price, 0),
+            value: data.items.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0),
             status: 'pending',
         }
         const { error } = await supabase.from('proposals').insert([payload])
@@ -249,7 +250,7 @@ export function Dashboard() {
             delivery_time: `${deliveryDays} dias úteis`,
             valid_until: data.valid_until,
             items: data.items,
-            value: data.items.reduce((acc, item) => acc + item.price, 0),
+            value: data.items.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0),
             status: 'pending',
             created_at: new Date().toISOString(),
         })
@@ -338,7 +339,7 @@ export function Dashboard() {
     
     const totalValue = filteredProposals.reduce((sum, proposal) => {
         const value = proposal.items && proposal.items.length > 0
-            ? proposal.items.reduce((acc, item) => acc + Number(item.price), 0)
+            ? proposal.items.reduce((acc, item) => acc + Number(item.price * (item.quantity || 1)), 0)
             : Number(proposal.value || 0);
         return sum + value;
     }, 0);
@@ -466,7 +467,7 @@ export function Dashboard() {
                                             const emailEvents = getProposalEmailEvents(proposal)
                                             const signedContracts = getSignedContracts(proposal)
                                             const totalValue = proposal.items && proposal.items.length > 0
-                                                ? proposal.items.reduce((sum, item) => sum + Number(item.price), 0)
+                                                ? proposal.items.reduce((sum, item) => sum + Number(item.price * (item.quantity || 1)), 0)
                                                 : proposal.value
 
                                             return (
@@ -638,7 +639,7 @@ export function Dashboard() {
                                     const emailEvents = getProposalEmailEvents(proposal)
                                     const signedContracts = getSignedContracts(proposal)
                                     const totalValue = proposal.items && proposal.items.length > 0
-                                        ? proposal.items.reduce((sum, item) => sum + Number(item.price), 0)
+                                        ? proposal.items.reduce((sum, item) => sum + Number(item.price * (item.quantity || 1)), 0)
                                         : proposal.value
 
                                     return (

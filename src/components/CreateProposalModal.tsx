@@ -8,6 +8,7 @@ import { Textarea } from './ui/Textarea'
 import { Button } from './ui/Button'
 import { SearchableSelect } from './ui/SearchableSelect'
 import { DeliveryTimeInput } from './ui/DeliveryTimeInput'
+import { CurrencyInput } from './ui/CurrencyInput'
 import { supabase } from '../lib/supabase'
 import { Plus, Trash, CaretUp, CaretDown, DotsSixVertical } from '@phosphor-icons/react'
 import type { CompanyProfile } from './SettingsModal'
@@ -28,8 +29,9 @@ const proposalSchema = z.object({
         z.object({
             title: z.string().min(1, 'Obrigatório'),
             description: z.string().min(1, 'Obrigatório'),
-            type: z.enum(['Único', 'Mensal']),
+            type: z.enum(['Pontual', 'Mensal']),
             price: z.number().min(0, 'Obrigatório'),
+            quantity: z.number().min(1, 'Mínimo 1'),
         })
     ).min(1, 'Adicione pelo menos um serviço'),
 })
@@ -90,7 +92,7 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
         defaultValues: {
             delivery_time: 3,
             valid_until: getTomorrowDate(),
-            items: [{ title: '', description: '', type: 'Único', price: 0 }]
+            items: [{ title: '', description: '', type: 'Pontual', price: 0, quantity: 1 }]
         }
     })
 
@@ -105,9 +107,10 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
                 items: initialData.items?.map(item => ({
                     title: item.title || '',
                     description: item.description || '',
-                    type: item.type === 'Mensal' ? 'Mensal' : 'Único',
-                    price: Number(item.price) || 0
-                })) || [{ title: '', description: '', type: 'Único', price: 0 }]
+                    type: item.type === 'Mensal' ? 'Mensal' : 'Pontual',
+                    price: Number(item.price) || 0,
+                    quantity: Number(item.quantity) || 1
+                })) || [{ title: '', description: '', type: 'Pontual', price: 0, quantity: 1 }]
             })
             if ((initialData as any).company_profile?.id) {
                 setSelectedProfileId((initialData as any).company_profile.id)
@@ -120,7 +123,7 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
                 project_title: '',
                 delivery_time: 3,
                 valid_until: getTomorrowDate(),
-                items: [{ title: '', description: '', type: 'Único', price: 0 }]
+                items: [{ title: '', description: '', type: 'Pontual', price: 0, quantity: 1 }]
             })
             if (companyProfiles.length > 0) {
                  setSelectedProfileId(companyProfiles[0].id)
@@ -138,7 +141,7 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
     async function onSubmit(data: ProposalFormData) {
         console.log('Submitting proposal data:', data)
         try {
-            const totalValue = data.items.reduce((acc, item) => acc + item.price, 0)
+            const totalValue = data.items.reduce((acc, item) => acc + (item.price * item.quantity), 0)
             const profile = companyProfiles.find(p => p.id === selectedProfileId)
             const payload = {
                 client_name: data.client_name,
@@ -179,7 +182,7 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
             remove(index)
         } else {
             // Se for o último, apenas reseta os campos
-            update(0, { title: '', description: '', type: 'Único', price: 0 })
+            update(0, { title: '', description: '', type: 'Pontual', price: 0, quantity: 1 })
         }
     }
 
@@ -291,7 +294,7 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
                                 {/* Content Card */}
                                 <div className="flex-1 p-5 bg-neutral-800/40 border border-neutral-800 rounded-xl relative">
                                     <div className="grid grid-cols-12 gap-4 mb-4">
-                                        <div className="col-span-12 md:col-span-6">
+                                        <div className="col-span-12 md:col-span-4">
                                             <Input
                                                 label="Título do Serviço"
                                                 {...register(`items.${index}.title`)}
@@ -306,17 +309,32 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
                                                 className="flex h-10 w-full rounded-md border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all"
                                                 {...register(`items.${index}.type`)}
                                             >
-                                                <option value="Único">Único</option>
+                                                <option value="Pontual">Pontual</option>
                                                 <option value="Mensal">Mensal</option>
                                             </select>
                                         </div>
-                                        <div className="col-span-12 md:col-span-3">
+                                        <div className="col-span-12 md:col-span-2">
                                             <Input
-                                                label="Preço (R$)"
+                                                label="Qtde"
                                                 type="number"
-                                                step="0.01"
-                                                {...register(`items.${index}.price`, { valueAsNumber: true })}
-                                                error={errors.items?.[index]?.price?.message}
+                                                step="1"
+                                                min="1"
+                                                {...register(`items.${index}.quantity`, { valueAsNumber: true })}
+                                                error={errors.items?.[index]?.quantity?.message}
+                                            />
+                                        </div>
+                                        <div className="col-span-12 md:col-span-3">
+                                            <Controller
+                                                control={control}
+                                                name={`items.${index}.price` as const}
+                                                render={({ field }) => (
+                                                    <CurrencyInput
+                                                        label="Preço Ref (R$)"
+                                                        value={typeof field.value === 'number' ? field.value : 0}
+                                                        onChange={field.onChange}
+                                                        error={errors.items?.[index]?.price?.message}
+                                                    />
+                                                )}
                                             />
                                         </div>
                                     </div>
@@ -346,7 +364,7 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={() => append({ title: '', description: '', type: 'Único', price: 0 })}
+                            onClick={() => append({ title: '', description: '', type: 'Pontual', price: 0, quantity: 1 })}
                             className="w-full gap-2 border-dashed py-8 border-2 text-neutral-500 hover:text-orange-400 hover:border-orange-500/50 hover:bg-orange-500/5 transition-all rounded-xl"
                         >
                             <Plus size={20} weight="bold" /> Adicionar Novo Serviço à Proposta

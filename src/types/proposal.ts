@@ -1,8 +1,9 @@
 export interface ProposalItem {
     title: string
     description: string
-    type: 'Único' | 'Mensal'
+    type: 'Pontual' | 'Mensal'
     price: number
+    quantity: number
 }
 
 export interface ProposalData {

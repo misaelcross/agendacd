@@ -69,9 +69,14 @@ export function AIChatModal({ isOpen, onClose, onApprove, onEdit }: AIChatModalP
 
         try {
             const result = await generateProposalFromText(apiKey, newMessages)
-            setProposal(result)
-            setMessages([...newMessages, { role: 'assistant', content: 'Proposta gerada! Confira a pré-visualização.' }])
-            setPhase('preview')
+
+            if (result.type === 'proposal') {
+                setProposal(result.data)
+                setMessages([...newMessages, { role: 'assistant', content: 'Proposta finalizada! Confira a pré-visualização.' }])
+                setPhase('preview')
+            } else {
+                setMessages([...newMessages, { role: 'assistant', content: result.content }])
+            }
         } catch (err) {
             const errorMsg = err instanceof Error ? err.message : 'Erro ao gerar proposta'
             let friendlyMsg = 'Erro ao processar. Tente novamente com mais detalhes.'

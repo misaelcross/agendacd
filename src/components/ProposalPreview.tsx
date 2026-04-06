@@ -29,8 +29,8 @@ interface ProposalPreviewProps {
 
 export function ProposalPreview({ proposal }: ProposalPreviewProps) {
     const items = proposal.items || []
-    const subtotalUnico = items.filter(i => i.type === 'Único').reduce((acc, curr) => acc + curr.price, 0)
-    const subtotalMensal = items.filter(i => i.type === 'Mensal').reduce((acc, curr) => acc + curr.price, 0)
+    const subtotalUnico = items.filter(i => i.type === 'Pontual' || i.type === 'Único' as any).reduce((acc, curr) => acc + (curr.price * (curr.quantity || 1)), 0)
+    const subtotalMensal = items.filter(i => i.type === 'Mensal').reduce((acc, curr) => acc + (curr.price * (curr.quantity || 1)), 0)
     const total = subtotalUnico + subtotalMensal
 
     return (
@@ -63,9 +63,12 @@ export function ProposalPreview({ proposal }: ProposalPreviewProps) {
                             </div>
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between gap-2 mb-1">
-                                    <h4 className="text-sm font-semibold text-white truncate">{item.title}</h4>
+                                    <h4 className="text-sm font-semibold text-white truncate">
+                                        {item.quantity && item.quantity > 1 && <span className="text-orange-400 mr-2">{item.quantity}x</span>}
+                                        {item.title}
+                                    </h4>
                                     <div className="flex items-center gap-2 shrink-0">
-                                        <span className="text-sm font-bold text-white">{formatCurrency(item.price)}</span>
+                                        <span className="text-sm font-bold text-white">{formatCurrency(item.price * (item.quantity || 1))}</span>
                                         <span className={`text-[9px] uppercase tracking-widest font-bold ${item.type === 'Mensal' ? 'text-blue-400' : 'text-green-400'}`}>
                                             {item.type}
                                         </span>
@@ -92,7 +95,7 @@ export function ProposalPreview({ proposal }: ProposalPreviewProps) {
             <div className="border border-white/10 rounded-xl p-4 bg-[#121212]/50">
                 <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                        <span className="text-xs text-neutral-400">Pagamento Único</span>
+                        <span className="text-xs text-neutral-400">Pagamento Pontual</span>
                         <span className="text-sm font-semibold text-neutral-200">{formatCurrency(subtotalUnico)}</span>
                     </div>
                     {subtotalMensal > 0 && (
