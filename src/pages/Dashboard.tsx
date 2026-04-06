@@ -1,5 +1,5 @@
 import { Fragment, useState, useEffect } from 'react'
-import { Plus, Eye, Export, CaretDown, CaretUp, LinkSimple, Pencil, Gear, Trash, DownloadSimple, Archive, ArrowCounterClockwise, ChartBar, CurrencyDollar, CheckCircle } from '@phosphor-icons/react'
+import { Plus, Eye, Export, CaretDown, CaretUp, LinkSimple, Pencil, Gear, Trash, DownloadSimple, Archive, ArrowCounterClockwise, ChartBar, CurrencyDollar, CheckCircle, Handshake } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Button } from '../components/ui/Button'
@@ -175,6 +175,18 @@ export function Dashboard() {
         }
     }
 
+    async function handleToggleAccept(proposal: Proposal) {
+        const newStatus = proposal.status === 'accepted' ? 'pending' : 'accepted'
+        try {
+            const { error } = await supabase.from('proposals').update({ status: newStatus }).eq('id', proposal.id)
+            if (error) throw error
+            fetchProposals()
+        } catch (error: any) {
+            console.error('Error toggling proposal status:', error)
+            alert(`Erro ao alterar status: ${error.message || 'Erro desconhecido'}`)
+        }
+    }
+
     function handleDelete(id: string) {
         setProposalToDelete(id)
         setIsDeleteModalOpen(true)
@@ -345,6 +357,7 @@ export function Dashboard() {
     }, 0);
 
     const signedProposalsCount = filteredProposals.filter(proposal => getSignedContracts(proposal).length > 0).length;
+    const hiredProposalsCount = filteredProposals.filter(proposal => proposal.status === 'accepted').length;
 
     return (
         <div className="min-h-screen bg-[#0C0A09] text-neutral-100 flex flex-col selection:bg-orange-500/30">
@@ -391,7 +404,7 @@ export function Dashboard() {
                 </div>
 
                 {/* Widgets Section */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <div className="bg-neutral-900/50 rounded-2xl border border-neutral-800/50 p-5 shadow-lg flex flex-col justify-center">
                         <div className="flex items-center gap-3 text-neutral-400 mb-2">
                             <ChartBar size={24} className="text-orange-500" weight="duotone" />
@@ -408,6 +421,14 @@ export function Dashboard() {
                         <p className="text-2xl font-bold text-neutral-100">
                             {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalValue)}
                         </p>
+                    </div>
+
+                    <div className="bg-neutral-900/50 rounded-2xl border border-neutral-800/50 p-5 shadow-lg flex flex-col justify-center">
+                        <div className="flex items-center gap-3 text-neutral-400 mb-2">
+                            <Handshake size={24} className="text-emerald-500" weight="duotone" />
+                            <h3 className="text-sm font-medium">Projetos Contratados</h3>
+                        </div>
+                        <p className="text-2xl font-bold text-neutral-100">{hiredProposalsCount}</p>
                     </div>
 
                     <div className="bg-neutral-900/50 rounded-2xl border border-neutral-800/50 p-5 shadow-lg flex flex-col justify-center">
@@ -485,6 +506,11 @@ export function Dashboard() {
                                                                     {isExpanded ? <CaretUp size={18} weight="bold" /> : <CaretDown size={18} weight="bold" />}
                                                                 </Button>
                                                                 <span>{proposal.client_name}</span>
+                                                                {proposal.status === 'accepted' && (
+                                                                    <span className="bg-emerald-500/10 text-emerald-500 text-[10px] uppercase font-bold px-2 py-0.5 rounded border border-emerald-500/20">
+                                                                        Contratado
+                                                                    </span>
+                                                                )}
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-4 text-neutral-400">
@@ -533,15 +559,26 @@ export function Dashboard() {
                                                                 <Pencil size={20} weight="bold" />
                                                             </Button>
                                                             {activeTab === 'all' ? (
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="sm"
-                                                                    className="text-orange-500 hover:text-orange-400 hover:bg-orange-500/10 p-2"
-                                                                    onClick={() => handleArchive(proposal.id)}
-                                                                    title="Arquivar"
-                                                                >
-                                                                    <Archive size={20} weight="bold" />
-                                                                </Button>
+                                                                <>
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="sm"
+                                                                        className={`${proposal.status === 'accepted' ? 'text-emerald-500 hover:text-emerald-400 hover:bg-emerald-500/10' : 'text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10'} p-2`}
+                                                                        onClick={() => handleToggleAccept(proposal)}
+                                                                        title={proposal.status === 'accepted' ? "Desmarcar Contratado" : "Marcar como Contratado"}
+                                                                    >
+                                                                        <Handshake size={20} weight="bold" />
+                                                                    </Button>
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="sm"
+                                                                        className="text-orange-500 hover:text-orange-400 hover:bg-orange-500/10 p-2"
+                                                                        onClick={() => handleArchive(proposal.id)}
+                                                                        title="Arquivar"
+                                                                    >
+                                                                        <Archive size={20} weight="bold" />
+                                                                    </Button>
+                                                                </>
                                                             ) : (
                                                                 <>
                                                                     <Button
@@ -656,7 +693,14 @@ export function Dashboard() {
                                                         <CaretDown size={20} className="text-neutral-500 shrink-0" />
                                                     )}
                                                     <div>
-                                                        <p className="font-semibold text-neutral-100">{proposal.client_name}</p>
+                                                        <p className="font-semibold text-neutral-100 flex items-center gap-2">
+                                                            {proposal.client_name}
+                                                            {proposal.status === 'accepted' && (
+                                                                <span className="bg-emerald-500/10 text-emerald-500 text-[9px] uppercase font-bold px-1.5 py-0.5 rounded border border-emerald-500/20">
+                                                                    Contratado
+                                                                </span>
+                                                            )}
+                                                        </p>
                                                         <p className="text-sm text-neutral-500">{proposal.project_title}</p>
                                                     </div>
                                                 </div>
@@ -729,15 +773,26 @@ export function Dashboard() {
                                                             Editar
                                                         </Button>
                                                         {activeTab === 'all' ? (
-                                                            <Button
-                                                                variant="outline"
-                                                                size="sm"
-                                                                className="flex-1 min-w-[80px] gap-2 text-orange-400 border-orange-500/30 hover:bg-orange-500/10"
-                                                                onClick={() => handleArchive(proposal.id)}
-                                                            >
-                                                                <Archive size={18} weight="bold" />
-                                                                Arquivar
-                                                            </Button>
+                                                            <>
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    className={`flex-1 min-w-[80px] gap-2 ${proposal.status === 'accepted' ? 'text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10' : 'text-neutral-400 border-neutral-700 hover:text-emerald-400 hover:bg-emerald-500/10'}`}
+                                                                    onClick={() => handleToggleAccept(proposal)}
+                                                                >
+                                                                    <Handshake size={18} weight="bold" />
+                                                                    {proposal.status === 'accepted' ? 'Desmarcar' : 'Contratado'}
+                                                                </Button>
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    className="flex-1 min-w-[80px] gap-2 text-orange-400 border-orange-500/30 hover:bg-orange-500/10"
+                                                                    onClick={() => handleArchive(proposal.id)}
+                                                                >
+                                                                    <Archive size={18} weight="bold" />
+                                                                    Arquivar
+                                                                </Button>
+                                                            </>
                                                         ) : (
                                                             <>
                                                                 <Button
