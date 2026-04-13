@@ -1,5 +1,5 @@
 import { Fragment, useState, useEffect } from 'react'
-import { Plus, Eye, Export, CaretDown, CaretUp, LinkSimple, Pencil, Gear, Trash, DownloadSimple, Archive, ArrowCounterClockwise, ChartBar, CurrencyDollar, CheckCircle, Handshake } from '@phosphor-icons/react'
+import { Plus, Eye, Export, CaretDown, CaretUp, LinkSimple, Pencil, Gear, Trash, DownloadSimple, Archive, ArrowCounterClockwise, ChartBar, CurrencyDollar, CheckCircle, Handshake, DotsThreeVertical, ShareNetwork } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Button } from '../components/ui/Button'
@@ -84,12 +84,25 @@ export function Dashboard() {
     const [proposalToExport, setProposalToExport] = useState<string | null>(null)
     const [expandedAccordions, setExpandedAccordions] = useState<Set<string>>(new Set())
     const [activeTab, setActiveTab] = useState<'all' | 'archived'>('all')
+    const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+    const [drawerProposal, setDrawerProposal] = useState<Proposal | null>(null)
 
     const handleCopyLink = (id: string) => {
         const shortId = id.split('-')[0]
         const link = `${window.location.origin}/proposta/${shortId}`
         navigator.clipboard.writeText(link)
         alert('Link da proposta copiado!')
+    }
+
+    const handleShare = (id: string) => {
+        const shortId = id.split('-')[0]
+        const link = `${window.location.origin}/proposta/${shortId}`
+        if (navigator.share) {
+            navigator.share({ title: 'Proposta', url: link })
+        } else {
+            const wpp = encodeURIComponent(`Segue o link da sua proposta: ${link}`)
+            window.open(`https://wa.me/?text=${wpp}`, '_blank')
+        }
     }
     const toggleAccordion = (id: string) => {
         setExpandedAccordions(prev => {
@@ -505,7 +518,12 @@ export function Dashboard() {
                                                                 >
                                                                     {isExpanded ? <CaretUp size={18} weight="bold" /> : <CaretDown size={18} weight="bold" />}
                                                                 </Button>
-                                                                <span>{proposal.client_name}</span>
+                                                                <span
+                                                                    className="cursor-pointer hover:text-orange-400 transition-colors"
+                                                                    onClick={() => setDrawerProposal(proposal)}
+                                                                >
+                                                                    {proposal.client_name}
+                                                                </span>
                                                                 {proposal.status === 'accepted' && (
                                                                     <span className="bg-emerald-500/10 text-emerald-500 text-[10px] uppercase font-bold px-2 py-0.5 rounded border border-emerald-500/20">
                                                                         Contratado
@@ -513,53 +531,53 @@ export function Dashboard() {
                                                                 )}
                                                             </div>
                                                         </td>
-                                                        <td className="px-6 py-4 text-neutral-400">
+                                                        <td
+                                                            className="px-6 py-4 text-neutral-400 cursor-pointer"
+                                                            onClick={() => setDrawerProposal(proposal)}
+                                                        >
                                                             {proposal.project_title}
                                                         </td>
-                                                        <td className="px-6 py-4 text-neutral-500 text-sm">
+                                                        <td
+                                                            className="px-6 py-4 text-neutral-500 text-sm cursor-pointer"
+                                                            onClick={() => setDrawerProposal(proposal)}
+                                                        >
                                                             {format(new Date(proposal.created_at), 'dd/MM/yyyy')}
                                                         </td>
-                                                        <td className="px-6 py-4 text-neutral-100 font-bold">
+                                                        <td
+                                                            className="px-6 py-4 text-neutral-100 font-bold cursor-pointer"
+                                                            onClick={() => setDrawerProposal(proposal)}
+                                                        >
                                                             {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalValue)}
                                                         </td>
-                                                        <td className="px-6 py-4 text-right flex justify-end gap-1">
-                                                            <Link to={`/proposta/${proposal.id.split('-')[0]}`} target="_blank" rel="noopener noreferrer">
-                                                                <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 p-2" title="Visualizar">
-                                                                    <Eye size={20} weight="bold" />
+                                                        <td className="px-6 py-4 text-right">
+                                                            <div className="flex justify-end items-center gap-1">
+                                                                <Link to={`/proposta/${proposal.id.split('-')[0]}`} target="_blank" rel="noopener noreferrer">
+                                                                    <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 p-2" title="Visualizar">
+                                                                        <Eye size={20} weight="bold" />
+                                                                    </Button>
+                                                                </Link>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    className="text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 p-2"
+                                                                    onClick={() => {
+                                                                        setProposalToExport(proposal.id)
+                                                                        setIsExportModalOpen(true)
+                                                                    }}
+                                                                    title="Exportar"
+                                                                >
+                                                                    <Export size={20} weight="bold" />
                                                                 </Button>
-                                                            </Link>
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="sm"
-                                                                className="text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 p-2"
-                                                                onClick={() => handleCopyLink(proposal.id)}
-                                                                title="Copiar Link"
-                                                            >
-                                                                <LinkSimple size={20} weight="bold" />
-                                                            </Button>
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="sm"
-                                                                className="text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 p-2"
-                                                                onClick={() => {
-                                                                    setProposalToExport(proposal.id)
-                                                                    setIsExportModalOpen(true)
-                                                                }}
-                                                                title="Exportar"
-                                                            >
-                                                                <Export size={20} weight="bold" />
-                                                            </Button>
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="sm"
-                                                                className="text-purple-500 hover:text-purple-400 hover:bg-purple-500/10 p-2"
-                                                                onClick={() => handleEdit(proposal)}
-                                                                title="Editar"
-                                                            >
-                                                                <Pencil size={20} weight="bold" />
-                                                            </Button>
-                                                            {activeTab === 'all' ? (
-                                                                <>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    className="text-purple-500 hover:text-purple-400 hover:bg-purple-500/10 p-2"
+                                                                    onClick={() => handleEdit(proposal)}
+                                                                    title="Editar"
+                                                                >
+                                                                    <Pencil size={20} weight="bold" />
+                                                                </Button>
+                                                                {activeTab === 'all' && (
                                                                     <Button
                                                                         variant="ghost"
                                                                         size="sm"
@@ -569,38 +587,73 @@ export function Dashboard() {
                                                                     >
                                                                         <Handshake size={20} weight="bold" />
                                                                     </Button>
+                                                                )}
+                                                                {activeTab === 'archived' && (
+                                                                    <>
+                                                                        <Button
+                                                                            variant="ghost"
+                                                                            size="sm"
+                                                                            className="text-green-500 hover:text-green-400 hover:bg-green-500/10 p-2"
+                                                                            onClick={() => handleRestore(proposal.id)}
+                                                                            title="Restaurar"
+                                                                        >
+                                                                            <ArrowCounterClockwise size={20} weight="bold" />
+                                                                        </Button>
+                                                                        <Button
+                                                                            variant="ghost"
+                                                                            size="sm"
+                                                                            className="text-red-500 hover:text-red-400 hover:bg-red-500/10 p-2"
+                                                                            onClick={() => handleDelete(proposal.id)}
+                                                                            title="Excluir Permanentemente"
+                                                                        >
+                                                                            <Trash size={20} weight="bold" />
+                                                                        </Button>
+                                                                    </>
+                                                                )}
+
+                                                                {/* Menu flutuante */}
+                                                                <div className="relative">
                                                                     <Button
                                                                         variant="ghost"
                                                                         size="sm"
-                                                                        className="text-orange-500 hover:text-orange-400 hover:bg-orange-500/10 p-2"
-                                                                        onClick={() => handleArchive(proposal.id)}
-                                                                        title="Arquivar"
+                                                                        className="text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 p-2"
+                                                                        onClick={() => setOpenMenuId(openMenuId === proposal.id ? null : proposal.id)}
+                                                                        title="Mais ações"
                                                                     >
-                                                                        <Archive size={20} weight="bold" />
+                                                                        <DotsThreeVertical size={20} weight="bold" />
                                                                     </Button>
-                                                                </>
-                                                            ) : (
-                                                                <>
-                                                                    <Button
-                                                                        variant="ghost"
-                                                                        size="sm"
-                                                                        className="text-green-500 hover:text-green-400 hover:bg-green-500/10 p-2"
-                                                                        onClick={() => handleRestore(proposal.id)}
-                                                                        title="Restaurar"
-                                                                    >
-                                                                        <ArrowCounterClockwise size={20} weight="bold" />
-                                                                    </Button>
-                                                                    <Button
-                                                                        variant="ghost"
-                                                                        size="sm"
-                                                                        className="text-red-500 hover:text-red-400 hover:bg-red-500/10 p-2"
-                                                                        onClick={() => handleDelete(proposal.id)}
-                                                                        title="Excluir Permanentemente"
-                                                                    >
-                                                                        <Trash size={20} weight="bold" />
-                                                                    </Button>
-                                                                </>
-                                                            )}
+                                                                    {openMenuId === proposal.id && (
+                                                                        <>
+                                                                            <div className="fixed inset-0 z-10" onClick={() => setOpenMenuId(null)} />
+                                                                            <div className="absolute right-0 top-full mt-1 z-20 w-44 bg-neutral-900 border border-white/10 rounded-xl shadow-xl overflow-hidden">
+                                                                                <button
+                                                                                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-neutral-300 hover:bg-white/5 hover:text-white transition-colors"
+                                                                                    onClick={() => { handleCopyLink(proposal.id); setOpenMenuId(null) }}
+                                                                                >
+                                                                                    <LinkSimple size={16} weight="bold" className="text-neutral-400" />
+                                                                                    Copiar link
+                                                                                </button>
+                                                                                <button
+                                                                                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-neutral-300 hover:bg-white/5 hover:text-white transition-colors"
+                                                                                    onClick={() => { handleShare(proposal.id); setOpenMenuId(null) }}
+                                                                                >
+                                                                                    <ShareNetwork size={16} weight="bold" className="text-neutral-400" />
+                                                                                    Compartilhar
+                                                                                </button>
+                                                                                {activeTab === 'all' && (
+                                                                                    <button
+                                                                                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-orange-400 hover:bg-orange-500/10 transition-colors"
+                                                                                        onClick={() => { handleArchive(proposal.id); setOpenMenuId(null) }}
+                                                                                    >
+                                                                                        <Archive size={16} weight="bold" />
+                                                                                        Arquivar
+                                                                                    </button>
+                                                                                )}
+                                                                            </div>
+                                                                        </>
+                                                                    )}
+                                                                </div>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                     {isExpanded && (
@@ -927,6 +980,135 @@ export function Dashboard() {
                 confirmLabel="Excluir"
                 isSubmitting={isDeleting}
             />
+
+            {/* Drawer de resumo interno da proposta */}
+            {drawerProposal && (() => {
+                const p = drawerProposal
+                const items: ProposalItem[] = p.items || []
+                const subtotalPontual = items.filter(i => i.type === 'Pontual' || (i.type as any) === 'Único').reduce((acc, i) => acc + i.price * (i.quantity || 1), 0)
+                const subtotalMensal = items.filter(i => i.type === 'Mensal').reduce((acc, i) => acc + i.price * (i.quantity || 1), 0)
+                const total = items.length > 0 ? subtotalPontual + subtotalMensal : p.value
+                const tax = total * 0.06
+                const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v)
+
+                return (
+                    <>
+                        {/* Overlay */}
+                        <div
+                            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+                            onClick={() => setDrawerProposal(null)}
+                        />
+                        {/* Drawer */}
+                        <div className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-md bg-[#0e0e0e] border-l border-white/10 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right-8 duration-300">
+                            {/* Header */}
+                            <div className="flex items-center justify-between px-6 py-5 border-b border-white/5">
+                                <div>
+                                    <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold mb-0.5">Resumo Interno</p>
+                                    <h2 className="text-lg font-bold text-white leading-tight">{p.client_name}</h2>
+                                    <p className="text-sm text-neutral-400">{p.project_title}</p>
+                                </div>
+                                <button
+                                    onClick={() => setDrawerProposal(null)}
+                                    className="p-2 text-neutral-500 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+
+                            {/* Body */}
+                            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+
+                                {/* Datas */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="bg-white/[0.03] border border-white/5 rounded-xl p-4">
+                                        <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold mb-1">Criada em</p>
+                                        <p className="text-sm font-semibold text-neutral-200">{format(new Date(p.created_at), 'dd/MM/yyyy')}</p>
+                                    </div>
+                                    {p.valid_until && (
+                                        <div className="bg-white/[0.03] border border-white/5 rounded-xl p-4">
+                                            <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold mb-1">Válida até</p>
+                                            <p className="text-sm font-semibold text-neutral-200">{format(new Date(p.valid_until), 'dd/MM/yyyy')}</p>
+                                        </div>
+                                    )}
+                                    {p.delivery_time && (
+                                        <div className="bg-white/[0.03] border border-white/5 rounded-xl p-4 col-span-2">
+                                            <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold mb-1">Prazo de entrega</p>
+                                            <p className="text-sm font-semibold text-neutral-200">{p.delivery_time}</p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Itens */}
+                                {items.length > 0 && (
+                                    <div>
+                                        <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold mb-3">Serviços</p>
+                                        <div className="space-y-2">
+                                            {items.map((item, idx) => (
+                                                <div key={idx} className="flex justify-between items-start bg-white/[0.03] border border-white/5 rounded-xl px-4 py-3 gap-4">
+                                                    <div className="min-w-0">
+                                                        <p className="text-sm font-semibold text-neutral-200 truncate">
+                                                            {item.quantity && item.quantity > 1 && <span className="text-orange-400 mr-1">{item.quantity}x</span>}
+                                                            {item.title}
+                                                        </p>
+                                                        <span className={`text-[9px] uppercase tracking-widest font-bold ${item.type === 'Mensal' ? 'text-blue-400' : 'text-green-400'}`}>
+                                                            {item.type}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-sm font-bold text-neutral-100 shrink-0">{fmt(item.price * (item.quantity || 1))}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Financeiro */}
+                                <div>
+                                    <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold mb-3">Financeiro</p>
+                                    <div className="bg-white/[0.03] border border-white/5 rounded-xl divide-y divide-white/5">
+                                        {items.length > 0 && (
+                                            <>
+                                                <div className="flex justify-between items-center px-4 py-3">
+                                                    <span className="text-sm text-neutral-400">Pagamento Pontual</span>
+                                                    <span className="text-sm font-semibold text-neutral-200">{fmt(subtotalPontual)}</span>
+                                                </div>
+                                                <div className="flex justify-between items-center px-4 py-3">
+                                                    <span className="text-sm text-neutral-400">Manutenção Mensal</span>
+                                                    <span className="text-sm font-semibold text-neutral-200">{fmt(subtotalMensal)}</span>
+                                                </div>
+                                            </>
+                                        )}
+                                        <div className="flex justify-between items-center px-4 py-3">
+                                            <span className="text-sm font-bold text-white">Total do Projeto</span>
+                                            <span className="text-base font-bold text-orange-400">{fmt(total)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Imposto — informação interna */}
+                                <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl px-4 py-4">
+                                    <p className="text-[10px] text-amber-400/70 uppercase tracking-widest font-bold mb-1">Imposto estimado (6%)</p>
+                                    <p className="text-2xl font-bold text-amber-400">{fmt(tax)}</p>
+                                    <p className="text-[11px] text-neutral-500 mt-1">Valor de referência interno — não exibido ao cliente.</p>
+                                </div>
+
+                                {/* Status */}
+                                <div className="bg-white/[0.03] border border-white/5 rounded-xl px-4 py-3 flex items-center justify-between">
+                                    <span className="text-sm text-neutral-400">Status</span>
+                                    <span className={`text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border ${
+                                        p.status === 'accepted'
+                                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                                            : p.status === 'archived'
+                                            ? 'bg-neutral-700/40 text-neutral-400 border-neutral-700'
+                                            : 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+                                    }`}>
+                                        {p.status === 'accepted' ? 'Contratado' : p.status === 'archived' ? 'Arquivado' : 'Aguardando'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                )
+            })()}
         </div>
     )
 }
