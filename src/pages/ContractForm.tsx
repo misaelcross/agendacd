@@ -3,6 +3,23 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { ArrowLeft, User, Briefcase, ArrowRight, CreditCard, CheckCircle } from '@phosphor-icons/react'
 
+// Taxas do provedor de cartão de crédito
+const SALE_FEE = 0.0498 // 4.98% taxa por venda (recebimento na hora)
+const INSTALLMENT_FEES: Record<number, number> = {
+    1: 0,
+    2: 0.0459,
+    3: 0.0597,
+    4: 0.0733,
+    5: 0.0866,
+}
+
+function calcCreditTotal(baseAmount: number, numInstallments: number) {
+    const totalFeeRate = SALE_FEE + (INSTALLMENT_FEES[numInstallments] ?? 0)
+    const total = baseAmount / (1 - totalFeeRate)
+    const perInstallment = total / numInstallments
+    return { total, perInstallment, saleFeeAmount: total * SALE_FEE, installmentFeeAmount: total * (INSTALLMENT_FEES[numInstallments] ?? 0) }
+}
+
 export function ContractForm() {
     const { proposalId } = useParams()
     const navigate = useNavigate()
@@ -189,6 +206,15 @@ export function ContractForm() {
         }
     }
 
+    // Calcular total base da proposta (mesmo cálculo do ProposalView)
+    const items = proposal?.items || []
+    const subtotalUnico = items.filter((i: any) => i.type === 'Pontual' || i.type === 'Único').reduce((acc: number, curr: any) => acc + (curr.price * (curr.quantity || 1)), 0)
+    const subtotalMensal = items.filter((i: any) => i.type === 'Mensal').reduce((acc: number, curr: any) => acc + (curr.price * (curr.quantity || 1)), 0)
+    const baseTotal = items.length > 0 ? (subtotalUnico + subtotalMensal) : (proposal?.value || 0)
+
+    const formatCurrency = (val: number) =>
+        new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val || 0)
+
     if (loading) {
         return (
             <div className="min-h-screen bg-[#050505] flex items-center justify-center">
@@ -269,24 +295,66 @@ export function ContractForm() {
                                 </div>
 
                                 {paymentMethod === 'credit' && (
-                                    <div className="mt-8 p-6 bg-black/40 border border-white/10 rounded-2xl animate-in fade-in slide-in-from-top-4">
-                                        <label className="block text-sm font-bold text-neutral-300 mb-4">Escolha o número de parcelas:</label>
-                                        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
-                                            {[1, 2, 3, 4, 5].map(num => (
-                                                <button
-                                                    key={num}
-                                                    type="button"
-                                                    onClick={() => setInstallments(num)}
-                                                    className={`shrink-0 w-16 h-16 rounded-xl font-bold flex flex-col items-center justify-center transition-all ${installments === num ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)] border border-blue-400' : 'bg-white/5 text-neutral-400 border border-white/10 hover:bg-white/10 hover:text-white'}`}
-                                                >
-                                                    <span className="text-xl">{num}x</span>
-                                                </button>
-                                            ))}
+                                    <div className="mt-8 p-6 bg-black/40 border border-white/10 rounded-2xl animate-in fade-in slide-in-from-top-4 space-y-5">
+                                        <label className="block text-sm font-bold text-neutral-300">Escolha o número de parcelas:</label>
+                                        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                                            {[1, 2, 3, 4, 5].map(num => {
+                                                const { perInstallment } = calcCreditTotal(baseTotal, num)
+                                                return (
+                                                    <button
+                                                        key={num}
+                                                        type="button"
+                                                        onClick={() => setInstallments(num)}
+                                                        className={`w-full rounded-xl font-bold flex flex-col items-center justify-center gap-1 py-3 px-1 transition-all ${installments === num ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)] border border-blue-400' : 'bg-white/5 text-neutral-400 border border-white/10 hover:bg-white/10 hover:text-white'}`}
+                                                    >
+                                                        <span className="text-lg">{num}x</span>
+                                                        <span className={`text-[9px] font-medium leading-tight text-center ${installments === num ? 'text-blue-200' : 'text-neutral-500'}`}>
+                                                            {formatCurrency(perInstallment)}
+                                                        </span>
+                                                    </button>
+                                                )
+                                            })}
                                         </div>
+
+                                        {/* Resumo da parcela selecionada */}
+                                        {(() => {
+                                            const { total, perInstallment } = calcCreditTotal(baseTotal, installments)
+                                            return (
+                                                <div className="pt-4 border-t border-white/5 flex justify-between items-center">
+                                                    <span className="text-xs font-semibold text-neutral-400">
+                                                        {installments === 1 ? 'À vista no cartão' : `${installments}x de`}
+                                                    </span>
+                                                    <div className="text-right">
+                                                        <p className="text-xl font-bold text-blue-400">
+                                                            {formatCurrency(installments === 1 ? total : perInstallment)}
+                                                        </p>
+                                                        {installments > 1 && (
+                                                            <p className="text-xs text-neutral-300 mt-0.5">
+                                                                Total parcelado: <span className="font-semibold">{formatCurrency(total)}</span>
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )
+                                        })()}
                                     </div>
                                 )}
 
-                                <div className="pt-8 flex justify-end">
+                                {/* Resumo de valor acima do botão Próximo */}
+                                {paymentMethod === 'pix' && (
+                                    <div className="p-5 bg-black/40 border border-emerald-500/20 rounded-2xl animate-in fade-in slide-in-from-top-4 flex justify-between items-center">
+                                        <div>
+                                            <p className="text-xs text-neutral-400 font-semibold">À vista via Pix</p>
+                                            <p className="text-[11px] text-emerald-400 mt-0.5">
+                                                Desconto de 5% aplicado
+                                                <span className="text-neutral-500 line-through ml-2">{formatCurrency(baseTotal)}</span>
+                                            </p>
+                                        </div>
+                                        <p className="text-xl font-bold text-emerald-400">{formatCurrency(baseTotal * 0.95)}</p>
+                                    </div>
+                                )}
+
+                                <div className="pt-4 flex justify-end">
                                     <button
                                         type="button"
                                         onClick={() => setStep(2)}
