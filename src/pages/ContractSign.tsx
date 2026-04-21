@@ -2,9 +2,6 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { CheckCircle, ShieldCheck, DownloadSimple, SpinnerGap } from '@phosphor-icons/react'
-import { ContractPDF } from '../components/ContractPDF'
-// @ts-ignore
-import { pdf } from '@react-pdf/renderer'
 
 export function ContractSign() {
     const { contractId } = useParams()
@@ -124,51 +121,10 @@ export function ContractSign() {
 
             setContract(updatedContract)
 
-            // 4. Gerar o PDF Assinado e subir pro Storage do Supabase silenciosamente
+            // 4. PDF export removed
             setIsGeneratingPdf(true)
             try {
-                const asPdf = pdf(<ContractPDF contract={updatedContract} proposal={updatedContract.proposals} />)
-                const blob = await asPdf.toBlob()
-
-                // Upload to storage
-                const fileName = `${contract.id} _signed.pdf`
-                const { error: uploadError } = await supabase.storage
-                    .from('contracts')
-                    .upload(fileName, blob, {
-                        contentType: 'application/pdf',
-                        upsert: true
-                    })
-
-                if (!uploadError) {
-                    // Pegar URL Pública e atualizar o contrato
-                    const { data: urlData } = supabase.storage.from('contracts').getPublicUrl(fileName)
-                    if (urlData.publicUrl) {
-                        const { data: savePdfResult, error: savePdfError } = await supabase.rpc('set_signed_pdf_url', {
-                            p_contract_id: contract.id,
-                            p_signed_pdf_url: urlData.publicUrl
-                        })
-
-                        if (savePdfError || !savePdfResult) {
-                            console.error('Erro ao salvar signed_pdf_url no banco:', savePdfError)
-                        }
-
-                        // Enviar e-mail automático com o PDF assinado
-                        try {
-                            await supabase.functions.invoke('send-contract-email', {
-                                body: {
-                                    contractId: contract.id,
-                                    email: contract.contractor_email,
-                                    clientName: contract.contractor_name || 'Cliente',
-                                    pdfUrl: urlData.publicUrl
-                                }
-                            })
-                        } catch (emailErr) {
-                            console.error('Erro ao enviar pdf por email:', emailErr)
-                        }
-
-                        setContract({ ...updatedContract, signed_pdf_url: urlData.publicUrl })
-                    }
-                }
+                console.warn('PDF export removed')
             } catch (pdfErr) {
                 console.error('Erro ao gerar/upar PDF:', pdfErr)
             } finally {
@@ -229,13 +185,7 @@ export function ContractSign() {
         if (contract?.signed_pdf_url) {
             window.open(contract.signed_pdf_url, '_blank')
         } else {
-            // Caso dê bug e o URL não tenha salvado, gerar na hora para download
-            setIsGeneratingPdf(true)
-            const asPdf = pdf(<ContractPDF contract={contract} proposal={contract.proposals} />)
-            const blob = await asPdf.toBlob()
-            const url = URL.createObjectURL(blob)
-            window.open(url, '_blank')
-            setIsGeneratingPdf(false)
+            console.warn('PDF export removed')
         }
     }
 

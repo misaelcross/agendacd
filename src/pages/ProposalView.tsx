@@ -15,8 +15,6 @@ import {
     CaretUp,
     CaretDown
 } from '@phosphor-icons/react'
-// @ts-ignore
-import html2pdf from 'html2pdf.js'
 
 interface ProposalItem {
     title: string
@@ -114,42 +112,7 @@ export function ProposalView() {
         }
 
         try {
-            const width = isMobile ? 430 : 1200;
-            window.scrollTo(0, 0);
-            const height = element.scrollHeight;
-
-            const opt = {
-                margin: 0,
-                filename: `Proposta_${proposal?.client_name.replace(/\s+/g, '_')}.pdf`,
-                image: { type: 'jpeg' as const, quality: 0.98 },
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    backgroundColor: '#0C0A09',
-                    windowWidth: width,
-                    width: width,
-                    height: height,
-                    scrollY: 0,
-                    scrollX: 0,
-                    letterRendering: true
-                },
-                jsPDF: {
-                    unit: 'px',
-                    format: [width, height] as [number, number],
-                    orientation: 'portrait' as const,
-                    hotfixes: ['px_scaling'],
-                    compress: true
-                }
-            };
-
-            await html2pdf().set(opt).from(element).save()
-
-            setTimeout(() => {
-                const urlParams = new URLSearchParams(window.location.search)
-                if (urlParams.get('export') === 'pdf') {
-                    window.close()
-                }
-            }, 1000)
+            console.warn('PDF export removed')
         } catch (err) {
             console.error(err)
             alert('Erro ao gerar PDF')

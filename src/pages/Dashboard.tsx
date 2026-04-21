@@ -8,7 +8,6 @@ import { CreateProposalModal } from '../components/CreateProposalModal'
 import { SettingsModal } from '../components/SettingsModal'
 import { ExportModal } from '../components/ExportModal'
 import { NewProposalSelectionModal } from '../components/NewProposalSelectionModal'
-import { AIChatModal } from '../components/AIChatModal'
 import { format } from 'date-fns'
 import type { ProposalData } from '../types/proposal'
 
@@ -73,7 +72,6 @@ export function Dashboard() {
     const [proposals, setProposals] = useState<Proposal[]>([])
     const [loading, setLoading] = useState(true)
     const [isSelectionModalOpen, setIsSelectionModalOpen] = useState(false)
-    const [isAIChatOpen, setIsAIChatOpen] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isSettingsOpen, setIsSettingsOpen] = useState(false)
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -237,7 +235,6 @@ export function Dashboard() {
 
     function handleSelectAI() {
         setIsSelectionModalOpen(false)
-        setIsAIChatOpen(true)
     }
 
     function handleSelectManual() {
@@ -262,7 +259,6 @@ export function Dashboard() {
             alert(`Erro ao criar proposta: ${error.message}`)
             throw error
         }
-        setIsAIChatOpen(false)
         fetchProposals()
     }
 
@@ -279,7 +275,6 @@ export function Dashboard() {
             status: 'pending',
             created_at: new Date().toISOString(),
         })
-        setIsAIChatOpen(false)
         setIsModalOpen(true)
     }
 
@@ -938,13 +933,6 @@ export function Dashboard() {
                 onClose={() => setIsSelectionModalOpen(false)}
                 onSelectAI={handleSelectAI}
                 onSelectManual={handleSelectManual}
-            />
-
-            <AIChatModal
-                isOpen={isAIChatOpen}
-                onClose={() => setIsAIChatOpen(false)}
-                onApprove={handleAIApprove}
-                onEdit={handleAIEdit}
             />
 
             <CreateProposalModal
