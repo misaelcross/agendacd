@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 // Existing pages
+import { SignUp }          from './pages/SignUp'
 import { Dashboard }       from './pages/Dashboard'
 import { ProposalView }    from './pages/ProposalView'
 import { Login }           from './pages/Login'
@@ -73,6 +74,7 @@ function App() {
         <Routes>
           {/* ── Public: auth ── */}
           <Route path="/login"           element={<Login />} />
+          <Route path="/cadastro"        element={<SignUp />} />
           <Route path="/reset-password"  element={<ResetPassword />} />
           <Route path="/update-password" element={<UpdatePassword />} />
 

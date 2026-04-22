@@ -87,6 +87,13 @@ export function Login() {
                         </button>
                     </form>
                 </div>
+
+                <p className="mt-6 text-center text-sm text-gray-500">
+                    Não tem uma conta?{' '}
+                    <Link to="/cadastro" className="text-green-600 font-medium hover:text-green-700 transition-colors">
+                        Criar conta
+                    </Link>
+                </p>
             </div>
         </div>
     )
