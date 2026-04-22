@@ -244,25 +244,25 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
 
                     {companyProfiles.length > 0 && (
                         <div className="flex flex-col gap-1 md:col-span-2">
-                            <label className="text-sm font-medium text-neutral-300">Perfil da Empresa (Assinante)</label>
+                            <label className="text-sm font-medium text-gray-600">Perfil da Empresa (Assinante)</label>
                             <select
                                 value={selectedProfileId}
                                 onChange={(e) => setSelectedProfileId(e.target.value)}
-                                className="flex h-10 w-full rounded-md border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all"
+                                className="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all"
                             >
                                 <option value="">Selecione um perfil de assinatura...</option>
                                 {companyProfiles.map(p => (
                                     <option key={p.id} value={p.id}>{p.name}</option>
                                 ))}
                             </select>
-                            <p className="text-xs text-neutral-500">Este perfil definirá os dados da empresa (ex: CNPJ) exportados no contrato PDF.</p>
+                            <p className="text-xs text-gray-400">Este perfil definirá os dados da empresa (ex: CNPJ) exportados no contrato PDF.</p>
                         </div>
                     )}
                 </div>
 
-                <div className="border-t border-neutral-800 pt-6">
+                <div className="border-t border-gray-200 pt-6">
                     <div className="flex items-center justify-between mb-6">
-                        <h3 className="font-semibold text-neutral-100 border-l-4 border-orange-500 pl-3">Serviços da Proposta</h3>
+                        <h3 className="font-semibold text-gray-900 border-l-4 border-green-600 pl-3">Serviços da Proposta</h3>
                     </div>
 
                     <div className="space-y-6">
@@ -273,7 +273,7 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
                                     <button
                                         type="button"
                                         onClick={() => index > 0 && move(index, index - 1)}
-                                        className={`p-1 rounded hover:bg-neutral-800 text-neutral-500 hover:text-neutral-300 transition-colors ${index === 0 ? 'invisible' : ''}`}
+                                        className={`p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors ${index === 0 ? 'invisible' : ''}`}
                                         title="Mover para cima"
                                     >
                                         <CaretUp size={18} weight="bold" />
@@ -284,7 +284,7 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
                                     <button
                                         type="button"
                                         onClick={() => index < fields.length - 1 && move(index, index + 1)}
-                                        className={`p-1 rounded hover:bg-neutral-800 text-neutral-500 hover:text-neutral-300 transition-colors ${index === fields.length - 1 ? 'invisible' : ''}`}
+                                        className={`p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors ${index === fields.length - 1 ? 'invisible' : ''}`}
                                         title="Mover para baixo"
                                     >
                                         <CaretDown size={18} weight="bold" />
@@ -292,7 +292,7 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
                                 </div>
 
                                 {/* Content Card */}
-                                <div className="flex-1 p-5 bg-neutral-800/40 border border-neutral-800 rounded-xl relative">
+                                <div className="flex-1 p-5 bg-gray-50 border border-gray-200 rounded-xl relative">
                                     <div className="grid grid-cols-12 gap-4 mb-4">
                                         <div className="col-span-12 md:col-span-4">
                                             <Input
@@ -302,11 +302,11 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
                                             />
                                         </div>
                                         <div className="col-span-12 md:col-span-3">
-                                            <label className="block text-sm font-medium text-neutral-300 mb-1">
+                                            <label className="block text-sm font-medium text-gray-600 mb-1">
                                                 Cobrança
                                             </label>
                                             <select
-                                                className="flex h-10 w-full rounded-md border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all"
+                                                className="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all"
                                                 {...register(`items.${index}.type`)}
                                             >
                                                 <option value="Pontual">Pontual</option>
@@ -352,7 +352,7 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
                                     <button
                                         type="button"
                                         onClick={() => handleRemoveService(index)}
-                                        className="p-2 text-neutral-600 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
                                         title="Remover serviço"
                                     >
                                         <Trash size={22} />
@@ -365,7 +365,7 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
                             type="button"
                             variant="outline"
                             onClick={() => append({ title: '', description: '', type: 'Pontual', price: 0, quantity: 1 })}
-                            className="w-full gap-2 border-dashed py-8 border-2 text-neutral-500 hover:text-orange-400 hover:border-orange-500/50 hover:bg-orange-500/5 transition-all rounded-xl"
+                            className="w-full gap-2 border-dashed py-8 border-2 text-gray-400 hover:text-green-600 hover:border-green-500/50 hover:bg-green-500/5 transition-all rounded-xl"
                         >
                             <Plus size={20} weight="bold" /> Adicionar Novo Serviço à Proposta
                         </Button>
@@ -378,11 +378,11 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
                     </div>
                 </div>
 
-                <div className="pt-6 flex justify-end gap-3 border-t border-neutral-800 mt-8">
+                <div className="pt-6 flex justify-end gap-3 border-t border-gray-200 mt-8">
                     <Button type="button" variant="ghost" onClick={onClose} className="px-6">
                         Cancelar
                     </Button>
-                    <Button type="submit" disabled={isSubmitting} className="px-8 bg-orange-600 hover:bg-orange-700">
+                    <Button type="submit" disabled={isSubmitting} className="px-8 bg-green-600 hover:bg-green-700">
                         {isSubmitting ? 'Salvando...' : initialData ? 'Salvar Alterações' : 'Criar Proposta Completa'}
                     </Button>
                 </div>

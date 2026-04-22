@@ -123,18 +123,18 @@ export function ProposalView() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#111] flex items-center justify-center">
-                <div className="animate-pulse text-orange-500 font-medium tracking-widest text-sm uppercase">Carregando Proposta...</div>
+            <div className="min-h-screen bg-off flex items-center justify-center">
+                <div className="animate-pulse text-green-600 font-medium tracking-widest text-sm uppercase">Carregando Proposta...</div>
             </div>
         )
     }
 
     if (!proposal) {
         return (
-            <div className="min-h-screen bg-[#111] flex items-center justify-center">
-                <div className="text-center text-white">
+            <div className="min-h-screen bg-off flex items-center justify-center">
+                <div className="text-center text-gray-900">
                     <h1 className="text-2xl font-bold mb-2">Proposta não encontrada</h1>
-                    <p className="text-neutral-500">O link que você tentou acessar é inválido.</p>
+                    <p className="text-gray-500">O link que você tentou acessar é inválido.</p>
                 </div>
             </div>
         )
@@ -168,17 +168,17 @@ export function ProposalView() {
         if (lowerTitle.includes('lançamento') || lowerTitle.includes('foguete') || lowerTitle.includes('vls')) {
             return { icon: RocketLaunch, color: 'text-red-400', bg: 'bg-red-400/10' };
         }
-        return { icon: Package, color: 'text-orange-500', bg: 'bg-orange-500/10' };
+        return { icon: Package, color: 'text-green-600', bg: 'bg-green-600/10' };
     }
 
     return (
-        <div id="proposal-container" className="min-h-screen bg-[#0C0A09] text-white font-sans overflow-x-clip relative flex justify-center selection:bg-orange-500/30">
-            <div className="absolute inset-0 bg-[#0C0A09] pointer-events-none" />
+        <div id="proposal-container" className="min-h-screen bg-off text-gray-900 font-sans overflow-x-clip relative flex justify-center selection:bg-green-600/20">
+            <div className="absolute inset-0 bg-off pointer-events-none" />
 
             {isExporting && (
-                <div data-html2canvas-ignore="true" className="fixed inset-0 bg-black/90 z-[9999] flex flex-col items-center justify-center">
-                    <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                    <p className="text-white text-lg font-medium">Gerando PDF...</p>
+                <div data-html2canvas-ignore="true" className="fixed inset-0 bg-white/90 z-[9999] flex flex-col items-center justify-center">
+                    <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <p className="text-gray-900 text-lg font-medium">Gerando PDF...</p>
                 </div>
             )}
 
@@ -197,7 +197,7 @@ export function ProposalView() {
                             <img src={logoUrl} alt="Logo" className="h-10 w-auto object-contain" />
                         ) : (
                             <>
-                                <div className="text-orange-500">
+                                <div className="text-green-600">
                                     <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M20 0L40 10V30L20 40L0 30V10L20 0Z" fill="currentColor" fillOpacity="0.1" />
                                         <path d="M20 5L35 12.5V27.5L20 35L5 27.5V12.5L20 5Z" stroke="currentColor" strokeWidth="2" />
@@ -205,28 +205,28 @@ export function ProposalView() {
                                     </svg>
                                 </div>
                                 <div>
-                                    <h1 className="text-2xl font-bold leading-tight tracking-tight text-white">Conversão</h1>
-                                    <h1 className="text-2xl font-bold leading-tight tracking-tight text-orange-500">Digital</h1>
+                                    <h1 className="text-2xl font-display font-bold leading-tight tracking-tight text-gray-900">Conversão</h1>
+                                    <h1 className="text-2xl font-display font-bold leading-tight tracking-tight text-green-600">Digital</h1>
                                 </div>
                             </>
                         )}
                     </div>
 
-                    <div className="flex gap-2 md:gap-4 p-1 rounded-full border border-white/10 bg-black/40 backdrop-blur-md">
-                        <a href="https://wa.me/+5515998074956" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-3 md:px-4 py-2 hover:bg-white/5 rounded-full transition-colors hidden md:flex">
-                            <WhatsappLogo size={20} className="text-orange-500" />
-                            <span className="text-sm font-medium text-neutral-300">15 99807-4956</span>
+                    <div className="flex gap-2 md:gap-4 p-1 rounded-full border border-gray-200 bg-white backdrop-blur-md">
+                        <a href="https://wa.me/+5515998074956" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-3 md:px-4 py-2 hover:bg-gray-50 rounded-full transition-colors hidden md:flex">
+                            <WhatsappLogo size={20} className="text-green-600" />
+                            <span className="text-sm font-medium text-gray-600">15 99807-4956</span>
                         </a>
-                        <a href="https://wa.me/+5515998074956" target="_blank" rel="noreferrer" className="flex md:hidden items-center justify-center w-10 h-10 hover:bg-white/5 rounded-full transition-colors">
-                            <WhatsappLogo size={20} className="text-orange-500" />
+                        <a href="https://wa.me/+5515998074956" target="_blank" rel="noreferrer" className="flex md:hidden items-center justify-center w-10 h-10 hover:bg-gray-50 rounded-full transition-colors">
+                            <WhatsappLogo size={20} className="text-green-600" />
                         </a>
 
-                        <a href="mailto:contato@conversao.digital" className="flex items-center gap-2 px-3 md:px-4 py-2 hover:bg-white/5 rounded-full transition-colors hidden md:flex">
-                            <EnvelopeSimple size={20} className="text-orange-500" />
-                            <span className="text-sm font-medium text-neutral-300">contato@conversao.digital</span>
+                        <a href="mailto:contato@conversao.digital" className="flex items-center gap-2 px-3 md:px-4 py-2 hover:bg-gray-50 rounded-full transition-colors hidden md:flex">
+                            <EnvelopeSimple size={20} className="text-green-600" />
+                            <span className="text-sm font-medium text-gray-600">contato@conversao.digital</span>
                         </a>
-                        <a href="mailto:contato@conversao.digital" className="flex md:hidden items-center justify-center w-10 h-10 hover:bg-white/5 rounded-full transition-colors">
-                            <EnvelopeSimple size={20} className="text-orange-500" />
+                        <a href="mailto:contato@conversao.digital" className="flex md:hidden items-center justify-center w-10 h-10 hover:bg-gray-50 rounded-full transition-colors">
+                            <EnvelopeSimple size={20} className="text-green-600" />
                         </a>
                     </div>
                 </header>
@@ -234,12 +234,12 @@ export function ProposalView() {
                 <div className="mb-8 md:mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 mx-auto">
                     <div>
                         <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-2">
-                            <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight leading-none">Seu Orçamento</h1>
-                            <span className="bg-white/10 text-neutral-300 text-[10px] md:text-xs px-2 py-0.5 md:py-1 rounded-full font-medium h-fit self-center">
+                            <h1 className="text-3xl md:text-4xl font-display font-bold text-gray-900 tracking-tight leading-none">Seu Orçamento</h1>
+                            <span className="bg-gray-100 text-gray-500 text-[10px] md:text-xs px-2 py-0.5 md:py-1 rounded-full font-medium h-fit self-center">
                                 #{proposal.id.split('-')[0]}
                             </span>
                         </div>
-                        <p className="text-neutral-500 font-medium text-sm md:text-lg">{items.length} {items.length === 1 ? 'Item selecionado' : 'Itens selecionados'}</p>
+                        <p className="text-gray-500 font-medium text-sm md:text-lg">{items.length} {items.length === 1 ? 'Item selecionado' : 'Itens selecionados'}</p>
                     </div>
                 </div>
 
@@ -250,54 +250,54 @@ export function ProposalView() {
                     <div className="lg:col-span-8 flex flex-col gap-8">
 
                         {/* Structural Info (Horizontal Row/Compact Grid) */}
-                        <div className="border border-white/10 rounded-2xl grid grid-cols-2 lg:grid-cols-3 divide-x divide-y lg:divide-y-0 divide-white/5 bg-[#121212]/50">
+                        <div className="bg-white border border-gray-200 rounded-2xl grid grid-cols-2 lg:grid-cols-3 divide-x divide-y lg:divide-y-0 divide-gray-100">
                             <div className="p-4 flex flex-col justify-center col-span-2 lg:col-span-1">
-                                <p className="text-[9px] md:text-[10px] text-neutral-500 mb-1 uppercase tracking-widest font-bold">Cliente</p>
-                                <p className="text-sm md:text-base font-medium text-neutral-200 truncate">{proposal.client_name}</p>
+                                <p className="text-[9px] md:text-[10px] text-gray-500 mb-1 uppercase tracking-widest font-bold">Cliente</p>
+                                <p className="text-sm md:text-base font-medium text-gray-800 truncate">{proposal.client_name}</p>
                             </div>
                             <div className="p-4 flex flex-col justify-center border-t-0 lg:border-l">
-                                <p className="text-[9px] md:text-[10px] text-neutral-500 mb-1 uppercase tracking-widest font-bold">Data do Pedido</p>
-                                <p className="text-sm md:text-base font-medium text-neutral-200">{formatDate(proposal.created_at)}</p>
-                                <p className="text-[9px] md:text-[10px] text-neutral-600 mt-0.5 italic">Válido até {formatDate(proposal.valid_until)}</p>
+                                <p className="text-[9px] md:text-[10px] text-gray-500 mb-1 uppercase tracking-widest font-bold">Data do Pedido</p>
+                                <p className="text-sm md:text-base font-medium text-gray-800">{formatDate(proposal.created_at)}</p>
+                                <p className="text-[9px] md:text-[10px] text-gray-400 mt-0.5 italic">Válido até {formatDate(proposal.valid_until)}</p>
                             </div>
                             <div className="p-4 flex flex-col justify-center">
-                                <p className="text-[9px] md:text-[10px] text-neutral-500 mb-1 uppercase tracking-widest font-bold">Data de Entrega</p>
-                                <p className="text-sm md:text-base font-medium text-neutral-200">{proposal.delivery_time || 'A combinar'}</p>
+                                <p className="text-[9px] md:text-[10px] text-gray-500 mb-1 uppercase tracking-widest font-bold">Data de Entrega</p>
+                                <p className="text-sm md:text-base font-medium text-gray-800">{proposal.delivery_time || 'A combinar'}</p>
                             </div>
                         </div>
 
                         {/* Services List - Backgrounds Removed */}
                         <div className="space-y-6">
-                            <h2 className="text-sm font-bold text-neutral-500 uppercase tracking-[0.2em] mb-4 ml-2">Serviços</h2>
+                            <h2 className="text-sm font-bold text-gray-500 uppercase tracking-[0.2em] mb-4 ml-2">Serviços</h2>
                             {items.length > 0 ? items.map((item, index) => {
                                 const style = getServiceIcon(item.title);
                                 return (
-                                    <div key={index} className="border border-white/5 rounded-2xl md:rounded-3xl p-4 md:p-8 flex flex-row gap-4 md:gap-8 hover:border-white/10 hover:bg-white/[0.02] transition-all group lg:items-center">
-                                        <div className={`w-14 h-14 md:w-32 md:h-32 ${style.bg} rounded-xl md:rounded-3xl flex items-center justify-center shrink-0 border border-white/5 shadow-inner group-hover:scale-105 transition-transform`}>
+                                    <div key={index} className="bg-white border border-gray-200 rounded-2xl md:rounded-3xl p-4 md:p-8 flex flex-row gap-4 md:gap-8 hover:border-gray-300 hover:shadow-sm transition-all group lg:items-center">
+                                        <div className={`w-14 h-14 md:w-32 md:h-32 ${style.bg} rounded-xl md:rounded-3xl flex items-center justify-center shrink-0 border border-gray-100 shadow-inner group-hover:scale-105 transition-transform`}>
                                             <style.icon size={28} className={`md:hidden ${style.color}`} weight="duotone" />
                                             <style.icon size={56} className={`hidden md:block ${style.color}`} weight="duotone" />
                                         </div>
 
                                         <div className="flex-1 flex flex-col justify-center">
                                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-1 md:gap-4 mb-2 md:mb-3">
-                                                <h3 className="text-lg md:text-2xl font-semibold text-white group-hover:text-orange-400 transition-colors tracking-tight leading-tight">
-                                                    {item.quantity && item.quantity > 1 && <span className="text-orange-400 mr-2">{item.quantity}x</span>}
+                                                <h3 className="text-lg md:text-2xl font-semibold text-gray-900 group-hover:text-green-600 transition-colors tracking-tight leading-tight">
+                                                    {item.quantity && item.quantity > 1 && <span className="text-green-600 mr-2">{item.quantity}x</span>}
                                                     {item.title}
                                                 </h3>
                                                 <div className="text-left md:text-right flex items-center gap-2 md:block">
-                                                    <div className="text-lg md:text-2xl font-bold text-white leading-tight">{formatCurrency(item.price * (item.quantity || 1))}</div>
-                                                    <span className={`text-[9px] md:text-[10px] uppercase tracking-widest font-bold ${item.type === 'Mensal' ? 'text-blue-400' : 'text-green-400'} mt-0.5`}>
+                                                    <div className="text-lg md:text-2xl font-bold text-gray-900 leading-tight">{formatCurrency(item.price * (item.quantity || 1))}</div>
+                                                    <span className={`text-[9px] md:text-[10px] uppercase tracking-widest font-bold ${item.type === 'Mensal' ? 'text-blue-500' : 'text-green-600'} mt-0.5`}>
                                                         {item.type}
                                                     </span>
                                                 </div>
                                             </div>
 
-                                            <div className="text-neutral-400 text-xs md:text-sm leading-relaxed max-w-2xl">
+                                            <div className="text-gray-500 text-xs md:text-sm leading-relaxed max-w-2xl">
                                                 {item.description.split('\n').map((line, i) => {
                                                     const isBullet = line.trim().startsWith('-') || line.trim().startsWith('•')
                                                     return (
                                                         <p key={i} className={isBullet ? "flex gap-2 mb-0.5 md:mb-1" : "mb-0.5 md:mb-1"}>
-                                                            {isBullet && <span className="text-orange-500/50 pt-0.5 md:pt-0">•</span>}
+                                                            {isBullet && <span className="text-green-600/50 pt-0.5 md:pt-0">•</span>}
                                                             <span>{line.replace(/^[-•]\s*/, '')}</span>
                                                         </p>
                                                     )
@@ -307,27 +307,27 @@ export function ProposalView() {
                                     </div>
                                 );
                             }) : (
-                                <div className="text-neutral-500 italic pb-8 rounded-3xl p-12 border border-white/5 text-center">
+                                <div className="text-gray-500 italic pb-8 rounded-3xl p-12 bg-white border border-gray-200 text-center">
                                     Nenhum serviço discriminado neste orçamento.
                                 </div>
                             )}
                         </div>
 
                         {/* Compact Terms - Backgrounds Removed */}
-                        <div className="pt-8 border-t border-white/10 mt-12 mb-12">
-                            <h4 className="text-xs font-bold text-neutral-500 uppercase tracking-widest mb-6">Informações Importantes</h4>
+                        <div className="pt-8 border-t border-gray-200 mt-12 mb-12">
+                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6">Informações Importantes</h4>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="text-[11px] text-neutral-500 flex gap-2">
-                                    <span className="text-orange-500/40">•</span> Início imediato após o aceite e pagamento inicial de 50%.
+                                <div className="text-[11px] text-gray-500 flex gap-2">
+                                    <span className="text-green-600/40">•</span> Início imediato após o aceite e pagamento inicial de 50%.
                                 </div>
-                                <div className="text-[11px] text-neutral-500 flex gap-2">
-                                    <span className="text-orange-500/40">•</span> Saldo remanescente a ser quitado no ato da entrega final.
+                                <div className="text-[11px] text-gray-500 flex gap-2">
+                                    <span className="text-green-600/40">•</span> Saldo remanescente a ser quitado no ato da entrega final.
                                 </div>
-                                <div className="text-[11px] text-neutral-500 flex gap-2">
-                                    <span className="text-orange-500/40">•</span> Inclui suporte e até 3 rodadas de ajustes pontuais.
+                                <div className="text-[11px] text-gray-500 flex gap-2">
+                                    <span className="text-green-600/40">•</span> Inclui suporte e até 3 rodadas de ajustes pontuais.
                                 </div>
-                                <div className="text-[11px] text-neutral-500 flex gap-2">
-                                    <span className="text-orange-500/40">•</span> Prazo de validade do orçamento conforme indicado no cabeçalho.
+                                <div className="text-[11px] text-gray-500 flex gap-2">
+                                    <span className="text-green-600/40">•</span> Prazo de validade do orçamento conforme indicado no cabeçalho.
                                 </div>
                             </div>
                         </div>
@@ -337,31 +337,31 @@ export function ProposalView() {
                     <div className="hidden lg:flex lg:col-span-4 lg:sticky lg:top-8 self-start flex-col gap-6">
 
                         {/* Financial Summary Box */}
-                        <div className="p-8 border border-white/10 rounded-3xl bg-gradient-to-br from-[#121212] to-black shadow-2xl relative overflow-hidden">
+                        <div className="p-8 bg-white border border-gray-200 rounded-3xl shadow-sm relative overflow-hidden">
                             <div className="relative z-10 flex flex-col gap-8">
                                 <div>
-                                    <p className="text-[10px] text-neutral-500 mb-2 uppercase tracking-[0.2em] font-bold">Investimento Total</p>
-                                    <div className="text-5xl font-bold tracking-tighter text-white mb-2 flex items-baseline gap-2">
+                                    <p className="text-[10px] text-gray-500 mb-2 uppercase tracking-[0.2em] font-bold">Investimento Total</p>
+                                    <div className="text-5xl font-bold tracking-tighter text-gray-900 mb-2 flex items-baseline gap-2">
                                         {formatCurrency(total)}
-                                        <span className="text-xs font-medium text-neutral-500 uppercase tracking-widest">BRL</span>
+                                        <span className="text-xs font-medium text-gray-400 uppercase tracking-widest">BRL</span>
                                     </div>
                                 </div>
 
-                                <div className="space-y-4 pt-8 border-t border-white/5">
+                                <div className="space-y-4 pt-8 border-t border-gray-100">
                                     <div className="flex justify-between items-center">
-                                        <span className="text-xs text-neutral-400">Pagamento Pontual</span>
-                                        <span className="text-sm font-semibold text-neutral-200">{formatCurrency(subtotalUnico)}</span>
+                                        <span className="text-xs text-gray-500">Pagamento Pontual</span>
+                                        <span className="text-sm font-semibold text-gray-700">{formatCurrency(subtotalUnico)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
-                                        <span className="text-xs text-neutral-400">Manutenção Mensal</span>
-                                        <span className="text-sm font-semibold text-neutral-200">{formatCurrency(subtotalMensal)}</span>
+                                        <span className="text-xs text-gray-500">Manutenção Mensal</span>
+                                        <span className="text-sm font-semibold text-gray-700">{formatCurrency(subtotalMensal)}</span>
                                     </div>
                                 </div>
 
                                 <div className="flex flex-col gap-3 pt-4">
                                     <button
                                         onClick={() => navigate(`/proposta/${id}/contratar`)}
-                                        className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all group active:scale-[0.98]">
+                                        className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all group active:scale-[0.98]">
                                         <CheckCircle size={22} weight="bold" />
                                         Quero Contratar Agora
                                     </button>
@@ -370,21 +370,21 @@ export function ProposalView() {
                                             const wppMessage = encodeURIComponent(`Olá, quero negociar o valor da proposta: ${window.location.origin}/proposta/${id?.split('-')[0]}`);
                                             window.open(`https://wa.me/5515997891687?text=${wppMessage}`, '_blank');
                                         }}
-                                        className="w-full bg-white/5 border border-white/10 hover:bg-white/10 text-neutral-300 font-semibold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
+                                        className="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-600 font-semibold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
                                         <ChatCircleDots size={22} />
                                         Negociar Proposta
                                     </button>
                                 </div>
 
-                                <div className="pt-6 border-t border-white/5 space-y-4">
-                                    <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Formas de Pagamento</p>
+                                <div className="pt-6 border-t border-gray-100 space-y-4">
+                                    <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Formas de Pagamento</p>
                                     <div className="flex items-center gap-4">
                                         <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
                                             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 48 48">
                                                 <path fill="#4db6ac" d="M11.9,12h-0.68l8.04-8.04c2.62-2.61,6.86-2.61,9.48,0L36.78,12H36.1c-1.6,0-3.11,0.62-4.24,1.76	l-6.8,6.77c-0.59,0.59-1.53,0.59-2.12,0l-6.8-6.77C15.01,12.62,13.5,12,11.9,12z"></path><path fill="#4db6ac" d="M36.1,36h0.68l-8.04,8.04c-2.62,2.61-6.86,2.61-9.48,0L11.22,36h0.68c1.6,0,3.11-0.62,4.24-1.76	l6.8-6.77c0.59-0.59,1.53-0.59,2.12,0l6.8,6.77C32.99,35.38,34.5,36,36.1,36z"></path><path fill="#4db6ac" d="M44.04,28.74L38.78,34H36.1c-1.07,0-2.07-0.42-2.83-1.17l-6.8-6.78c-1.36-1.36-3.58-1.36-4.94,0	l-6.8,6.78C13.97,33.58,12.97,34,11.9,34H9.22l-5.26-5.26c-2.61-2.62-2.61-6.86,0-9.48L9.22,14h2.68c1.07,0,2.07,0.42,2.83,1.17	l6.8,6.78c0.68,0.68,1.58,1.02,2.47,1.02s1.79-0.34,2.47-1.02l6.8-6.78C34.03,14.42,35.03,14,36.1,14h2.68l5.26,5.26	C46.65,21.88,46.65,26.12,44.04,28.74z"></path>
                                             </svg>
                                         </div>
-                                        <span className="text-xs text-neutral-400 font-medium tracking-tight">Pix (5% de desconto à vista)</span>
+                                        <span className="text-xs text-gray-500 font-medium tracking-tight">Pix (5% de desconto à vista)</span>
                                     </div>
                                     <div className="flex items-center gap-4">
                                         <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0">
@@ -393,12 +393,12 @@ export function ProposalView() {
                                                 <path d="M2 10H22" stroke="#3b82f6" strokeWidth="2" />
                                             </svg>
                                         </div>
-                                        <span className="text-xs text-neutral-400 font-medium tracking-tight">Cartão de Crédito em até 5x</span>
+                                        <span className="text-xs text-gray-500 font-medium tracking-tight">Cartão de Crédito em até 5x</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="absolute top-0 right-0 p-8 text-white/[0.02] pointer-events-none -mr-8 -mt-8 rotate-12">
+                            <div className="absolute top-0 right-0 p-8 text-gray-900/[0.02] pointer-events-none -mr-8 -mt-8 rotate-12">
                                 <Receipt size={200} weight="thin" />
                             </div>
                         </div>
@@ -407,11 +407,11 @@ export function ProposalView() {
             </div>
 
             {/* Mobile Sticky Action Footer */}
-            <div data-html2canvas-ignore="true" className={`fixed bottom-0 left-0 right-0 border-t border-white/10 bg-black/90 backdrop-blur-xl lg:hidden z-40 transition-all duration-300 ease-in-out ${isSummaryExpanded ? 'pb-8 pt-6 px-6' : 'pb-8 pt-5 px-5 h-[100px]'}`}>
+            <div data-html2canvas-ignore="true" className={`fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white/95 backdrop-blur-xl lg:hidden z-40 transition-all duration-300 ease-in-out ${isSummaryExpanded ? 'pb-8 pt-6 px-6' : 'pb-8 pt-5 px-5 h-[100px]'}`}>
                 {/* Expand/Collapse Toggle Button */}
                 <button
                     onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
-                    className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-6 bg-black/80 backdrop-blur-md border border-white/10 border-b-0 rounded-t-xl flex items-center justify-center text-neutral-400 active:text-white"
+                    className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-6 bg-white border border-gray-200 border-b-0 rounded-t-xl flex items-center justify-center text-gray-400 active:text-gray-700"
                 >
                     {isSummaryExpanded ? <CaretDown size={20} weight="bold" /> : <CaretUp size={20} weight="bold" />}
                 </button>
@@ -421,37 +421,37 @@ export function ProposalView() {
                     <div className="mb-6 pt-2 space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
                         <div className="space-y-3 pt-2">
                             <div className="flex justify-between items-center text-xs">
-                                <span className="text-neutral-500 uppercase tracking-widest font-bold">Investimento Pontual</span>
-                                <span className="font-semibold text-neutral-200">{formatCurrency(subtotalUnico)}</span>
+                                <span className="text-gray-500 uppercase tracking-widest font-bold">Investimento Pontual</span>
+                                <span className="font-semibold text-gray-700">{formatCurrency(subtotalUnico)}</span>
                             </div>
                             <div className="flex justify-between items-center text-xs">
-                                <span className="text-neutral-500 uppercase tracking-widest font-bold">Investimento Mensal</span>
-                                <span className="font-semibold text-neutral-200">{formatCurrency(subtotalMensal)}</span>
+                                <span className="text-gray-500 uppercase tracking-widest font-bold">Investimento Mensal</span>
+                                <span className="font-semibold text-gray-700">{formatCurrency(subtotalMensal)}</span>
                             </div>
                         </div>
 
-                        <div className="pt-4 border-t border-white/5 space-y-3">
-                            <p className="text-[9px] text-neutral-500 uppercase tracking-widest font-bold">Formas de Pagamento</p>
+                        <div className="pt-4 border-t border-gray-100 space-y-3">
+                            <p className="text-[9px] text-gray-500 uppercase tracking-widest font-bold">Formas de Pagamento</p>
                             <div className="flex items-center gap-3">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                <span className="text-[11px] text-neutral-400">Pix (5% de desconto à vista)</span>
+                                <span className="text-[11px] text-gray-500">Pix (5% de desconto à vista)</span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                                <span className="text-[11px] text-neutral-400">Cartão de Crédito em até 5x</span>
+                                <span className="text-[11px] text-gray-500">Cartão de Crédito em até 5x</span>
                             </div>
                         </div>
                     </div>
                 )}
 
-                <div className={`flex items-center justify-between gap-4 ${isSummaryExpanded ? 'pt-4 border-t border-white/5' : ''}`}>
+                <div className={`flex items-center justify-between gap-4 ${isSummaryExpanded ? 'pt-4 border-t border-gray-100' : ''}`}>
                     <div className="flex flex-col">
-                        <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-bold">Total</span>
-                        <span className="text-2xl font-bold text-white tracking-tight">{formatCurrency(total)}</span>
+                        <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Total</span>
+                        <span className="text-2xl font-bold text-gray-900 tracking-tight">{formatCurrency(total)}</span>
                     </div>
                     <button
                         onClick={() => navigate(`/proposta/${id}/contratar`)}
-                        className="bg-orange-600 hover:bg-orange-700 active:scale-95 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all flex-1 max-w-[200px] shadow-lg shadow-orange-500/20">
+                        className="bg-green-600 hover:bg-green-700 active:scale-95 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all flex-1 max-w-[200px] shadow-lg shadow-green-600/20">
                         <CheckCircle size={20} weight="bold" />
                         Contratar
                     </button>

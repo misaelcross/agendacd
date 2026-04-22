@@ -30,64 +30,63 @@ export function Login() {
     }
 
     return (
-        <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center px-4 font-inter text-white relative overflow-hidden">
-            {/* Decoração de fundo sutil */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/[0.02] blur-[120px] rounded-full pointer-events-none" />
-
-            <div className="w-full max-w-sm relative z-10">
+        <div className="min-h-screen bg-off flex flex-col items-center justify-center px-4 text-gray-900">
+            <div className="w-full max-w-sm">
                 <div className="mb-10 text-center">
-                    <h1 className="text-2xl font-medium tracking-tight">Login Dashboard</h1>
-                    <p className="text-[#a1a1aa] text-sm mt-2">Sua central de contratos e propostas.</p>
+                    <h1 className="text-2xl font-semibold tracking-tight font-display text-green-700">Login Dashboard</h1>
+                    <p className="text-gray-500 text-sm mt-2">Sua central de contratos e propostas.</p>
                 </div>
 
-                <form onSubmit={handleLogin} className="space-y-4">
-                    {error && (
-                        <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm text-center">
-                            {error}
-                        </div>
-                    )}
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8">
+                    <form onSubmit={handleLogin} className="space-y-4">
+                        {error && (
+                            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm text-center">
+                                {error}
+                            </div>
+                        )}
 
-                    <div>
-                        <label className="block text-sm font-medium text-[#a1a1aa] mb-1.5 ml-1">
-                            E-mail
-                        </label>
-                        <input
-                            type="email"
-                            required
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-full bg-[#111111] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-white/30 transition-colors"
-                            placeholder="seu@email.com"
-                        />
-                    </div>
-
-                    <div>
-                        <div className="flex items-center justify-between mb-1.5 ml-1 mr-1">
-                            <label className="block text-sm font-medium text-[#a1a1aa]">
-                                Senha
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">
+                                E-mail
                             </label>
-                            <Link to="/reset-password" className="text-xs text-[#a1a1aa] hover:text-white transition-colors">
-                                Esqueceu a senha?
-                            </Link>
+                            <input
+                                type="email"
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-600 transition-colors"
+                                placeholder="seu@email.com"
+                            />
                         </div>
-                        <input
-                            type="password"
-                            required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full bg-[#111111] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-white/30 transition-colors"
-                            placeholder="••••••••"
-                        />
-                    </div>
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-white text-black font-medium text-sm py-3 rounded-xl hover:bg-gray-200 transition-colors disabled:opacity-50 mt-4"
-                    >
-                        {loading ? 'Entrando...' : 'Entrar na conta'}
-                    </button>
-                </form>
+                        <div>
+                            <div className="flex items-center justify-between mb-1.5 ml-1 mr-1">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Senha
+                                </label>
+                                <Link to="/reset-password" className="text-xs text-gray-500 hover:text-green-600 transition-colors">
+                                    Esqueceu a senha?
+                                </Link>
+                            </div>
+                            <input
+                                type="password"
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-600 transition-colors"
+                                placeholder="••••••••"
+                            />
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-green-600 text-white font-medium text-sm py-3 rounded-xl hover:bg-green-700 transition-colors disabled:opacity-50 mt-4"
+                        >
+                            {loading ? 'Entrando...' : 'Entrar na conta'}
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     )

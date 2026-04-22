@@ -3,7 +3,7 @@ import { Modal } from './ui/Modal'
 import { Input } from './ui/Input'
 import { Button } from './ui/Button'
 import { supabase } from '../lib/supabase'
-import { Image, FloppyDisk, Globe, Desktop, Robot, Key, Buildings, Plus, Trash } from '@phosphor-icons/react'
+import { Image, FloppyDisk, Globe, Desktop, Buildings, Plus, Trash } from '@phosphor-icons/react'
 
 interface SettingsModalProps {
     isOpen: boolean
@@ -23,7 +23,6 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     const [logoUrl, setLogoUrl] = useState('')
     const [faviconUrl, setFaviconUrl] = useState('')
     const [systemName, setSystemName] = useState('')
-    const [geminiApiKey, setGeminiApiKey] = useState('')
     const [companyProfiles, setCompanyProfiles] = useState<CompanyProfile[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [isSaving, setIsSaving] = useState(false)
@@ -39,7 +38,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         try {
             const { data, error } = await supabase
                 .from('settings')
-                .select('logo_url, favicon_url, system_name, gemini_api_key, company_profiles')
+                .select('logo_url, favicon_url, system_name, company_profiles')
                 .eq('id', SETTINGS_ID)
                 .single()
 
@@ -51,7 +50,6 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 setLogoUrl(data.logo_url || '')
                 setFaviconUrl(data.favicon_url || '')
                 setSystemName(data.system_name || '')
-                setGeminiApiKey(data.gemini_api_key || '')
                 setCompanyProfiles(data.company_profiles || [])
             }
         } catch (error) {
@@ -71,7 +69,6 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     logo_url: logoUrl,
                     favicon_url: faviconUrl,
                     system_name: systemName,
-                    gemini_api_key: geminiApiKey,
                     company_profiles: companyProfiles,
                     updated_at: new Date().toISOString()
                 })
@@ -102,14 +99,14 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                             placeholder="Ex: Propostas CD"
                             value={systemName}
                             onChange={(e) => setSystemName(e.target.value)}
-                            icon={<Desktop size={18} className="text-neutral-500" />}
+                            icon={<Desktop size={18} className="text-gray-400" />}
                         />
                         <Input
                             label="URL do Favicon"
                             placeholder="https://exemplo.com/favicon.png"
                             value={faviconUrl}
                             onChange={(e) => setFaviconUrl(e.target.value)}
-                            icon={<Globe size={18} className="text-neutral-500" />}
+                            icon={<Globe size={18} className="text-gray-400" />}
                         />
                     </div>
 
@@ -118,12 +115,12 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         placeholder="https://exemplo.com/logo.png"
                         value={logoUrl}
                         onChange={(e) => setLogoUrl(e.target.value)}
-                        icon={<Image size={18} className="text-neutral-500" />}
+                        icon={<Image size={18} className="text-gray-400" />}
                     />
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="p-4 bg-neutral-800/30 border border-neutral-800 rounded-xl flex flex-col items-center justify-center min-h-[140px]">
-                            <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest mb-3">Preview Logo</span>
+                        <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl flex flex-col items-center justify-center min-h-[140px]">
+                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Preview Logo</span>
                             {logoUrl ? (
                                 <img
                                     src={logoUrl}
@@ -134,15 +131,15 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                                     }}
                                 />
                             ) : (
-                                <div className="flex flex-col items-center text-neutral-700">
+                                <div className="flex flex-col items-center text-gray-300">
                                     <Image size={32} weight="thin" />
                                     <span className="text-xs mt-2">Sem logo</span>
                                 </div>
                             )}
                         </div>
 
-                        <div className="p-4 bg-neutral-800/30 border border-neutral-800 rounded-xl flex flex-col items-center justify-center min-h-[140px]">
-                            <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest mb-3">Preview Favicon</span>
+                        <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl flex flex-col items-center justify-center min-h-[140px]">
+                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Preview Favicon</span>
                             {faviconUrl ? (
                                 <img
                                     src={faviconUrl}
@@ -153,7 +150,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                                     }}
                                 />
                             ) : (
-                                <div className="flex flex-col items-center text-neutral-700">
+                                <div className="flex flex-col items-center text-gray-300">
                                     <Globe size={32} weight="thin" />
                                     <span className="text-xs mt-2">Sem favicon</span>
                                 </div>
@@ -162,42 +159,20 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     </div>
                 </div>
 
-                {/* AI Section */}
-                <div className="pt-6 border-t border-neutral-800 space-y-4">
-                    <div className="flex items-center gap-2 mb-1">
-                        <Robot size={16} className="text-orange-500" />
-                        <span className="text-sm font-semibold text-neutral-300">Inteligência Artificial</span>
-                    </div>
-                    <Input
-                        label="Chave API do Gemini"
-                        placeholder="AIza..."
-                        value={geminiApiKey}
-                        onChange={(e) => setGeminiApiKey(e.target.value)}
-                        type="password"
-                        icon={<Key size={18} className="text-neutral-500" />}
-                    />
-                    <p className="text-xs text-neutral-600">
-                        Obtenha sua chave em{' '}
-                        <a href="https://aistudio.google.com" target="_blank" rel="noopener noreferrer" className="text-orange-500/70 hover:text-orange-500">
-                            aistudio.google.com
-                        </a>
-                    </p>
-                </div>
-
                 {/* Perfis de Empresa */}
-                <div className="pt-6 border-t border-neutral-800 space-y-4">
+                <div className="pt-6 border-t border-gray-200 space-y-4">
                     <div className="flex items-center gap-2 mb-1">
-                        <Buildings size={16} className="text-orange-500" />
-                        <span className="text-sm font-semibold text-neutral-300">Perfis da Nossa Empresa (Assinatura PDF)</span>
+                        <Buildings size={16} className="text-green-600" />
+                        <span className="text-sm font-semibold text-gray-600">Perfis da Nossa Empresa (Assinatura PDF)</span>
                     </div>
                     {companyProfiles.map((profile, idx) => (
-                        <div key={profile.id} className="p-4 bg-neutral-900 border border-neutral-800 rounded-xl space-y-3 relative group">
+                        <div key={profile.id} className="p-4 bg-white border border-gray-200 rounded-xl space-y-3 relative group">
                             <button
                                 type="button"
                                 onClick={() => {
                                     setCompanyProfiles(prev => prev.filter(p => p.id !== profile.id))
                                 }}
-                                className="absolute top-2 right-2 p-1.5 text-neutral-500 hover:text-red-500 bg-black/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="absolute top-2 right-2 p-1.5 text-gray-400 hover:text-red-500 bg-gray-100 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
                             >
                                 <Trash size={16} />
                             </button>
@@ -243,14 +218,14 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     </Button>
                 </div>
 
-                <div className="pt-4 flex justify-end gap-3 border-t border-neutral-800">
+                <div className="pt-4 flex justify-end gap-3 border-t border-gray-200">
                     <Button type="button" variant="ghost" onClick={onClose}>
                         Cancelar
                     </Button>
                     <Button
                         onClick={handleSave}
                         disabled={isSaving || isLoading}
-                        className="gap-2 bg-orange-600 hover:bg-orange-700 text-white border-none"
+                        className="gap-2 bg-green-600 hover:bg-green-700 text-white border-none"
                     >
                         <FloppyDisk size={18} />
                         {isSaving ? 'Salvando...' : 'Salvar Configurações'}

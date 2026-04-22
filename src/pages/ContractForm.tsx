@@ -217,41 +217,41 @@ export function ContractForm() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#050505] flex items-center justify-center">
-                <div className="animate-pulse text-orange-500 text-sm tracking-widest uppercase">Carregando Dados...</div>
+            <div className="min-h-screen bg-off flex items-center justify-center">
+                <div className="animate-pulse text-green-600 text-sm tracking-widest uppercase">Carregando Dados...</div>
             </div>
         )
     }
 
     if (error && !proposal) {
         return (
-            <div className="min-h-screen bg-[#050505] flex items-center justify-center text-white">
+            <div className="min-h-screen bg-off flex items-center justify-center text-gray-900">
                 {error}
             </div>
         )
     }
 
     return (
-        <div className="min-h-screen bg-[#050505] text-white font-inter py-12 px-4 selection:bg-orange-500/30">
+        <div className="min-h-screen bg-off text-gray-900 font-inter py-12 px-4 selection:bg-green-600/20">
             <div className="max-w-3xl mx-auto">
                 <div className="relative flex items-center justify-center mb-8">
                     <button
                         onClick={() => step === 1 ? navigate(`/proposta/${proposalId}`) : setStep(step - 1)}
-                        className="absolute left-0 p-2 text-neutral-400 hover:text-white transition-colors flex items-center justify-center"
+                        className="absolute left-0 p-2 text-gray-400 hover:text-gray-700 transition-colors flex items-center justify-center"
                         aria-label="Voltar"
                     >
                         <ArrowLeft size={18} weight="bold" />
                     </button>
-                    <h1 className="text-white font-bold text-lg tracking-wide">Assinar contrato</h1>
+                    <h1 className="text-gray-900 font-bold text-lg tracking-wide">Assinar contrato</h1>
                 </div>
 
                 {error && (
-                    <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-2xl text-sm">
+                    <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-600 rounded-2xl text-sm">
                         {error}
                     </div>
                 )}
 
-                <div className="bg-[#111] border border-white/5 rounded-3xl p-6 md:p-10 shadow-2xl relative overflow-hidden">
+                <div className="bg-white border border-gray-200 rounded-3xl p-6 md:p-10 shadow-sm relative overflow-hidden">
 
 
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -259,14 +259,14 @@ export function ContractForm() {
                         {/* ----------------- PASSO 1: PAGAMENTO ----------------- */}
                         {step === 1 && (
                             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300 relative z-20">
-                                <h3 className="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">1. Como prefere pagar?</h3>
+                                <h3 className="text-xl font-bold text-gray-900 mb-6 border-b border-gray-200 pb-4">1. Como prefere pagar?</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <button
                                         type="button"
                                         onClick={() => setPaymentMethod('pix')}
-                                        className={`flex flex-col items-start gap-4 p-6 rounded-2xl border transition-all hover:-translate-y-1 ${paymentMethod === 'pix' ? 'bg-[#4db6ac]/10 border-[#4db6ac] shadow-[0_5px_20px_rgba(77,182,172,0.15)] focus:outline-none focus:ring-2 focus:ring-[#4db6ac]/50' : 'bg-black/40 border-white/10 hover:border-white/20'}`}
+                                        className={`flex flex-col items-start gap-4 p-6 rounded-2xl border transition-all hover:-translate-y-1 ${paymentMethod === 'pix' ? 'bg-[#4db6ac]/10 border-[#4db6ac] shadow-[0_5px_20px_rgba(77,182,172,0.15)] focus:outline-none focus:ring-2 focus:ring-[#4db6ac]/50' : 'bg-gray-50 border-gray-200 hover:border-gray-300'}`}
                                     >
-                                        <div className={`p-3 rounded-xl ${paymentMethod === 'pix' ? 'bg-[#4db6ac]/20 text-[#4db6ac]' : 'bg-white/5 text-neutral-400'}`}>
+                                        <div className={`p-3 rounded-xl ${paymentMethod === 'pix' ? 'bg-[#4db6ac]/20 text-[#4db6ac]' : 'bg-gray-100 text-gray-400'}`}>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 48 48">
                                                 <path fill="currentColor" d="M11.9,12h-0.68l8.04-8.04c2.62-2.61,6.86-2.61,9.48,0L36.78,12H36.1c-1.6,0-3.11,0.62-4.24,1.76	l-6.8,6.77c-0.59,0.59-1.53,0.59-2.12,0l-6.8-6.77C15.01,12.62,13.5,12,11.9,12z"></path>
                                                 <path fill="currentColor" d="M36.1,36h0.68l-8.04,8.04c-2.62,2.61-6.86,2.61-9.48,0L11.22,36h0.68c1.6,0,3.11-0.62,4.24-1.76	l6.8-6.77c0.59-0.59,1.53-0.59,2.12,0l6.8,6.77C32.99,35.38,34.5,36,36.1,36z"></path>
@@ -274,29 +274,29 @@ export function ContractForm() {
                                             </svg>
                                         </div>
                                         <div className="text-left">
-                                            <h4 className="font-bold text-white text-lg">Pix</h4>
-                                            <p className="text-sm text-neutral-400 mt-1">À vista com desconto especial</p>
+                                            <h4 className="font-bold text-gray-900 text-lg">Pix</h4>
+                                            <p className="text-sm text-gray-500 mt-1">À vista com desconto especial</p>
                                         </div>
                                     </button>
 
                                     <button
                                         type="button"
                                         onClick={() => setPaymentMethod('credit')}
-                                        className={`flex flex-col items-start gap-4 p-6 rounded-2xl border transition-all hover:-translate-y-1 ${paymentMethod === 'credit' ? 'bg-blue-500/10 border-blue-500 shadow-[0_5px_20px_rgba(59,130,246,0.15)] focus:outline-none focus:ring-2 focus:ring-blue-500/50' : 'bg-black/40 border-white/10 hover:border-white/20'}`}
+                                        className={`flex flex-col items-start gap-4 p-6 rounded-2xl border transition-all hover:-translate-y-1 ${paymentMethod === 'credit' ? 'bg-blue-500/10 border-blue-500 shadow-[0_5px_20px_rgba(59,130,246,0.15)] focus:outline-none focus:ring-2 focus:ring-blue-500/50' : 'bg-gray-50 border-gray-200 hover:border-gray-300'}`}
                                     >
-                                        <div className={`p-3 rounded-xl ${paymentMethod === 'credit' ? 'bg-blue-500/20 text-blue-400' : 'bg-white/5 text-neutral-400'}`}>
+                                        <div className={`p-3 rounded-xl ${paymentMethod === 'credit' ? 'bg-blue-500/20 text-blue-500' : 'bg-gray-100 text-gray-400'}`}>
                                             <CreditCard size={32} weight={paymentMethod === 'credit' ? 'duotone' : 'regular'} />
                                         </div>
                                         <div className="text-left">
-                                            <h4 className="font-bold text-white text-lg">Cartão de Crédito</h4>
-                                            <p className="text-sm text-neutral-400 mt-1">Parcelamento flexível em até 5x</p>
+                                            <h4 className="font-bold text-gray-900 text-lg">Cartão de Crédito</h4>
+                                            <p className="text-sm text-gray-500 mt-1">Parcelamento flexível em até 5x</p>
                                         </div>
                                     </button>
                                 </div>
 
                                 {paymentMethod === 'credit' && (
-                                    <div className="mt-8 p-6 bg-black/40 border border-white/10 rounded-2xl animate-in fade-in slide-in-from-top-4 space-y-5">
-                                        <label className="block text-sm font-bold text-neutral-300">Escolha o número de parcelas:</label>
+                                    <div className="mt-8 p-6 bg-gray-50 border border-gray-200 rounded-2xl animate-in fade-in slide-in-from-top-4 space-y-5">
+                                        <label className="block text-sm font-bold text-gray-700">Escolha o número de parcelas:</label>
                                         <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
                                             {[1, 2, 3, 4, 5].map(num => {
                                                 const { perInstallment } = calcCreditTotal(baseTotal, num)
@@ -305,10 +305,10 @@ export function ContractForm() {
                                                         key={num}
                                                         type="button"
                                                         onClick={() => setInstallments(num)}
-                                                        className={`w-full rounded-xl font-bold flex flex-col items-center justify-center gap-1 py-3 px-1 transition-all ${installments === num ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)] border border-blue-400' : 'bg-white/5 text-neutral-400 border border-white/10 hover:bg-white/10 hover:text-white'}`}
+                                                        className={`w-full rounded-xl font-bold flex flex-col items-center justify-center gap-1 py-3 px-1 transition-all ${installments === num ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.2)] border border-blue-400' : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-100 hover:text-gray-700'}`}
                                                     >
                                                         <span className="text-lg">{num}x</span>
-                                                        <span className={`text-[9px] font-medium leading-tight text-center ${installments === num ? 'text-blue-200' : 'text-neutral-500'}`}>
+                                                        <span className={`text-[9px] font-medium leading-tight text-center ${installments === num ? 'text-blue-200' : 'text-gray-400'}`}>
                                                             {formatCurrency(perInstallment)}
                                                         </span>
                                                     </button>
@@ -320,16 +320,16 @@ export function ContractForm() {
                                         {(() => {
                                             const { total, perInstallment } = calcCreditTotal(baseTotal, installments)
                                             return (
-                                                <div className="pt-4 border-t border-white/5 flex justify-between items-center">
-                                                    <span className="text-xs font-semibold text-neutral-400">
+                                                <div className="pt-4 border-t border-gray-200 flex justify-between items-center">
+                                                    <span className="text-xs font-semibold text-gray-500">
                                                         {installments === 1 ? 'À vista no cartão' : `${installments}x de`}
                                                     </span>
                                                     <div className="text-right">
-                                                        <p className="text-xl font-bold text-blue-400">
+                                                        <p className="text-xl font-bold text-blue-600">
                                                             {formatCurrency(installments === 1 ? total : perInstallment)}
                                                         </p>
                                                         {installments > 1 && (
-                                                            <p className="text-xs text-neutral-300 mt-0.5">
+                                                            <p className="text-xs text-gray-500 mt-0.5">
                                                                 Total parcelado: <span className="font-semibold">{formatCurrency(total)}</span>
                                                             </p>
                                                         )}
@@ -342,15 +342,15 @@ export function ContractForm() {
 
                                 {/* Resumo de valor acima do botão Próximo */}
                                 {paymentMethod === 'pix' && (
-                                    <div className="p-5 bg-black/40 border border-emerald-500/20 rounded-2xl animate-in fade-in slide-in-from-top-4 flex justify-between items-center">
+                                    <div className="p-5 bg-emerald-50 border border-emerald-200 rounded-2xl animate-in fade-in slide-in-from-top-4 flex justify-between items-center">
                                         <div>
-                                            <p className="text-xs text-neutral-400 font-semibold">À vista via Pix</p>
-                                            <p className="text-[11px] text-emerald-400 mt-0.5">
+                                            <p className="text-xs text-gray-600 font-semibold">À vista via Pix</p>
+                                            <p className="text-[11px] text-emerald-600 mt-0.5">
                                                 Desconto de 5% aplicado
-                                                <span className="text-neutral-500 line-through ml-2">{formatCurrency(baseTotal)}</span>
+                                                <span className="text-gray-400 line-through ml-2">{formatCurrency(baseTotal)}</span>
                                             </p>
                                         </div>
-                                        <p className="text-xl font-bold text-emerald-400">{formatCurrency(baseTotal * 0.95)}</p>
+                                        <p className="text-xl font-bold text-emerald-600">{formatCurrency(baseTotal * 0.95)}</p>
                                     </div>
                                 )}
 
@@ -358,7 +358,7 @@ export function ContractForm() {
                                     <button
                                         type="button"
                                         onClick={() => setStep(2)}
-                                        className="w-full md:w-auto bg-orange-600 hover:bg-orange-700 active:scale-[0.98] transition-all text-white font-bold px-8 py-4 rounded-xl flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(249,115,22,0.2)] hover:shadow-[0_0_25px_rgba(249,115,22,0.4)]"
+                                        className="w-full md:w-auto bg-green-600 hover:bg-green-700 active:scale-[0.98] transition-all text-white font-bold px-8 py-4 rounded-xl flex items-center justify-center gap-2"
                                     >
                                         Próximo
                                         <ArrowRight size={20} weight="bold" />
@@ -370,21 +370,21 @@ export function ContractForm() {
                         {/* ----------------- PASSO 2: DADOS PESSOAIS ----------------- */}
                         {step === 2 && (
                             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300 relative z-20">
-                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-white/10 pb-4">
-                                    <h3 className="text-xl font-bold text-white">2. Dados de Faturamento</h3>
+                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-gray-200 pb-4">
+                                    <h3 className="text-xl font-bold text-gray-900">2. Dados de Faturamento</h3>
 
-                                    <div className="flex gap-1 p-1 bg-black/40 border border-white/5 rounded-xl w-fit">
+                                    <div className="flex gap-1 p-1 bg-gray-100 border border-gray-200 rounded-xl w-fit">
                                         <button
                                             type="button"
                                             onClick={() => { setType('pf'); setDocumentNumber(''); }}
-                                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'pf' ? 'bg-white/10 text-white shadow-sm' : 'text-neutral-500 hover:text-neutral-300'}`}
+                                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'pf' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                                         >
                                             <User size={16} /> Física
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => { setType('pj'); setDocumentNumber(''); }}
-                                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'pj' ? 'bg-white/10 text-white shadow-sm' : 'text-neutral-500 hover:text-neutral-300'}`}
+                                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'pj' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                                         >
                                             <Briefcase size={16} /> Jurídica
                                         </button>
@@ -395,45 +395,45 @@ export function ContractForm() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <label className="block text-xs font-medium text-neutral-400 mb-1.5 ml-1">{type === 'pf' ? 'Nome Completo' : 'Razão Social'}</label>
-                                        <input required value={name} onChange={(e) => setName(e.target.value)} type="text" className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-sm focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50 transition-colors placeholder:text-neutral-600" placeholder={type === 'pf' ? 'Ex: Alexander Bragato' : 'Ex: Conversão Digital LTDA'} />
+                                        <label className="block text-xs font-medium text-gray-600 mb-1.5 ml-1">{type === 'pf' ? 'Nome Completo' : 'Razão Social'}</label>
+                                        <input required value={name} onChange={(e) => setName(e.target.value)} type="text" className="w-full bg-white border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors placeholder:text-gray-400" placeholder={type === 'pf' ? 'Ex: Alexander Bragato' : 'Ex: Conversão Digital LTDA'} />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-medium text-neutral-400 mb-1.5 ml-1">{type === 'pf' ? 'CPF' : 'CNPJ'}</label>
+                                        <label className="block text-xs font-medium text-gray-600 mb-1.5 ml-1">{type === 'pf' ? 'CPF' : 'CNPJ'}</label>
                                         <input
                                             required value={documentNumber} onChange={(e) => setDocumentNumber(type === 'pf' ? maskCPF(e.target.value) : maskCNPJ(e.target.value))}
                                             type="text" placeholder={type === 'pf' ? '000.000.000-00' : '00.000.000/0000-00'}
-                                            className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-sm focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50 transition-colors placeholder:text-neutral-600"
+                                            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors placeholder:text-gray-400"
                                         />
                                     </div>
                                     <div className="md:col-span-2">
-                                        <label className="block text-xs font-medium text-neutral-400 mb-1.5 ml-1">E-mail (Para receber código de verificação)</label>
-                                        <input required value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="seu.email@exemplo.com" className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-sm focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50 transition-colors placeholder:text-neutral-600" />
+                                        <label className="block text-xs font-medium text-gray-600 mb-1.5 ml-1">E-mail (Para receber código de verificação)</label>
+                                        <input required value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="seu.email@exemplo.com" className="w-full bg-white border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors placeholder:text-gray-400" />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-medium text-neutral-400 mb-1.5 ml-1">Telefone / WhatsApp</label>
+                                        <label className="block text-xs font-medium text-gray-600 mb-1.5 ml-1">Telefone / WhatsApp</label>
                                         <input
                                             required value={phone} onChange={(e) => setPhone(maskPhone(e.target.value))}
                                             type="text" placeholder="(00) 00000-0000"
-                                            className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-sm focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50 transition-colors placeholder:text-neutral-600"
+                                            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors placeholder:text-gray-400"
                                         />
                                     </div>
                                 </div>
 
                                 {type === 'pj' && (
-                                    <div className="mt-8 p-6 bg-black/30 border border-neutral-800 rounded-2xl animate-in fade-in slide-in-from-top-4">
-                                        <h3 className="text-xs font-bold text-orange-500 uppercase tracking-widest mb-4">Representante Legal (Assinante)</h3>
+                                    <div className="mt-8 p-6 bg-gray-50 border border-gray-200 rounded-2xl animate-in fade-in slide-in-from-top-4">
+                                        <h3 className="text-xs font-bold text-green-600 uppercase tracking-widest mb-4">Representante Legal (Assinante)</h3>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div>
-                                                <label className="block text-xs font-medium text-neutral-400 mb-1.5 ml-1">Nome Completo</label>
-                                                <input required value={respName} onChange={(e) => setRespName(e.target.value)} type="text" className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-sm focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50 transition-colors" />
+                                                <label className="block text-xs font-medium text-gray-600 mb-1.5 ml-1">Nome Completo</label>
+                                                <input required value={respName} onChange={(e) => setRespName(e.target.value)} type="text" className="w-full bg-white border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors" />
                                             </div>
                                             <div>
-                                                <label className="block text-xs font-medium text-neutral-400 mb-1.5 ml-1">CPF</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-1.5 ml-1">CPF</label>
                                                 <input
                                                     required value={respCpf} onChange={(e) => setRespCpf(maskCPF(e.target.value))}
                                                     type="text" placeholder="000.000.000-00"
-                                                    className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-sm focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50 transition-colors"
+                                                    className="w-full bg-white border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors"
                                                 />
                                             </div>
                                         </div>
@@ -444,7 +444,7 @@ export function ContractForm() {
                                     <button
                                         type="button"
                                         onClick={() => setStep(1)}
-                                        className="flex-1 bg-transparent border border-white/10 hover:bg-white/5 active:scale-[0.98] transition-all text-neutral-300 font-bold px-2 py-4 rounded-xl flex items-center justify-center gap-2"
+                                        className="flex-1 bg-transparent border border-gray-200 hover:bg-gray-50 active:scale-[0.98] transition-all text-gray-600 font-bold px-2 py-4 rounded-xl flex items-center justify-center gap-2"
                                     >
                                         <ArrowLeft size={20} weight="bold" />
                                         Voltar
@@ -463,7 +463,7 @@ export function ContractForm() {
                                                 document.forms[0].removeChild(btn);
                                             }
                                         }}
-                                        className="flex-1 bg-orange-600 hover:bg-orange-700 active:scale-[0.98] transition-all text-white font-bold px-2 py-4 rounded-xl flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(249,115,22,0.2)] hover:shadow-[0_0_25px_rgba(249,115,22,0.4)]"
+                                        className="flex-1 bg-green-600 hover:bg-green-700 active:scale-[0.98] transition-all text-white font-bold px-2 py-4 rounded-xl flex items-center justify-center gap-2"
                                     >
                                         Próximo
                                         <ArrowRight size={20} weight="bold" />
@@ -475,38 +475,38 @@ export function ContractForm() {
                         {/* ----------------- PASSO 3: ENDEREÇO E FINALIZAÇÃO ----------------- */}
                         {step === 3 && (
                             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300 relative z-20">
-                                <h3 className="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">3. Endereço</h3>
+                                <h3 className="text-xl font-bold text-gray-900 mb-6 border-b border-gray-200 pb-4">3. Endereço</h3>
 
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                                     <div className="md:col-span-1">
-                                        <label className="block text-xs font-medium text-neutral-400 mb-1.5 ml-1">CEP</label>
+                                        <label className="block text-xs font-medium text-gray-600 mb-1.5 ml-1">CEP</label>
                                         <input
                                             required value={cep} onChange={(e) => setCep(maskCEP(e.target.value))}
                                             type="text" placeholder="00000-000"
-                                            className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-sm focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50 transition-colors"
+                                            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors"
                                         />
                                     </div>
                                     <div className="md:col-span-2">
-                                        <label className="block text-xs font-medium text-neutral-400 mb-1.5 ml-1">Logradouro (Rua, Av)</label>
-                                        <input required value={address} onChange={(e) => setAddress(e.target.value)} type="text" className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-sm focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50 transition-colors" />
+                                        <label className="block text-xs font-medium text-gray-600 mb-1.5 ml-1">Logradouro (Rua, Av)</label>
+                                        <input required value={address} onChange={(e) => setAddress(e.target.value)} type="text" className="w-full bg-white border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors" />
                                     </div>
                                     <div className="md:col-span-1">
-                                        <label className="block text-xs font-medium text-neutral-400 mb-1.5 ml-1">Número</label>
-                                        <input required value={addressNumber} onChange={(e) => setAddressNumber(e.target.value)} type="text" className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-sm focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50 transition-colors" />
+                                        <label className="block text-xs font-medium text-gray-600 mb-1.5 ml-1">Número</label>
+                                        <input required value={addressNumber} onChange={(e) => setAddressNumber(e.target.value)} type="text" className="w-full bg-white border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors" />
                                     </div>
                                     <div className="md:col-span-2">
-                                        <label className="block text-xs font-medium text-neutral-400 mb-1.5 ml-1">Bairro</label>
-                                        <input required value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)} type="text" className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-sm focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50 transition-colors" />
+                                        <label className="block text-xs font-medium text-gray-600 mb-1.5 ml-1">Bairro</label>
+                                        <input required value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)} type="text" className="w-full bg-white border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors" />
                                     </div>
                                     <div className="md:col-span-1">
-                                        <label className="block text-xs font-medium text-neutral-400 mb-1.5 ml-1">Cidade</label>
-                                        <input required value={city} onChange={(e) => setCity(e.target.value)} type="text" className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-sm focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50 transition-colors" />
+                                        <label className="block text-xs font-medium text-gray-600 mb-1.5 ml-1">Cidade</label>
+                                        <input required value={city} onChange={(e) => setCity(e.target.value)} type="text" className="w-full bg-white border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors" />
                                     </div>
                                     <div className="md:col-span-1">
-                                        <label className="block text-xs font-medium text-neutral-400 mb-1.5 ml-1">Estado</label>
+                                        <label className="block text-xs font-medium text-gray-600 mb-1.5 ml-1">Estado</label>
                                         <select
                                             required value={stateUF} onChange={(e) => setStateUF(e.target.value)}
-                                            className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-sm focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50 transition-colors custom-select appearance-none"
+                                            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-900 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors custom-select appearance-none"
                                         >
                                             <option value="" disabled>UF</option>
                                             {UFs.map(uf => (
@@ -520,7 +520,7 @@ export function ContractForm() {
                                     <button
                                         type="button"
                                         onClick={() => setStep(2)}
-                                        className="flex-1 bg-transparent border border-white/10 hover:bg-white/5 active:scale-[0.98] transition-all text-neutral-300 font-bold px-2 py-4 rounded-xl flex items-center justify-center gap-2"
+                                        className="flex-1 bg-transparent border border-gray-200 hover:bg-gray-50 active:scale-[0.98] transition-all text-gray-600 font-bold px-2 py-4 rounded-xl flex items-center justify-center gap-2"
                                     >
                                         <ArrowLeft size={20} weight="bold" />
                                         Voltar

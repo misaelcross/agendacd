@@ -18,26 +18,20 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     ({ className, label, error, autoExpand = true, maxHeight = 250, minHeight = 80, onChange, rows, ...props }, ref) => {
         const internalRef = useRef<HTMLTextAreaElement | null>(null)
 
-        // Merge refs - handle both callback ref and ref object
         useImperativeHandle(ref, () => internalRef.current!)
 
         const adjustHeight = useCallback(() => {
             const textarea = internalRef.current
             if (textarea && autoExpand) {
-                // Reset height to get the correct scrollHeight
                 textarea.style.height = 'auto'
-                // Calculate new height, limited by maxHeight but at least minHeight
                 const newHeight = Math.min(Math.max(textarea.scrollHeight, minHeight), maxHeight)
                 textarea.style.height = `${newHeight}px`
-                // Enable scroll if content exceeds maxHeight
                 textarea.style.overflowY = textarea.scrollHeight > maxHeight ? 'auto' : 'hidden'
             }
         }, [autoExpand, maxHeight, minHeight])
 
-        // Adjust height on mount and when value changes externally
         useEffect(() => {
             if (autoExpand) {
-                // Small timeout to ensure the textarea is rendered
                 const timer = setTimeout(() => {
                     adjustHeight()
                 }, 0)
@@ -53,14 +47,14 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         return (
             <div className="w-full">
                 {label && (
-                    <label className="block text-sm font-medium text-neutral-300 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                         {label}
                     </label>
                 )}
                 <textarea
                     className={cn(
-                        'flex w-full rounded-md border border-neutral-700 bg-neutral-800/50 px-3 py-2 text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 disabled:cursor-not-allowed disabled:opacity-50 transition-all resize-none overflow-hidden',
-                        error && 'border-red-500/50 focus:ring-red-500/50',
+                        'flex w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 disabled:cursor-not-allowed disabled:opacity-50 transition-all resize-none overflow-hidden',
+                        error && 'border-red-400 focus:ring-red-500/20 focus:border-red-400',
                         className
                     )}
                     style={{ minHeight: `${minHeight}px`, maxHeight: `${maxHeight}px` }}

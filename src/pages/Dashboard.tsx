@@ -368,9 +368,9 @@ export function Dashboard() {
     const hiredProposalsCount = filteredProposals.filter(proposal => proposal.status === 'accepted').length;
 
     return (
-        <div className="min-h-screen bg-[#0C0A09] text-neutral-100 flex flex-col selection:bg-orange-500/30">
-            <header className="bg-black/40 backdrop-blur-md border-b border-neutral-800/50 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">Propostas CD</h1>
+        <div className="min-h-screen bg-gray-50 text-gray-900 flex flex-col selection:bg-green-500/30">
+            <header className="bg-white/95 backdrop-blur-md border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+                <h1 className="text-xl font-display font-bold text-green-700">Propostas CD</h1>
                 <div className="flex items-center gap-3">
                     <Button
                         variant="outline"
@@ -380,7 +380,7 @@ export function Dashboard() {
                         <Gear size={20} />
                         <span className="hidden md:inline">Configurações</span>
                     </Button>
-                    <Button onClick={handleNewProposal} className="gap-2 bg-orange-600 hover:bg-orange-700">
+                    <Button onClick={handleNewProposal} className="gap-2 bg-green-600 hover:bg-green-700">
                         <Plus size={20} weight="bold" />
                         <span className="hidden sm:inline">Nova Proposta</span>
                     </Button>
@@ -388,13 +388,13 @@ export function Dashboard() {
             </header>
 
             <main className="flex-1 p-6 max-w-7xl mx-auto w-full">
-                <div className="flex gap-4 mb-6 border-b border-neutral-800">
+                <div className="flex gap-4 mb-6 border-b border-gray-200">
                     <button
                         onClick={() => setActiveTab('all')}
                         className={`pb-3 px-1 text-sm font-medium transition-colors border-b-2 ${
                             activeTab === 'all'
-                                ? 'border-orange-500 text-orange-400'
-                                : 'border-transparent text-neutral-400 hover:text-neutral-200'
+                                ? 'border-green-600 text-green-700'
+                                : 'border-transparent text-gray-500 hover:text-gray-700'
                         }`}
                     >
                         Todas as propostas
@@ -403,8 +403,8 @@ export function Dashboard() {
                         onClick={() => setActiveTab('archived')}
                         className={`pb-3 px-1 text-sm font-medium transition-colors border-b-2 ${
                             activeTab === 'archived'
-                                ? 'border-orange-500 text-orange-400'
-                                : 'border-transparent text-neutral-400 hover:text-neutral-200'
+                                ? 'border-green-600 text-green-700'
+                                : 'border-transparent text-gray-500 hover:text-gray-700'
                         }`}
                     >
                         Propostas arquivadas
@@ -413,55 +413,55 @@ export function Dashboard() {
 
                 {/* Widgets Section */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    <div className="bg-neutral-900/50 rounded-2xl border border-neutral-800/50 p-5 shadow-lg flex flex-col justify-center">
-                        <div className="flex items-center gap-3 text-neutral-400 mb-2">
-                            <ChartBar size={24} className="text-orange-500" weight="duotone" />
+                    <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-lg flex flex-col justify-center">
+                        <div className="flex items-center gap-3 text-gray-500 mb-2">
+                            <ChartBar size={24} className="text-green-600" weight="duotone" />
                             <h3 className="text-sm font-medium">Propostas {activeTab === 'all' ? 'Criadas' : 'Arquivadas'}</h3>
                         </div>
-                        <p className="text-2xl font-bold text-neutral-100">{totalProposals}</p>
+                        <p className="text-2xl font-bold text-gray-900">{totalProposals}</p>
                     </div>
 
-                    <div className="bg-neutral-900/50 rounded-2xl border border-neutral-800/50 p-5 shadow-lg flex flex-col justify-center">
-                        <div className="flex items-center gap-3 text-neutral-400 mb-2">
+                    <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-lg flex flex-col justify-center">
+                        <div className="flex items-center gap-3 text-gray-500 mb-2">
                             <CurrencyDollar size={24} className="text-green-500" weight="duotone" />
                             <h3 className="text-sm font-medium">Valor Total</h3>
                         </div>
-                        <p className="text-2xl font-bold text-neutral-100">
+                        <p className="text-2xl font-bold text-gray-900">
                             {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalValue)}
                         </p>
                     </div>
 
-                    <div className="bg-neutral-900/50 rounded-2xl border border-neutral-800/50 p-5 shadow-lg flex flex-col justify-center">
-                        <div className="flex items-center gap-3 text-neutral-400 mb-2">
+                    <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-lg flex flex-col justify-center">
+                        <div className="flex items-center gap-3 text-gray-500 mb-2">
                             <Handshake size={24} className="text-emerald-500" weight="duotone" />
                             <h3 className="text-sm font-medium">Projetos Contratados</h3>
                         </div>
-                        <p className="text-2xl font-bold text-neutral-100">{hiredProposalsCount}</p>
+                        <p className="text-2xl font-bold text-gray-900">{hiredProposalsCount}</p>
                     </div>
 
-                    <div className="bg-neutral-900/50 rounded-2xl border border-neutral-800/50 p-5 shadow-lg flex flex-col justify-center">
-                        <div className="flex items-center gap-3 text-neutral-400 mb-2">
+                    <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-lg flex flex-col justify-center">
+                        <div className="flex items-center gap-3 text-gray-500 mb-2">
                             <CheckCircle size={24} className="text-blue-500" weight="duotone" />
                             <h3 className="text-sm font-medium">Propostas Assinadas</h3>
                         </div>
-                        <p className="text-2xl font-bold text-neutral-100">{signedProposalsCount}</p>
+                        <p className="text-2xl font-bold text-gray-900">{signedProposalsCount}</p>
                     </div>
                 </div>
 
-                <div className="bg-neutral-900/50 rounded-2xl shadow-2xl border border-neutral-800/50 overflow-hidden backdrop-blur-sm">
+                <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden backdrop-blur-sm">
                     {loading ? (
-                        <div className="p-8 text-center text-neutral-500">Carregando...</div>
+                        <div className="p-8 text-center text-gray-400">Carregando...</div>
                     ) : filteredProposals.length === 0 ? (
                         <div className="p-12 text-center flex flex-col items-center">
-                            <div className="w-16 h-16 bg-neutral-800 rounded-full flex items-center justify-center mb-4 border border-neutral-700">
-                                {activeTab === 'all' ? <Plus size={32} className="text-neutral-500" /> : <Archive size={32} className="text-neutral-500" />}
+                            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4 border border-gray-200">
+                                {activeTab === 'all' ? <Plus size={32} className="text-gray-400" /> : <Archive size={32} className="text-gray-400" />}
                             </div>
-                            <h3 className="text-lg font-medium text-neutral-100 mb-1">
+                            <h3 className="text-lg font-medium text-gray-900 mb-1">
                                 {activeTab === 'all' ? 'Nenhuma proposta' : 'Nenhuma proposta arquivada'}
                             </h3>
-                            <p className="text-neutral-500 mb-4 text-sm">
-                                {activeTab === 'all' 
-                                    ? 'Comece criando sua primeira proposta comercial.' 
+                            <p className="text-gray-400 mb-4 text-sm">
+                                {activeTab === 'all'
+                                    ? 'Comece criando sua primeira proposta comercial.'
                                     : 'Nenhuma proposta foi arquivada ainda.'}
                             </p>
                             {activeTab === 'all' && (
@@ -477,20 +477,20 @@ export function Dashboard() {
                             <div className="hidden md:block overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr className="border-b border-neutral-800 bg-neutral-800/30">
-                                            <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-widest">
+                                        <tr className="border-b border-gray-200 bg-gray-50">
+                                            <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">
                                                 <span className="inline-flex items-center gap-2">
                                                     <CaretDown size={18} className="invisible" />
                                                     Cliente
                                                 </span>
                                             </th>
-                                            <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-widest">Projeto</th>
-                                            <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-widest">Data</th>
-                                            <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-widest">Valor</th>
-                                            <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-widest text-right">Ações</th>
+                                            <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Projeto</th>
+                                            <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Data</th>
+                                            <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Valor</th>
+                                            <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest text-right">Ações</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-neutral-800/50">
+                                    <tbody className="divide-y divide-gray-100">
                                         {filteredProposals.map((proposal) => {
                                             const isExpanded = expandedAccordions.has(proposal.id)
                                             const emailEvents = getProposalEmailEvents(proposal)
@@ -501,20 +501,20 @@ export function Dashboard() {
 
                                             return (
                                                 <Fragment key={proposal.id}>
-                                                    <tr className="hover:bg-neutral-800/30 transition-all group">
-                                                        <td className="px-6 py-4 font-semibold text-neutral-100 group-hover:text-orange-400">
+                                                    <tr className="hover:bg-gray-50 transition-all group">
+                                                        <td className="px-6 py-4 font-semibold text-gray-900 group-hover:text-green-700">
                                                             <div className="inline-flex items-center gap-2">
                                                                 <Button
                                                                     variant="ghost"
                                                                     size="sm"
-                                                                    className="text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 p-1.5 h-auto min-w-0"
+                                                                    className="text-gray-400 hover:text-gray-700 hover:bg-gray-100 p-1.5 h-auto min-w-0"
                                                                     onClick={() => toggleAccordion(proposal.id)}
                                                                     title={isExpanded ? 'Fechar detalhes' : 'Abrir detalhes'}
                                                                 >
                                                                     {isExpanded ? <CaretUp size={18} weight="bold" /> : <CaretDown size={18} weight="bold" />}
                                                                 </Button>
                                                                 <span
-                                                                    className="cursor-pointer hover:text-orange-400 transition-colors"
+                                                                    className="cursor-pointer hover:text-green-700 transition-colors"
                                                                     onClick={() => setDrawerProposal(proposal)}
                                                                 >
                                                                     {proposal.client_name}
@@ -527,19 +527,19 @@ export function Dashboard() {
                                                             </div>
                                                         </td>
                                                         <td
-                                                            className="px-6 py-4 text-neutral-400 cursor-pointer"
+                                                            className="px-6 py-4 text-gray-600 cursor-pointer"
                                                             onClick={() => setDrawerProposal(proposal)}
                                                         >
                                                             {proposal.project_title}
                                                         </td>
                                                         <td
-                                                            className="px-6 py-4 text-neutral-500 text-sm cursor-pointer"
+                                                            className="px-6 py-4 text-gray-400 text-sm cursor-pointer"
                                                             onClick={() => setDrawerProposal(proposal)}
                                                         >
                                                             {format(new Date(proposal.created_at), 'dd/MM/yyyy')}
                                                         </td>
                                                         <td
-                                                            className="px-6 py-4 text-neutral-100 font-bold cursor-pointer"
+                                                            className="px-6 py-4 text-gray-900 font-bold cursor-pointer"
                                                             onClick={() => setDrawerProposal(proposal)}
                                                         >
                                                             {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalValue)}
@@ -554,7 +554,7 @@ export function Dashboard() {
                                                                 <Button
                                                                     variant="ghost"
                                                                     size="sm"
-                                                                    className="text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 p-2"
+                                                                    className="text-gray-400 hover:text-gray-700 hover:bg-gray-100 p-2"
                                                                     onClick={() => {
                                                                         setProposalToExport(proposal.id)
                                                                         setIsExportModalOpen(true)
@@ -576,7 +576,7 @@ export function Dashboard() {
                                                                     <Button
                                                                         variant="ghost"
                                                                         size="sm"
-                                                                        className={`${proposal.status === 'accepted' ? 'text-emerald-500 hover:text-emerald-400 hover:bg-emerald-500/10' : 'text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10'} p-2`}
+                                                                        className={`${proposal.status === 'accepted' ? 'text-emerald-500 hover:text-emerald-400 hover:bg-emerald-500/10' : 'text-gray-400 hover:text-emerald-500 hover:bg-emerald-500/10'} p-2`}
                                                                         onClick={() => handleToggleAccept(proposal)}
                                                                         title={proposal.status === 'accepted' ? "Desmarcar Contratado" : "Marcar como Contratado"}
                                                                     >
@@ -611,7 +611,7 @@ export function Dashboard() {
                                                                     <Button
                                                                         variant="ghost"
                                                                         size="sm"
-                                                                        className="text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 p-2"
+                                                                        className="text-gray-400 hover:text-gray-700 hover:bg-gray-100 p-2"
                                                                         onClick={() => setOpenMenuId(openMenuId === proposal.id ? null : proposal.id)}
                                                                         title="Mais ações"
                                                                     >
@@ -620,24 +620,24 @@ export function Dashboard() {
                                                                     {openMenuId === proposal.id && (
                                                                         <>
                                                                             <div className="fixed inset-0 z-10" onClick={() => setOpenMenuId(null)} />
-                                                                            <div className="absolute right-0 top-full mt-1 z-20 w-44 bg-neutral-900 border border-white/10 rounded-xl shadow-xl overflow-hidden">
+                                                                            <div className="absolute right-0 top-full mt-1 z-20 w-44 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
                                                                                 <button
-                                                                                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-neutral-300 hover:bg-white/5 hover:text-white transition-colors"
+                                                                                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
                                                                                     onClick={() => { handleCopyLink(proposal.id); setOpenMenuId(null) }}
                                                                                 >
-                                                                                    <LinkSimple size={16} weight="bold" className="text-neutral-400" />
+                                                                                    <LinkSimple size={16} weight="bold" className="text-gray-400" />
                                                                                     Copiar link
                                                                                 </button>
                                                                                 <button
-                                                                                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-neutral-300 hover:bg-white/5 hover:text-white transition-colors"
+                                                                                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
                                                                                     onClick={() => { handleShare(proposal.id); setOpenMenuId(null) }}
                                                                                 >
-                                                                                    <ShareNetwork size={16} weight="bold" className="text-neutral-400" />
+                                                                                    <ShareNetwork size={16} weight="bold" className="text-gray-400" />
                                                                                     Compartilhar
                                                                                 </button>
                                                                                 {activeTab === 'all' && (
                                                                                     <button
-                                                                                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-orange-400 hover:bg-orange-500/10 transition-colors"
+                                                                                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-green-600 hover:bg-green-50 transition-colors"
                                                                                         onClick={() => { handleArchive(proposal.id); setOpenMenuId(null) }}
                                                                                     >
                                                                                         <Archive size={16} weight="bold" />
@@ -653,37 +653,37 @@ export function Dashboard() {
                                                     </tr>
                                                     {isExpanded && (
                                                         <tr>
-                                                            <td colSpan={5} className="px-6 py-4 bg-neutral-950/40">
+                                                            <td colSpan={5} className="px-6 py-4 bg-gray-50">
                                                                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                                                                    <div className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-4">
-                                                                        <h4 className="text-sm font-bold text-neutral-100 mb-3">Disparos de e-mail</h4>
+                                                                    <div className="rounded-xl border border-gray-200 bg-white p-4">
+                                                                        <h4 className="text-sm font-bold text-gray-900 mb-3">Disparos de e-mail</h4>
                                                                         {emailEvents.length === 0 ? (
-                                                                            <p className="text-sm text-neutral-500">Nenhum disparo encontrado.</p>
+                                                                            <p className="text-sm text-gray-400">Nenhum disparo encontrado.</p>
                                                                         ) : (
                                                                             <div className="space-y-2 max-h-64 overflow-auto pr-1">
                                                                                 {emailEvents.map((event) => (
-                                                                                    <div key={event.id} className="rounded-lg border border-neutral-800/70 bg-neutral-900/70 p-3">
-                                                                                        <p className="text-sm text-neutral-100">{event.email}</p>
-                                                                                        <p className="text-xs text-neutral-400 mt-1">{event.subject}</p>
-                                                                                        <p className="text-xs text-orange-400 mt-1">{formatDateTime(event.sentAt)}</p>
+                                                                                    <div key={event.id} className="rounded-lg border border-gray-100 bg-gray-50 p-3">
+                                                                                        <p className="text-sm text-gray-900">{event.email}</p>
+                                                                                        <p className="text-xs text-gray-500 mt-1">{event.subject}</p>
+                                                                                        <p className="text-xs text-green-600 mt-1">{formatDateTime(event.sentAt)}</p>
                                                                                     </div>
                                                                                 ))}
                                                                             </div>
                                                                         )}
                                                                     </div>
 
-                                                                    <div className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-4">
-                                                                        <h4 className="text-sm font-bold text-neutral-100 mb-3">Contratos assinados</h4>
+                                                                    <div className="rounded-xl border border-gray-200 bg-white p-4">
+                                                                        <h4 className="text-sm font-bold text-gray-900 mb-3">Contratos assinados</h4>
                                                                         {signedContracts.length === 0 ? (
-                                                                            <p className="text-sm text-neutral-500">Nenhum contrato assinado com PDF disponível.</p>
+                                                                            <p className="text-sm text-gray-400">Nenhum contrato assinado com PDF disponível.</p>
                                                                         ) : (
                                                                             <div className="space-y-2 max-h-64 overflow-auto pr-1">
                                                                                 {signedContracts.map((contract) => (
-                                                                                    <div key={contract.id} className="rounded-lg border border-neutral-800/70 bg-neutral-900/70 p-3 flex items-center justify-between gap-3">
+                                                                                    <div key={contract.id} className="rounded-lg border border-gray-100 bg-gray-50 p-3 flex items-center justify-between gap-3">
                                                                                         <div>
-                                                                                            <p className="text-sm text-neutral-100">{contract.contractor_name}</p>
-                                                                                            <p className="text-xs text-neutral-400">{contract.contractor_email}</p>
-                                                                                            <p className="text-xs text-orange-400 mt-1">
+                                                                                            <p className="text-sm text-gray-900">{contract.contractor_name}</p>
+                                                                                            <p className="text-xs text-gray-500">{contract.contractor_email}</p>
+                                                                                            <p className="text-xs text-green-600 mt-1">
                                                                                                 Assinado em {formatDateTime(contract.signed_at || contract.created_at)}
                                                                                             </p>
                                                                                         </div>
@@ -718,7 +718,7 @@ export function Dashboard() {
                             </div>
 
                             {/* Mobile Accordion View */}
-                            <div className="md:hidden divide-y divide-neutral-800/50">
+                            <div className="md:hidden divide-y divide-gray-100">
                                 {filteredProposals.map((proposal) => {
                                     const isExpanded = expandedAccordions.has(proposal.id)
                                     const emailEvents = getProposalEmailEvents(proposal)
@@ -728,32 +728,32 @@ export function Dashboard() {
                                         : proposal.value
 
                                     return (
-                                        <div key={proposal.id} className="bg-neutral-900/30">
+                                        <div key={proposal.id} className="bg-white">
                                             {/* Accordion Header - Always Visible */}
                                             <button
                                                 onClick={() => toggleAccordion(proposal.id)}
-                                                className="w-full px-4 py-4 flex items-center justify-between hover:bg-neutral-800/30 transition-all"
+                                                className="w-full px-4 py-4 flex items-center justify-between hover:bg-gray-50 transition-all"
                                             >
                                                 <div className="flex-1 text-left inline-flex items-center gap-2">
                                                     {isExpanded ? (
-                                                        <CaretUp size={20} className="text-neutral-500 shrink-0" />
+                                                        <CaretUp size={20} className="text-gray-400 shrink-0" />
                                                     ) : (
-                                                        <CaretDown size={20} className="text-neutral-500 shrink-0" />
+                                                        <CaretDown size={20} className="text-gray-400 shrink-0" />
                                                     )}
                                                     <div>
-                                                        <p className="font-semibold text-neutral-100 flex items-center gap-2">
+                                                        <p className="font-semibold text-gray-900 flex items-center gap-2">
                                                             {proposal.client_name}
                                                             {proposal.status === 'accepted' && (
-                                                                <span className="bg-emerald-500/10 text-emerald-500 text-[9px] uppercase font-bold px-1.5 py-0.5 rounded border border-emerald-500/20">
+                                                                <span className="bg-emerald-50 text-emerald-600 text-[9px] uppercase font-bold px-1.5 py-0.5 rounded border border-emerald-200">
                                                                     Contratado
                                                                 </span>
                                                             )}
                                                         </p>
-                                                        <p className="text-sm text-neutral-500">{proposal.project_title}</p>
+                                                        <p className="text-sm text-gray-500">{proposal.project_title}</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center">
-                                                    <span className="text-sm font-bold text-orange-400">
+                                                    <span className="text-sm font-bold text-green-600">
                                                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalValue)}
                                                     </span>
                                                 </div>
@@ -761,15 +761,15 @@ export function Dashboard() {
 
                                             {/* Accordion Content - Expanded */}
                                             {isExpanded && (
-                                                <div className="px-4 py-4 space-y-3">
+                                                <div className="px-4 py-4 space-y-3 bg-gray-50">
                                                     <div className="grid grid-cols-2 gap-3 text-sm">
                                                         <div>
-                                                            <p className="text-neutral-500 text-xs uppercase tracking-wider mb-1">Data</p>
-                                                            <p className="text-neutral-300">{format(new Date(proposal.created_at), 'dd/MM/yyyy')}</p>
+                                                            <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">Data</p>
+                                                            <p className="text-gray-700">{format(new Date(proposal.created_at), 'dd/MM/yyyy')}</p>
                                                         </div>
                                                         <div>
-                                                            <p className="text-neutral-500 text-xs uppercase tracking-wider mb-1">Valor Total</p>
-                                                            <p className="text-neutral-100 font-bold">
+                                                            <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">Valor Total</p>
+                                                            <p className="text-gray-900 font-bold">
                                                                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalValue)}
                                                             </p>
                                                         </div>
@@ -783,7 +783,7 @@ export function Dashboard() {
                                                             rel="noopener noreferrer"
                                                             className="min-w-[50%]"
                                                         >
-                                                            <Button variant="outline" size="sm" className="w-full gap-2 text-blue-400 border-blue-500/30 hover:bg-blue-500/10">
+                                                            <Button variant="outline" size="sm" className="w-full gap-2 text-blue-600 border-blue-200 hover:bg-blue-50">
                                                                 <Eye size={18} weight="bold" />
                                                                 Ver
                                                             </Button>
@@ -791,7 +791,7 @@ export function Dashboard() {
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
-                                                            className="flex-1 gap-2 text-neutral-400 border-neutral-700 hover:bg-neutral-800"
+                                                            className="flex-1 gap-2 text-gray-600 border-gray-200 hover:bg-gray-100"
                                                             onClick={() => handleCopyLink(proposal.id)}
                                                         >
                                                             <LinkSimple size={18} weight="bold" />
@@ -802,7 +802,7 @@ export function Dashboard() {
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
-                                                            className="flex-1 min-w-[80px] gap-2 text-neutral-400 border-neutral-700 hover:bg-neutral-800"
+                                                            className="flex-1 min-w-[80px] gap-2 text-gray-600 border-gray-200 hover:bg-gray-100"
                                                             onClick={() => {
                                                                 setProposalToExport(proposal.id)
                                                                 setIsExportModalOpen(true)
@@ -814,7 +814,7 @@ export function Dashboard() {
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
-                                                            className="flex-1 min-w-[80px] gap-2 text-purple-400 border-purple-500/30 hover:bg-purple-500/10"
+                                                            className="flex-1 min-w-[80px] gap-2 text-purple-600 border-purple-200 hover:bg-purple-50"
                                                             onClick={() => handleEdit(proposal)}
                                                         >
                                                             <Pencil size={18} weight="bold" />
@@ -825,7 +825,7 @@ export function Dashboard() {
                                                                 <Button
                                                                     variant="outline"
                                                                     size="sm"
-                                                                    className={`flex-1 min-w-[80px] gap-2 ${proposal.status === 'accepted' ? 'text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10' : 'text-neutral-400 border-neutral-700 hover:text-emerald-400 hover:bg-emerald-500/10'}`}
+                                                                    className={`flex-1 min-w-[80px] gap-2 ${proposal.status === 'accepted' ? 'text-emerald-600 border-emerald-200 hover:bg-emerald-50' : 'text-gray-500 border-gray-200 hover:text-emerald-600 hover:bg-emerald-50'}`}
                                                                     onClick={() => handleToggleAccept(proposal)}
                                                                 >
                                                                     <Handshake size={18} weight="bold" />
@@ -834,7 +834,7 @@ export function Dashboard() {
                                                                 <Button
                                                                     variant="outline"
                                                                     size="sm"
-                                                                    className="flex-1 min-w-[80px] gap-2 text-orange-400 border-orange-500/30 hover:bg-orange-500/10"
+                                                                    className="flex-1 min-w-[80px] gap-2 text-amber-600 border-amber-200 hover:bg-amber-50"
                                                                     onClick={() => handleArchive(proposal.id)}
                                                                 >
                                                                     <Archive size={18} weight="bold" />
@@ -846,7 +846,7 @@ export function Dashboard() {
                                                                 <Button
                                                                     variant="outline"
                                                                     size="sm"
-                                                                    className="flex-1 min-w-[80px] gap-2 text-green-400 border-green-500/30 hover:bg-green-500/10"
+                                                                    className="flex-1 min-w-[80px] gap-2 text-green-600 border-green-200 hover:bg-green-50"
                                                                     onClick={() => handleRestore(proposal.id)}
                                                                 >
                                                                     <ArrowCounterClockwise size={18} weight="bold" />
@@ -855,7 +855,7 @@ export function Dashboard() {
                                                                 <Button
                                                                     variant="outline"
                                                                     size="sm"
-                                                                    className="flex-1 min-w-[80px] gap-2 text-red-400 border-red-500/30 hover:bg-red-500/10"
+                                                                    className="flex-1 min-w-[80px] gap-2 text-red-600 border-red-200 hover:bg-red-50"
                                                                     onClick={() => handleDelete(proposal.id)}
                                                                 >
                                                                     <Trash size={18} weight="bold" />
@@ -866,34 +866,34 @@ export function Dashboard() {
                                                     </div>
 
                                                     <div className="space-y-3 pt-2">
-                                                        <div className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-3">
-                                                            <h4 className="text-xs font-bold text-neutral-300 uppercase tracking-wider mb-2">Disparos de e-mail</h4>
+                                                        <div className="rounded-xl border border-gray-200 bg-white p-3">
+                                                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Disparos de e-mail</h4>
                                                             {emailEvents.length === 0 ? (
-                                                                <p className="text-sm text-neutral-500">Nenhum disparo encontrado.</p>
+                                                                <p className="text-sm text-gray-400">Nenhum disparo encontrado.</p>
                                                             ) : (
                                                                 <div className="space-y-2 max-h-48 overflow-auto">
                                                                     {emailEvents.map((event) => (
-                                                                        <div key={event.id} className="rounded-lg border border-neutral-800/70 bg-neutral-900/70 p-2">
-                                                                            <p className="text-sm text-neutral-100">{event.email}</p>
-                                                                            <p className="text-xs text-neutral-400">{event.subject}</p>
-                                                                            <p className="text-xs text-orange-400 mt-1">{formatDateTime(event.sentAt)}</p>
+                                                                        <div key={event.id} className="rounded-lg border border-gray-100 bg-gray-50 p-2">
+                                                                            <p className="text-sm text-gray-900">{event.email}</p>
+                                                                            <p className="text-xs text-gray-500">{event.subject}</p>
+                                                                            <p className="text-xs text-green-600 mt-1">{formatDateTime(event.sentAt)}</p>
                                                                         </div>
                                                                     ))}
                                                                 </div>
                                                             )}
                                                         </div>
 
-                                                        <div className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-3">
-                                                            <h4 className="text-xs font-bold text-neutral-300 uppercase tracking-wider mb-2">Contratos assinados</h4>
+                                                        <div className="rounded-xl border border-gray-200 bg-white p-3">
+                                                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Contratos assinados</h4>
                                                             {signedContracts.length === 0 ? (
-                                                                <p className="text-sm text-neutral-500">Nenhum contrato assinado com PDF disponível.</p>
+                                                                <p className="text-sm text-gray-400">Nenhum contrato assinado com PDF disponível.</p>
                                                             ) : (
                                                                 <div className="space-y-2 max-h-48 overflow-auto">
                                                                     {signedContracts.map((contract) => (
-                                                                        <div key={contract.id} className="rounded-lg border border-neutral-800/70 bg-neutral-900/70 p-2">
-                                                                            <p className="text-sm text-neutral-100">{contract.contractor_name}</p>
-                                                                            <p className="text-xs text-neutral-400">{contract.contractor_email}</p>
-                                                                            <p className="text-xs text-orange-400 mt-1">
+                                                                        <div key={contract.id} className="rounded-lg border border-gray-100 bg-gray-50 p-2">
+                                                                            <p className="text-sm text-gray-900">{contract.contractor_name}</p>
+                                                                            <p className="text-xs text-gray-500">{contract.contractor_email}</p>
+                                                                            <p className="text-xs text-green-600 mt-1">
                                                                                 Assinado em {formatDateTime(contract.signed_at || contract.created_at)}
                                                                             </p>
                                                                             {contract.signed_pdf_url ? (
@@ -909,7 +909,7 @@ export function Dashboard() {
                                                                                     </Button>
                                                                                 </a>
                                                                             ) : (
-                                                                                <p className="text-xs text-neutral-500 mt-2">PDF ainda não disponível</p>
+                                                                                <p className="text-xs text-gray-400 mt-2">PDF ainda não disponível</p>
                                                                             )}
                                                                         </div>
                                                                     ))}
@@ -987,17 +987,17 @@ export function Dashboard() {
                             onClick={() => setDrawerProposal(null)}
                         />
                         {/* Drawer */}
-                        <div className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-md bg-[#0e0e0e] border-l border-white/10 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right-8 duration-300">
+                        <div className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-md bg-white border-l border-gray-200 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right-8 duration-300">
                             {/* Header */}
-                            <div className="flex items-center justify-between px-6 py-5 border-b border-white/5">
+                            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
                                 <div>
-                                    <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold mb-0.5">Resumo Interno</p>
-                                    <h2 className="text-lg font-bold text-white leading-tight">{p.client_name}</h2>
-                                    <p className="text-sm text-neutral-400">{p.project_title}</p>
+                                    <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-0.5">Resumo Interno</p>
+                                    <h2 className="text-lg font-bold text-gray-900 leading-tight font-display">{p.client_name}</h2>
+                                    <p className="text-sm text-gray-500">{p.project_title}</p>
                                 </div>
                                 <button
                                     onClick={() => setDrawerProposal(null)}
-                                    className="p-2 text-neutral-500 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
+                                    className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
                                 >
                                     ✕
                                 </button>
@@ -1008,20 +1008,20 @@ export function Dashboard() {
 
                                 {/* Datas */}
                                 <div className="grid grid-cols-2 gap-4">
-                                    <div className="bg-white/[0.03] border border-white/5 rounded-xl p-4">
-                                        <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold mb-1">Criada em</p>
-                                        <p className="text-sm font-semibold text-neutral-200">{format(new Date(p.created_at), 'dd/MM/yyyy')}</p>
+                                    <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                        <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">Criada em</p>
+                                        <p className="text-sm font-semibold text-gray-900">{format(new Date(p.created_at), 'dd/MM/yyyy')}</p>
                                     </div>
                                     {p.valid_until && (
-                                        <div className="bg-white/[0.03] border border-white/5 rounded-xl p-4">
-                                            <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold mb-1">Válida até</p>
-                                            <p className="text-sm font-semibold text-neutral-200">{format(new Date(p.valid_until), 'dd/MM/yyyy')}</p>
+                                        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                            <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">Válida até</p>
+                                            <p className="text-sm font-semibold text-gray-900">{format(new Date(p.valid_until), 'dd/MM/yyyy')}</p>
                                         </div>
                                     )}
                                     {p.delivery_time && (
-                                        <div className="bg-white/[0.03] border border-white/5 rounded-xl p-4 col-span-2">
-                                            <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold mb-1">Prazo de entrega</p>
-                                            <p className="text-sm font-semibold text-neutral-200">{p.delivery_time}</p>
+                                        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 col-span-2">
+                                            <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">Prazo de entrega</p>
+                                            <p className="text-sm font-semibold text-gray-900">{p.delivery_time}</p>
                                         </div>
                                     )}
                                 </div>
@@ -1029,20 +1029,20 @@ export function Dashboard() {
                                 {/* Itens */}
                                 {items.length > 0 && (
                                     <div>
-                                        <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold mb-3">Serviços</p>
+                                        <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-3">Serviços</p>
                                         <div className="space-y-2">
                                             {items.map((item, idx) => (
-                                                <div key={idx} className="flex justify-between items-start bg-white/[0.03] border border-white/5 rounded-xl px-4 py-3 gap-4">
+                                                <div key={idx} className="flex justify-between items-start bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 gap-4">
                                                     <div className="min-w-0">
-                                                        <p className="text-sm font-semibold text-neutral-200 truncate">
-                                                            {item.quantity && item.quantity > 1 && <span className="text-orange-400 mr-1">{item.quantity}x</span>}
+                                                        <p className="text-sm font-semibold text-gray-900 truncate">
+                                                            {item.quantity && item.quantity > 1 && <span className="text-green-600 mr-1">{item.quantity}x</span>}
                                                             {item.title}
                                                         </p>
-                                                        <span className={`text-[9px] uppercase tracking-widest font-bold ${item.type === 'Mensal' ? 'text-blue-400' : 'text-green-400'}`}>
+                                                        <span className={`text-[9px] uppercase tracking-widest font-bold ${item.type === 'Mensal' ? 'text-blue-600' : 'text-green-600'}`}>
                                                             {item.type}
                                                         </span>
                                                     </div>
-                                                    <p className="text-sm font-bold text-neutral-100 shrink-0">{fmt(item.price * (item.quantity || 1))}</p>
+                                                    <p className="text-sm font-bold text-gray-900 shrink-0">{fmt(item.price * (item.quantity || 1))}</p>
                                                 </div>
                                             ))}
                                         </div>
@@ -1051,43 +1051,43 @@ export function Dashboard() {
 
                                 {/* Financeiro */}
                                 <div>
-                                    <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold mb-3">Financeiro</p>
-                                    <div className="bg-white/[0.03] border border-white/5 rounded-xl divide-y divide-white/5">
+                                    <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-3">Financeiro</p>
+                                    <div className="bg-gray-50 border border-gray-200 rounded-xl divide-y divide-gray-100">
                                         {items.length > 0 && (
                                             <>
                                                 <div className="flex justify-between items-center px-4 py-3">
-                                                    <span className="text-sm text-neutral-400">Pagamento Pontual</span>
-                                                    <span className="text-sm font-semibold text-neutral-200">{fmt(subtotalPontual)}</span>
+                                                    <span className="text-sm text-gray-500">Pagamento Pontual</span>
+                                                    <span className="text-sm font-semibold text-gray-900">{fmt(subtotalPontual)}</span>
                                                 </div>
                                                 <div className="flex justify-between items-center px-4 py-3">
-                                                    <span className="text-sm text-neutral-400">Manutenção Mensal</span>
-                                                    <span className="text-sm font-semibold text-neutral-200">{fmt(subtotalMensal)}</span>
+                                                    <span className="text-sm text-gray-500">Manutenção Mensal</span>
+                                                    <span className="text-sm font-semibold text-gray-900">{fmt(subtotalMensal)}</span>
                                                 </div>
                                             </>
                                         )}
                                         <div className="flex justify-between items-center px-4 py-3">
-                                            <span className="text-sm font-bold text-white">Total do Projeto</span>
-                                            <span className="text-base font-bold text-orange-400">{fmt(total)}</span>
+                                            <span className="text-sm font-bold text-gray-900">Total do Projeto</span>
+                                            <span className="text-base font-bold text-green-600">{fmt(total)}</span>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Imposto — informação interna */}
-                                <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl px-4 py-4">
-                                    <p className="text-[10px] text-amber-400/70 uppercase tracking-widest font-bold mb-1">Imposto estimado (6%)</p>
-                                    <p className="text-2xl font-bold text-amber-400">{fmt(tax)}</p>
-                                    <p className="text-[11px] text-neutral-500 mt-1">Valor de referência interno — não exibido ao cliente.</p>
+                                <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-4">
+                                    <p className="text-[10px] text-amber-600 uppercase tracking-widest font-bold mb-1">Imposto estimado (6%)</p>
+                                    <p className="text-2xl font-bold text-amber-600">{fmt(tax)}</p>
+                                    <p className="text-[11px] text-gray-400 mt-1">Valor de referência interno — não exibido ao cliente.</p>
                                 </div>
 
                                 {/* Status */}
-                                <div className="bg-white/[0.03] border border-white/5 rounded-xl px-4 py-3 flex items-center justify-between">
-                                    <span className="text-sm text-neutral-400">Status</span>
+                                <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 flex items-center justify-between">
+                                    <span className="text-sm text-gray-500">Status</span>
                                     <span className={`text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border ${
                                         p.status === 'accepted'
-                                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                                             : p.status === 'archived'
-                                            ? 'bg-neutral-700/40 text-neutral-400 border-neutral-700'
-                                            : 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+                                            ? 'bg-gray-100 text-gray-500 border-gray-200'
+                                            : 'bg-amber-50 text-amber-700 border-amber-200'
                                     }`}>
                                         {p.status === 'accepted' ? 'Contratado' : p.status === 'archived' ? 'Arquivado' : 'Aguardando'}
                                     </span>

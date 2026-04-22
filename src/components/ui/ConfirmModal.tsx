@@ -27,7 +27,7 @@ export function ConfirmModal({
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={title}>
             <div className="space-y-6">
-                <p className="text-neutral-400">{description}</p>
+                <p className="text-gray-500">{description}</p>
                 <div className="flex justify-end gap-3">
                     <Button variant="ghost" onClick={onClose} disabled={isSubmitting}>
                         {cancelLabel}

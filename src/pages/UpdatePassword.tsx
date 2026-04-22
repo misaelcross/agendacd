@@ -46,42 +46,44 @@ export function UpdatePassword() {
     }
 
     return (
-        <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center px-4 font-inter text-white relative overflow-hidden">
-            <div className="w-full max-w-sm relative z-10">
+        <div className="min-h-screen bg-off flex flex-col items-center justify-center px-4 text-gray-900">
+            <div className="w-full max-w-sm">
                 <div className="mb-10 text-center">
-                    <h1 className="text-2xl font-medium tracking-tight">Nova Senha</h1>
-                    <p className="text-[#a1a1aa] text-sm mt-2">Digite sua nova senha abaixo.</p>
+                    <h1 className="text-2xl font-semibold tracking-tight font-display text-green-700">Nova Senha</h1>
+                    <p className="text-gray-500 text-sm mt-2">Digite sua nova senha abaixo.</p>
                 </div>
 
-                <form onSubmit={handleUpdate} className="space-y-4">
-                    {error && (
-                        <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm text-center">
-                            {error}
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8">
+                    <form onSubmit={handleUpdate} className="space-y-4">
+                        {error && (
+                            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm text-center">
+                                {error}
+                            </div>
+                        )}
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">
+                                Nova Senha
+                            </label>
+                            <input
+                                type="password"
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-600 transition-colors"
+                                placeholder="••••••••"
+                            />
                         </div>
-                    )}
 
-                    <div>
-                        <label className="block text-sm font-medium text-[#a1a1aa] mb-1.5 ml-1">
-                            Nova Senha
-                        </label>
-                        <input
-                            type="password"
-                            required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full bg-[#111111] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-white/30 transition-colors"
-                            placeholder="••••••••"
-                        />
-                    </div>
-
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-white text-black font-medium text-sm py-3 rounded-xl hover:bg-gray-200 transition-colors disabled:opacity-50 mt-4"
-                    >
-                        {loading ? 'Atualizando...' : 'Atualizar senha'}
-                    </button>
-                </form>
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-green-600 text-white font-medium text-sm py-3 rounded-xl hover:bg-green-700 transition-colors disabled:opacity-50 mt-4"
+                        >
+                            {loading ? 'Atualizando...' : 'Atualizar senha'}
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     )

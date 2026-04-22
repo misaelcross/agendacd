@@ -192,15 +192,15 @@ export function ContractSign() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#050505] flex items-center justify-center">
-                <div className="animate-pulse text-orange-500 text-sm tracking-widest uppercase">Verificando Documento...</div>
+            <div className="min-h-screen bg-off flex items-center justify-center">
+                <div className="animate-pulse text-green-600 text-sm tracking-widest uppercase">Verificando Documento...</div>
             </div>
         )
     }
 
     if (error && !contract) {
         return (
-            <div className="min-h-screen bg-[#050505] flex items-center justify-center text-white">
+            <div className="min-h-screen bg-off flex items-center justify-center text-gray-900">
                 {error}
             </div>
         )
@@ -208,18 +208,18 @@ export function ContractSign() {
 
     if (success) {
         return (
-            <div className="min-h-screen bg-[#050505] flex items-center justify-center px-4 font-inter">
+            <div className="min-h-screen bg-off flex items-center justify-center px-4 font-inter">
                 <div className="max-w-md w-full text-center">
-                    <div className="w-20 h-20 bg-emerald-500/20 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
                         <CheckCircle size={40} weight="fill" />
                     </div>
-                    <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">Assinatura Concluída!</h1>
-                    <p className="text-neutral-400 mb-8 leading-relaxed">O contrato referente ao pedido <strong className="text-white">#{contract.proposal_id.split('-')[0]}</strong> foi assinado digitalmente com sucesso. Seu documento já possui validade jurídica.</p>
+                    <h1 className="text-3xl font-display font-bold text-gray-900 mb-2 tracking-tight">Assinatura Concluída!</h1>
+                    <p className="text-gray-500 mb-8 leading-relaxed">O contrato referente ao pedido <strong className="text-gray-900">#{contract.proposal_id.split('-')[0]}</strong> foi assinado digitalmente com sucesso. Seu documento já possui validade jurídica.</p>
 
                     <button
                         onClick={handleDownloadPDF}
                         disabled={isGeneratingPdf}
-                        className="w-full bg-white text-black hover:bg-neutral-200 font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all mb-4 disabled:opacity-50"
+                        className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all mb-4 disabled:opacity-50"
                     >
                         {isGeneratingPdf ? <SpinnerGap size={20} className="animate-spin" /> : <DownloadSimple size={20} weight="bold" />}
                         {isGeneratingPdf ? 'Preparando PDF...' : 'Baixar Cópia do Contrato (PDF)'}
@@ -227,7 +227,7 @@ export function ContractSign() {
 
                     <button
                         onClick={() => navigate(`/ proposta / ${contract.proposal_id.split('-')[0]} `)}
-                        className="w-full bg-transparent border border-white/10 hover:bg-white/5 text-neutral-300 font-medium py-3 px-6 rounded-xl transition-all"
+                        className="w-full bg-transparent border border-gray-200 hover:bg-gray-50 text-gray-600 font-medium py-3 px-6 rounded-xl transition-all"
                     >
                         Voltar para Proposta
                     </button>
@@ -237,26 +237,26 @@ export function ContractSign() {
     }
 
     return (
-        <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center px-4 font-inter relative">
-            <div className="max-w-sm w-full relative z-10 p-8 md:p-10 bg-[#111] border border-white/5 shadow-2xl rounded-3xl">
-                <div className="flex justify-center mb-6 text-orange-500">
+        <div className="min-h-screen bg-off flex flex-col items-center justify-center px-4 font-inter relative">
+            <div className="max-w-sm w-full relative z-10 p-8 md:p-10 bg-white border border-gray-200 shadow-sm rounded-3xl">
+                <div className="flex justify-center mb-6 text-green-600">
                     <ShieldCheck size={48} weight="duotone" />
                 </div>
 
                 <div className="text-center mb-8">
-                    <h1 className="text-2xl font-bold text-white mb-2 tracking-tight">Assinatura do Contrato</h1>
-                    <p className="text-sm text-neutral-400 leading-relaxed">Enviamos um código de <strong className="text-white">assinatura de 6 dígitos</strong> para o e-mail: <br /><span className="text-orange-400 block mt-1">{contract.contractor_email}</span></p>
+                    <h1 className="text-2xl font-display font-bold text-gray-900 mb-2 tracking-tight">Assinatura do Contrato</h1>
+                    <p className="text-sm text-gray-500 leading-relaxed">Enviamos um código de <strong className="text-gray-900">assinatura de 6 dígitos</strong> para o e-mail: <br /><span className="text-green-600 block mt-1">{contract.contractor_email}</span></p>
                 </div>
 
                 <form onSubmit={handleVerifyToken}>
                     {error && (
-                        <div className="mb-6 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-sm text-center">
+                        <div className="mb-6 p-3 bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl text-sm text-center">
                             {error}
                         </div>
                     )}
 
                     <div className="mb-8">
-                        <label className="block text-xs font-bold text-neutral-500 uppercase tracking-widest text-center mb-3">
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest text-center mb-3">
                             Digite o Código
                         </label>
                         <input
@@ -266,7 +266,7 @@ export function ContractSign() {
                             maxLength={6}
                             value={token}
                             onChange={(e) => setToken(e.target.value.toUpperCase())}
-                            className="w-full bg-black/60 border border-orange-500/30 rounded-2xl py-4 text-center text-3xl font-bold focus:outline-none focus:border-orange-500 text-white transition-all placeholder:text-white/10"
+                            className="w-full bg-gray-50 border border-green-500/30 rounded-2xl py-4 text-center text-3xl font-bold focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 text-gray-900 transition-all placeholder:text-gray-300"
                             style={{ letterSpacing: '0.8em', paddingLeft: '0.8em' }}
                             placeholder="000000"
                             autoComplete="off"
@@ -276,7 +276,7 @@ export function ContractSign() {
                     <button
                         type="submit"
                         disabled={isVerifying || token.length < 6}
-                        className="w-full bg-orange-600 hover:bg-orange-700 active:scale-[0.98] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all mb-4 disabled:opacity-50 disabled:active:scale-100"
+                        className="w-full bg-green-600 hover:bg-green-700 active:scale-[0.98] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all mb-4 disabled:opacity-50 disabled:active:scale-100"
                     >
                         {isVerifying ? (
                             <><SpinnerGap size={20} className="animate-spin" /> Verificando...</>
@@ -289,7 +289,7 @@ export function ContractSign() {
                         type="button"
                         onClick={handleResendToken}
                         disabled={resendTimer > 0 || isResending}
-                        className="w-full bg-transparent hover:bg-white/5 active:scale-[0.98] text-neutral-400 font-medium py-3 rounded-xl flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:active:scale-100 text-sm"
+                        className="w-full bg-transparent hover:bg-gray-50 active:scale-[0.98] text-gray-400 font-medium py-3 rounded-xl flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:active:scale-100 text-sm"
                     >
                         {isResending ? <SpinnerGap size={16} className="animate-spin" /> : null}
                         {resendTimer > 0 ? `Aguarde ${resendTimer}s para reenviar` : 'Não recebi o código (Reenviar)'}
@@ -297,7 +297,7 @@ export function ContractSign() {
                 </form>
             </div>
 
-            <div className="mt-8 text-center text-xs text-neutral-600 max-w-sm">
+            <div className="mt-8 text-center text-xs text-gray-400 max-w-sm">
                 Ao clicar em assinar, você concorda com os termos propostos e sua assinatura digital terá validade jurídica mediante registro de IP e data.
             </div>
         </div>

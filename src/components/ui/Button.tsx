@@ -7,7 +7,7 @@ function cn(...inputs: ClassValue[]) {
 }
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: 'primary' | 'secondary' | 'outline' | 'ghost'
+    variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger'
     size?: 'sm' | 'md' | 'lg'
 }
 
@@ -17,15 +17,16 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             <button
                 ref={ref}
                 className={cn(
-                    'inline-flex items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:pointer-events-none disabled:opacity-50',
+                    'inline-flex items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 disabled:pointer-events-none disabled:opacity-50',
                     {
-                        'bg-blue-600 text-white hover:bg-blue-700': variant === 'primary',
-                        'bg-neutral-800 text-neutral-100 hover:bg-neutral-700 border border-neutral-700': variant === 'secondary',
-                        'border border-neutral-700 bg-transparent hover:bg-neutral-800 text-neutral-300': variant === 'outline',
-                        'bg-transparent hover:bg-neutral-800 text-neutral-400 hover:text-neutral-100': variant === 'ghost',
+                        'bg-green-600 text-white hover:bg-green-700 focus-visible:ring-green-500': variant === 'primary',
+                        'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50': variant === 'secondary',
+                        'border border-gray-200 bg-transparent hover:bg-gray-50 text-gray-700': variant === 'outline',
+                        'bg-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900': variant === 'ghost',
+                        'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500': variant === 'danger',
                         'h-9 px-4 text-sm': size === 'sm',
                         'h-10 px-4 py-2': size === 'md',
-                        'h-11 px-8 text-lg': size === 'lg',
+                        'h-11 px-8 text-base': size === 'lg',
                     },
                     className
                 )}

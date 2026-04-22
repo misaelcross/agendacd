@@ -13,18 +13,24 @@ export function Modal({ isOpen, onClose, title, children, maxWidth = 'max-w-lg' 
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-            <div className={`bg-neutral-900/95 border border-neutral-800 rounded-xl shadow-2xl w-full ${maxWidth} overflow-hidden flex flex-col max-h-[90vh]`}>
-                <div className="flex items-center justify-between p-4 border-b border-neutral-800">
-                    <h2 className="text-lg font-semibold text-neutral-100">{title}</h2>
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+            onClick={onClose}
+        >
+            <div
+                className={`bg-white border border-gray-200 rounded-xl shadow-xl w-full ${maxWidth} overflow-hidden flex flex-col max-h-[90vh]`}
+                onClick={e => e.stopPropagation()}
+            >
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                    <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
                     <button
                         onClick={onClose}
-                        className="text-neutral-500 hover:text-neutral-200 transition-colors"
+                        className="text-gray-400 hover:text-gray-600 transition-colors rounded-lg p-1 hover:bg-gray-100"
                     >
-                        <X size={24} weight="bold" />
+                        <X size={20} weight="bold" />
                     </button>
                 </div>
-                <div className="p-6 overflow-y-auto text-neutral-300">{children}</div>
+                <div className="p-6 overflow-y-auto text-gray-700">{children}</div>
             </div>
         </div>
     )
