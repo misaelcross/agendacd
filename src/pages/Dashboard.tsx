@@ -368,7 +368,7 @@ export function Dashboard() {
     const hiredProposalsCount = filteredProposals.filter(proposal => proposal.status === 'accepted').length;
 
     return (
-        <div className="min-h-screen bg-gray-50 text-gray-900 flex flex-col selection:bg-green-500/30">
+        <div className="flex-1 flex flex-col bg-off text-gray-900 selection:bg-green-500/30">
             <header className="bg-white/95 backdrop-blur-md border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
                 <h1 className="text-xl font-display font-bold text-green-700">Propostas CD</h1>
                 <div className="flex items-center gap-3">
