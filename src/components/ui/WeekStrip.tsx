@@ -1,4 +1,4 @@
-import { format, addWeeks, subWeeks, eachDayOfInterval, startOfWeek, endOfWeek, isSameDay, isToday, parseISO } from 'date-fns'
+import { format, eachDayOfInterval, startOfWeek, endOfWeek, isSameDay, isToday } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { CaretLeft, CaretRight } from '@phosphor-icons/react'
 

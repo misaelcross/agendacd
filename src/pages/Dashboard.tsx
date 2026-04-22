@@ -9,7 +9,6 @@ import { SettingsModal } from '../components/SettingsModal'
 import { ExportModal } from '../components/ExportModal'
 import { NewProposalSelectionModal } from '../components/NewProposalSelectionModal'
 import { format } from 'date-fns'
-import type { ProposalData } from '../types/proposal'
 
 interface ProposalItem {
     title: string
@@ -243,40 +242,7 @@ export function Dashboard() {
         setIsModalOpen(true)
     }
 
-    async function handleAIApprove(data: ProposalData) {
-        const deliveryDays = parseInt(data.delivery_time) || 7
-        const payload = {
-            client_name: data.client_name,
-            project_title: data.project_title,
-            delivery_time: `${deliveryDays} dias úteis`,
-            valid_until: data.valid_until,
-            items: data.items,
-            value: data.items.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0),
-            status: 'pending',
-        }
-        const { error } = await supabase.from('proposals').insert([payload])
-        if (error) {
-            alert(`Erro ao criar proposta: ${error.message}`)
-            throw error
-        }
-        fetchProposals()
-    }
 
-    function handleAIEdit(data: ProposalData) {
-        const deliveryDays = parseInt(data.delivery_time) || 7
-        setEditingProposal({
-            id: '',
-            client_name: data.client_name,
-            project_title: data.project_title,
-            delivery_time: `${deliveryDays} dias úteis`,
-            valid_until: data.valid_until,
-            items: data.items,
-            value: data.items.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0),
-            status: 'pending',
-            created_at: new Date().toISOString(),
-        })
-        setIsModalOpen(true)
-    }
 
     async function fetchProposals() {
         setLoading(true)

@@ -2,17 +2,16 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { format, parseISO } from 'date-fns'
 import { MagnifyingGlass, Eye, X, CalendarBlank } from '@phosphor-icons/react'
-import { AdminShell } from '../../../components/layout/AdminShell'
-import { AdminTopBar } from '../../../components/layout/AdminTopBar'
-import { Badge } from '../../../components/ui/Badge'
-import { Button } from '../../../components/ui/Button'
-import { Input } from '../../../components/ui/Input'
+import { AdminShell } from '../../components/layout/AdminShell'
+import { AdminTopBar } from '../../components/layout/AdminTopBar'
+import { Badge } from '../../components/ui/Badge'
+import { Input } from '../../components/ui/Input'
 import {
   fetchAppointments,
   updateAppointmentStatus,
   confirmCautionPayment,
-} from '../../../lib/appointments'
-import type { Appointment, AppointmentStatus } from '../../../types/appointments'
+} from '../../lib/appointments'
+import type { Appointment, AppointmentStatus } from '../../types/appointments'
 
 const BRL = (v: number) =>
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v)

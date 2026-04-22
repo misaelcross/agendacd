@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Plus, X, Trash, Scissors } from '@phosphor-icons/react'
-import { AdminShell } from '../../../components/layout/AdminShell'
-import { AdminTopBar } from '../../../components/layout/AdminTopBar'
-import { Button } from '../../../components/ui/Button'
-import { Input } from '../../../components/ui/Input'
-import { Select } from '../../../components/ui/Select'
-import { Toggle } from '../../../components/ui/Toggle'
-import { supabase } from '../../../lib/supabase'
-import type { Service, ServiceCategory } from '../../../types/appointments'
+import { AdminShell } from '../../components/layout/AdminShell'
+import { AdminTopBar } from '../../components/layout/AdminTopBar'
+import { Button } from '../../components/ui/Button'
+import { Input } from '../../components/ui/Input'
+import { Select } from '../../components/ui/Select'
+import { Toggle } from '../../components/ui/Toggle'
+import { supabase } from '../../lib/supabase'
+import type { Service, ServiceCategory } from '../../types/appointments'
 
 const BRL = (v: number) =>
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v)

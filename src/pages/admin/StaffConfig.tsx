@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Plus, X, CaretDown, CaretUp, Users } from '@phosphor-icons/react'
-import { AdminShell } from '../../../components/layout/AdminShell'
-import { AdminTopBar } from '../../../components/layout/AdminTopBar'
-import { Button } from '../../../components/ui/Button'
-import { Input } from '../../../components/ui/Input'
-import { Toggle } from '../../../components/ui/Toggle'
-import { StaffAvatar } from '../../../components/ui/StaffAvatar'
-import { supabase } from '../../../lib/supabase'
-import type { Staff, StaffAvailability } from '../../../types/appointments'
+import { AdminShell } from '../../components/layout/AdminShell'
+import { AdminTopBar } from '../../components/layout/AdminTopBar'
+import { Button } from '../../components/ui/Button'
+import { Input } from '../../components/ui/Input'
+import { Toggle } from '../../components/ui/Toggle'
+import { StaffAvatar } from '../../components/ui/StaffAvatar'
+import { supabase } from '../../lib/supabase'
+import type { Staff, StaffAvailability } from '../../types/appointments'
 
 type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6
 

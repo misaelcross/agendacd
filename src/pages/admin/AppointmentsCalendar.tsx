@@ -12,15 +12,13 @@ import {
 } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { CaretLeft, CaretRight, CalendarBlank, LockSimple } from '@phosphor-icons/react'
-import { AdminShell } from '../../../components/layout/AdminShell'
-import { AdminTopBar } from '../../../components/layout/AdminTopBar'
-import { Button } from '../../../components/ui/Button'
-import { Badge } from '../../../components/ui/Badge'
-import { fetchAppointments } from '../../../lib/appointments'
-import type { Appointment, AppointmentStatus } from '../../../types/appointments'
+import { AdminShell } from '../../components/layout/AdminShell'
+import { AdminTopBar } from '../../components/layout/AdminTopBar'
+import { Button } from '../../components/ui/Button'
+import { Badge } from '../../components/ui/Badge'
+import { fetchAppointments } from '../../lib/appointments'
+import type { Appointment, AppointmentStatus } from '../../types/appointments'
 
-const BRL = (v: number) =>
-  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v)
 
 export function AppointmentsCalendar() {
   const navigate = useNavigate()

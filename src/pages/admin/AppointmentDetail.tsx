@@ -10,18 +10,18 @@ import {
   Warning,
   CheckCircle,
 } from '@phosphor-icons/react'
-import { AdminShell } from '../../../components/layout/AdminShell'
-import { AdminTopBar } from '../../../components/layout/AdminTopBar'
-import { Badge } from '../../../components/ui/Badge'
-import { Button } from '../../../components/ui/Button'
-import { Select } from '../../../components/ui/Select'
+import { AdminShell } from '../../components/layout/AdminShell'
+import { AdminTopBar } from '../../components/layout/AdminTopBar'
+import { Badge } from '../../components/ui/Badge'
+import { Button } from '../../components/ui/Button'
+import { Select } from '../../components/ui/Select'
 import {
   fetchAppointmentById,
   updateAppointmentStatus,
   confirmCautionPayment,
-} from '../../../lib/appointments'
-import { supabase } from '../../../lib/supabase'
-import type { Appointment, AppointmentStatus } from '../../../types/appointments'
+} from '../../lib/appointments'
+import { supabase } from '../../lib/supabase'
+import type { Appointment, AppointmentStatus } from '../../types/appointments'
 
 const BRL = (v: number) =>
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v)

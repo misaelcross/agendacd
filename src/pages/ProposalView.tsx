@@ -101,7 +101,7 @@ export function ProposalView() {
         }
     }, [loading, proposal])
 
-    const generatePdf = async (isMobile: boolean) => {
+    const generatePdf = async (_isMobile: boolean) => {
         setIsExporting(true)
         await new Promise(resolve => setTimeout(resolve, 2000))
 
