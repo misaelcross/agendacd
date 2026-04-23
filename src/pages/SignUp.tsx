@@ -1,9 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
 export function SignUp() {
     const [name, setName] = useState('')
+    const [businessName, setBusinessName] = useState('')
+    const [slug, setSlug] = useState('')
+    const [slugManuallyEdited, setSlugManuallyEdited] = useState(false)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirm, setConfirm] = useState('')
@@ -11,6 +25,13 @@ export function SignUp() {
     const [error, setError] = useState<string | null>(null)
 
     const navigate = useNavigate()
+
+    // Auto-generate slug from business name
+    useEffect(() => {
+      if (!slugManuallyEdited) {
+        setSlug(generateSlug(businessName))
+      }
+    }, [businessName, slugManuallyEdited])
 
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -24,6 +45,14 @@ export function SignUp() {
             setError('A senha deve ter pelo menos 6 caracteres.')
             return
         }
+        if (!businessName.trim()) {
+            setError('O nome da empresa é obrigatório.')
+            return
+        }
+        if (!slug.trim()) {
+            setError('O slug do link de agendamento é obrigatório.')
+            return
+        }
 
         setLoading(true)
 
@@ -31,7 +60,11 @@ export function SignUp() {
             email,
             password,
             options: {
-                data: { full_name: name },
+                data: {
+                  full_name: name,
+                  business_name: businessName,
+                  business_slug: slug,
+                },
             },
         })
 
@@ -40,7 +73,6 @@ export function SignUp() {
                 ? 'Este e-mail já está cadastrado.'
                 : `Erro ao criar conta: ${error.message}`)
         } else {
-            // Confirmação de e-mail desativada — login direto
             navigate('/')
         }
 
@@ -79,6 +111,45 @@ export function SignUp() {
                                 className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-600 transition-colors"
                                 placeholder="Seu nome"
                             />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">
+                                Nome da empresa
+                            </label>
+                            <input
+                                type="text"
+                                required
+                                value={businessName}
+                                onChange={e => setBusinessName(e.target.value)}
+                                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-600 transition-colors"
+                                placeholder="Ex: Studio Bela"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">
+                                Link de agendamento
+                            </label>
+                            <div className="flex items-center bg-gray-50 border border-gray-200 rounded-xl overflow-hidden focus-within:border-green-600 transition-colors">
+                                <span className="px-3 text-sm text-gray-400 shrink-0 select-none">
+                                    /agendar/
+                                </span>
+                                <input
+                                    type="text"
+                                    required
+                                    value={slug}
+                                    onChange={e => {
+                                      setSlugManuallyEdited(true)
+                                      setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))
+                                    }}
+                                    className="flex-1 bg-transparent py-3 pr-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none"
+                                    placeholder="studio-bela"
+                                />
+                            </div>
+                            <p className="text-xs text-gray-400 mt-1 ml-1">
+                                Seus clientes acessarão {window.location.origin}/agendar/{slug || '...'}
+                            </p>
                         </div>
 
                         <div>

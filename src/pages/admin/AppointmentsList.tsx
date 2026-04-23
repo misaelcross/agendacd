@@ -10,6 +10,7 @@ import {
   updateAppointmentStatus,
   confirmCautionPayment,
 } from '../../lib/appointments'
+import { useBusiness } from '../../contexts/BusinessContext'
 import type { Appointment, AppointmentStatus } from '../../types/appointments'
 
 const BRL = (v: number) =>
@@ -28,6 +29,7 @@ const STATUS_TABS: { key: FilterStatus; label: string }[] = [
 
 export function AppointmentsList() {
   const navigate = useNavigate()
+  const { businessId } = useBusiness()
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -42,7 +44,7 @@ export function AppointmentsList() {
       const data = await fetchAppointments({
         status: activeStatus,
         search: search || undefined,
-      })
+      }, businessId ?? undefined)
       setAppointments(data)
     } catch (err) {
       setError('Erro ao carregar agendamentos.')

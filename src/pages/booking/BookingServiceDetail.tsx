@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Clock, CurrencyCircleDollar, Warning, Package } from '@phosphor-icons/react'
 import { fetchServiceById, fetchActiveServices, calcCautionAmount } from '../../lib/appointments'
 import { useBooking } from '../../contexts/BookingContext'
+import { useBusiness } from '../../contexts/BusinessContext'
+import { bookingPath } from '../../lib/routes'
 import { Button } from '../../components/ui/Button'
 import type { Service, ServiceCategory } from '../../types/appointments'
 
@@ -47,8 +49,9 @@ function DetailSkeleton() {
 
 export function BookingServiceDetail() {
   const navigate = useNavigate()
-  const { serviceId } = useParams<{ serviceId: string }>()
+  const { serviceId, slug } = useParams<{ serviceId: string; slug: string }>()
   const { dispatch } = useBooking()
+  const { businessId } = useBusiness()
 
   const [service, setService] = useState<Service | null>(null)
   const [loading, setLoading] = useState(true)
@@ -56,17 +59,17 @@ export function BookingServiceDetail() {
   const [comboNames, setComboNames] = useState<string[]>([])
 
   useEffect(() => {
-    if (!serviceId) {
+    if (!serviceId || !businessId) {
       setNotFound(true)
       setLoading(false)
       return
     }
-    fetchServiceById(serviceId)
+    fetchServiceById(serviceId, businessId)
       .then(async data => {
         if (!data) { setNotFound(true); return }
         setService(data)
-        if (data.is_combo && data.combo_service_ids?.length) {
-          const all = await fetchActiveServices()
+        if (data.is_combo && data.combo_service_ids?.length && businessId) {
+          const all = await fetchActiveServices(businessId)
           setComboNames(
             data.combo_service_ids
               .map(id => all.find(s => s.id === id)?.name)
@@ -76,12 +79,12 @@ export function BookingServiceDetail() {
       })
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false))
-  }, [serviceId])
+  }, [serviceId, businessId])
 
   function handleChooseProfessional() {
     if (!service) return
     dispatch({ type: 'SET_SERVICE', payload: service })
-    navigate('/agendar/profissional')
+    navigate(bookingPath(slug!, 'profissional'))
   }
 
   const cautionAmount = service ? calcCautionAmount(service.price, service.caution_pct) : 0
@@ -107,7 +110,7 @@ export function BookingServiceDetail() {
             Este serviço não existe ou não está mais disponível.
           </p>
           <button
-            onClick={() => navigate('/agendar')}
+            onClick={() => navigate(bookingPath(slug!))}
             className="text-sm text-green-600 hover:underline"
           >
             Ver todos os serviços

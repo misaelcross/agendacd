@@ -5,6 +5,7 @@ import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { Toggle } from '../../components/ui/Toggle'
 import { supabase } from '../../lib/supabase'
+import { useBusiness } from '../../contexts/BusinessContext'
 import type { Service } from '../../types/appointments'
 
 // ── Price mask ────────────────────────────────────────────────────
@@ -147,7 +148,7 @@ interface ImageUploadProps {
   onChange: (url: string | null) => void
 }
 
-function ImageUpload({ value, onChange }: ImageUploadProps) {
+function ImageUpload({ value, onChange, businessId }: ImageUploadProps & { businessId: string | null }) {
   const [dragOver, setDragOver] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState('')
@@ -166,7 +167,8 @@ function ImageUpload({ value, onChange }: ImageUploadProps) {
     setUploading(true)
     try {
       const ext = file.name.split('.').pop() ?? 'jpg'
-      const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+      const prefix = businessId ? `${businessId}/` : ''
+      const path = `${prefix}${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
       const { error } = await supabase.storage
         .from('service-images')
         .upload(path, file, { upsert: true, contentType: file.type })
@@ -269,6 +271,7 @@ const EMPTY_FORM: ServiceForm = {
 const MAX_FEATURED = 3
 
 export function ServicesConfig() {
+  const { businessId } = useBusiness()
   const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -295,6 +298,7 @@ export function ServicesConfig() {
       const { data, error } = await supabase
         .from('services')
         .select('*')
+        .eq('business_id', businessId!)
         .order('name', { ascending: true })
       if (error) throw error
       const rows = (data ?? []).map(s => ({ is_featured: false, ...s }))
@@ -307,7 +311,7 @@ export function ServicesConfig() {
     }
   }
 
-  useEffect(() => { loadServices() }, [])
+  useEffect(() => { if (businessId) loadServices() }, [businessId])
 
   // Close combo dropdown on outside click
   useEffect(() => {
@@ -394,6 +398,7 @@ export function ServicesConfig() {
     try {
       const payload = {
         ...form,
+        business_id: businessId,
         price: priceCents / 100,
         is_combo: comboMode,
         combo_service_ids: comboMode ? selectedComboIds : null,
@@ -678,6 +683,7 @@ export function ServicesConfig() {
               <ImageUpload
                 value={form.image_url ?? null}
                 onChange={url => set('image_url', url)}
+                businessId={businessId}
               />
 
               {/* Name */}

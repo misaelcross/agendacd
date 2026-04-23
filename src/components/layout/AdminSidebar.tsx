@@ -11,6 +11,7 @@ import {
   Check,
   Copy,
 } from '@phosphor-icons/react'
+import { useBusiness } from '../../contexts/BusinessContext'
 
 interface NavItem {
   to: string
@@ -45,7 +46,10 @@ const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
 
 export function AdminSidebar() {
   const [copied, setCopied] = useState(false)
-  const bookingUrl = `${window.location.origin}/agendar`
+  const { business } = useBusiness()
+  const bookingUrl = business
+    ? `${window.location.origin}/agendar/${business.slug}`
+    : `${window.location.origin}/agendar`
 
   function handleCopyLink() {
     navigator.clipboard.writeText(bookingUrl).then(() => {

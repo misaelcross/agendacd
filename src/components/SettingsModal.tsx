@@ -3,6 +3,7 @@ import { Modal } from './ui/Modal'
 import { Input } from './ui/Input'
 import { Button } from './ui/Button'
 import { supabase } from '../lib/supabase'
+import { useBusiness } from '../contexts/BusinessContext'
 import { Image, FloppyDisk, Globe, Desktop, Buildings, Plus, Trash } from '@phosphor-icons/react'
 
 interface SettingsModalProps {
@@ -17,9 +18,8 @@ export interface CompanyProfile {
     address: string
 }
 
-const SETTINGS_ID = '550e8400-e29b-41d4-a716-446655440000'
-
 export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
+    const { businessId } = useBusiness()
     const [logoUrl, setLogoUrl] = useState('')
     const [faviconUrl, setFaviconUrl] = useState('')
     const [systemName, setSystemName] = useState('')
@@ -39,7 +39,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             const { data, error } = await supabase
                 .from('settings')
                 .select('logo_url, favicon_url, system_name, company_profiles')
-                .eq('id', SETTINGS_ID)
+                .eq('business_id', businessId)
                 .single()
 
             if (error && error.code !== 'PGRST116') {
@@ -65,7 +65,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             const { error } = await supabase
                 .from('settings')
                 .upsert({
-                    id: SETTINGS_ID,
+                    business_id: businessId,
                     logo_url: logoUrl,
                     favicon_url: faviconUrl,
                     system_name: systemName,
@@ -75,8 +75,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
             if (error) throw error
             onClose()
-            // Optional: Trigger a refresh of the global state if needed, or window.location.reload()
-            window.location.reload() // Reload to apply title/favicon changes everywhere easily
+            window.location.reload()
         } catch (error: any) {
             console.error('Error saving settings:', error)
             alert(`Erro ao salvar configurações: ${error.message}`)

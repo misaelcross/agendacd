@@ -31,43 +31,11 @@ import { BookingPayment }        from './pages/booking/BookingPayment'
 
 // Layout & auth
 import { AdminShell }      from './components/layout/AdminShell'
-import { supabase }        from './lib/supabase'
 import { AuthProvider }    from './contexts/AuthContext'
 import { ProtectedRoute }  from './components/ProtectedRoute'
-
-const SETTINGS_ID = '550e8400-e29b-41d4-a716-446655440000'
+import { AdminBusinessProvider } from './contexts/BusinessContext'
 
 function App() {
-  useEffect(() => {
-    async function loadSettings() {
-      try {
-        const { data, error } = await supabase
-          .from('settings')
-          .select('system_name, favicon_url')
-          .eq('id', SETTINGS_ID)
-          .single()
-
-        if (data && !error) {
-          if (data.system_name) document.title = data.system_name
-
-          if (data.favicon_url) {
-            let link: HTMLLinkElement | null = document.querySelector("link[rel~='icon']")
-            if (!link) {
-              link = document.createElement('link')
-              link.rel = 'icon'
-              document.getElementsByTagName('head')[0].appendChild(link)
-            }
-            link.href = data.favicon_url
-          }
-        }
-      } catch (err) {
-        console.error('Error loading settings:', err)
-      }
-    }
-
-    loadSettings()
-  }, [])
-
   return (
     <AuthProvider>
       <BrowserRouter>
@@ -83,8 +51,8 @@ function App() {
           <Route path="/proposta/:proposalId/contratar" element={<ContractForm />} />
           <Route path="/proposta/:contractId/assinar"   element={<ContractSign />} />
 
-          {/* ── Public: booking wizard ── */}
-          <Route path="/agendar" element={<BookingLayout />}>
+          {/* ── Public: booking wizard (multi-tenant via slug) ── */}
+          <Route path="/agendar/:slug" element={<BookingLayout />}>
             <Route index                     element={<BookingServices />} />
             <Route path="servico/:serviceId" element={<BookingServiceDetail />} />
             <Route path="profissional"       element={<BookingStaffSelect />} />
@@ -99,9 +67,11 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <AdminShell>
-                  <Dashboard />
-                </AdminShell>
+                <AdminBusinessProvider>
+                  <AdminShell>
+                    <Dashboard />
+                  </AdminShell>
+                </AdminBusinessProvider>
               </ProtectedRoute>
             }
           />
@@ -111,9 +81,11 @@ function App() {
             path="/agenda"
             element={
               <ProtectedRoute>
-                <AdminShell>
-                  <AppointmentsCalendar />
-                </AdminShell>
+                <AdminBusinessProvider>
+                  <AdminShell>
+                    <AppointmentsCalendar />
+                  </AdminShell>
+                </AdminBusinessProvider>
               </ProtectedRoute>
             }
           />
@@ -121,9 +93,11 @@ function App() {
             path="/agenda/lista"
             element={
               <ProtectedRoute>
-                <AdminShell>
-                  <AppointmentsList />
-                </AdminShell>
+                <AdminBusinessProvider>
+                  <AdminShell>
+                    <AppointmentsList />
+                  </AdminShell>
+                </AdminBusinessProvider>
               </ProtectedRoute>
             }
           />
@@ -131,9 +105,11 @@ function App() {
             path="/agenda/:id"
             element={
               <ProtectedRoute>
-                <AdminShell>
-                  <AppointmentDetail />
-                </AdminShell>
+                <AdminBusinessProvider>
+                  <AdminShell>
+                    <AppointmentDetail />
+                  </AdminShell>
+                </AdminBusinessProvider>
               </ProtectedRoute>
             }
           />
@@ -141,9 +117,11 @@ function App() {
             path="/admin/servicos"
             element={
               <ProtectedRoute>
-                <AdminShell>
-                  <ServicesConfig />
-                </AdminShell>
+                <AdminBusinessProvider>
+                  <AdminShell>
+                    <ServicesConfig />
+                  </AdminShell>
+                </AdminBusinessProvider>
               </ProtectedRoute>
             }
           />
@@ -151,9 +129,11 @@ function App() {
             path="/admin/equipe"
             element={
               <ProtectedRoute>
-                <AdminShell>
-                  <StaffConfig />
-                </AdminShell>
+                <AdminBusinessProvider>
+                  <AdminShell>
+                    <StaffConfig />
+                  </AdminShell>
+                </AdminBusinessProvider>
               </ProtectedRoute>
             }
           />
@@ -161,9 +141,11 @@ function App() {
             path="/admin/relatorios"
             element={
               <ProtectedRoute>
-                <AdminShell>
-                  <AppointmentsReports />
-                </AdminShell>
+                <AdminBusinessProvider>
+                  <AdminShell>
+                    <AppointmentsReports />
+                  </AdminShell>
+                </AdminBusinessProvider>
               </ProtectedRoute>
             }
           />

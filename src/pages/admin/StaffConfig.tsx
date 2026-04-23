@@ -6,6 +6,7 @@ import { Input } from '../../components/ui/Input'
 import { Toggle } from '../../components/ui/Toggle'
 import { StaffAvatar } from '../../components/ui/StaffAvatar'
 import { supabase } from '../../lib/supabase'
+import { useBusiness } from '../../contexts/BusinessContext'
 import type { Staff, StaffAvailability } from '../../types/appointments'
 
 type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6
@@ -51,6 +52,7 @@ interface StaffFormState {
 }
 
 export function StaffConfig() {
+  const { businessId } = useBusiness()
   const [staffList, setStaffList] = useState<StaffWithAvail[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -72,6 +74,7 @@ export function StaffConfig() {
       const { data, error } = await supabase
         .from('staff')
         .select('*, staff_availability(*)')
+        .eq('business_id', businessId!)
         .order('sort_order', { ascending: true })
       if (error) throw error
       setStaffList((data ?? []) as StaffWithAvail[])
@@ -83,7 +86,7 @@ export function StaffConfig() {
     }
   }
 
-  useEffect(() => { load() }, [])
+  useEffect(() => { if (businessId) load() }, [businessId])
 
   const openNew = () => {
     setEditTarget(null)
@@ -130,6 +133,7 @@ export function StaffConfig() {
         if (error) throw error
       } else {
         const { data, error } = await supabase.from('staff').insert({
+          business_id:  businessId,
           name:         form.name,
           role:         form.role || null,
           initials:     form.initials || null,

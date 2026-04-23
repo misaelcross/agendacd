@@ -16,11 +16,13 @@ import { AdminTopBar } from '../../components/layout/AdminTopBar'
 import { Button } from '../../components/ui/Button'
 import { Badge } from '../../components/ui/Badge'
 import { fetchAppointments } from '../../lib/appointments'
+import { useBusiness } from '../../contexts/BusinessContext'
 import type { Appointment, AppointmentStatus } from '../../types/appointments'
 
 
 export function AppointmentsCalendar() {
   const navigate = useNavigate()
+  const { businessId } = useBusiness()
   const [weekStart, setWeekStart] = useState<Date>(() =>
     startOfWeek(new Date(), { weekStartsOn: 1 })
   )
@@ -38,7 +40,7 @@ export function AppointmentsCalendar() {
       const data = await fetchAppointments({
         dateFrom: weekStart.toISOString(),
         dateTo: weekEnd.toISOString(),
-      })
+      }, businessId ?? undefined)
       setAppointments(data)
     } catch (err) {
       setError('Erro ao carregar agendamentos.')

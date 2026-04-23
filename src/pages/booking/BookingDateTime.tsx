@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { startOfWeek, addWeeks, subWeeks } from 'date-fns'
 import { ArrowRight, SpinnerGap } from '@phosphor-icons/react'
 
 import { useBooking } from '../../contexts/BookingContext'
+import { useBusiness } from '../../contexts/BusinessContext'
 import { computeWeekSlots, fetchStaffForService } from '../../lib/appointments'
+import { bookingPath } from '../../lib/routes'
 import type { DaySlots, TimeSlot } from '../../types/appointments'
 import { WeekStrip } from '../../components/ui/WeekStrip'
 import { TimeSlotPicker } from '../../components/ui/TimeSlotPicker'
@@ -12,7 +14,9 @@ import { Button } from '../../components/ui/Button'
 
 export function BookingDateTime() {
   const navigate = useNavigate()
+  const { slug } = useParams<{ slug: string }>()
   const { state, dispatch } = useBooking()
+  const { businessId } = useBusiness()
 
   const [weekStart, setWeekStart] = useState<Date>(() =>
     startOfWeek(new Date(), { weekStartsOn: 1 })
@@ -22,12 +26,12 @@ export function BookingDateTime() {
 
   // Guard
   useEffect(() => {
-    if (!state.service) navigate('/agendar', { replace: true })
-  }, [state.service, navigate])
+    if (!state.service) navigate(bookingPath(slug!), { replace: true })
+  }, [state.service, navigate, slug])
 
   // Fetch slots whenever weekStart changes
   useEffect(() => {
-    if (!state.service) return
+    if (!state.service || !businessId) return
 
     let cancelled = false
 
@@ -45,11 +49,12 @@ export function BookingDateTime() {
             durationMin,
             state.staff.id,
             availability,
+            businessId,
           )
           if (!cancelled) setDaySlots(slots)
         } else {
           // No preference — fetch all active staff for this service and union slots
-          const allStaff = await fetchStaffForService(service.id)
+          const allStaff = await fetchStaffForService(service.id, businessId)
 
           if (allStaff.length === 0) {
             if (!cancelled) setDaySlots([])
@@ -64,6 +69,7 @@ export function BookingDateTime() {
                 durationMin,
                 member.id,
                 member.staff_availability ?? [],
+                businessId,
               )
             )
           )
@@ -109,7 +115,7 @@ export function BookingDateTime() {
 
     load()
     return () => { cancelled = true }
-  }, [weekStart, state.service, state.staff])
+  }, [weekStart, state.service, state.staff, businessId])
 
   const selectedDaySlots = daySlots.find(d => d.date === state.date)
   const datesWithSlots = daySlots
@@ -164,7 +170,7 @@ export function BookingDateTime() {
             size="lg"
             className="w-full gap-2"
             disabled={!canAdvance}
-            onClick={() => navigate('/agendar/dados')}
+            onClick={() => navigate(bookingPath(slug!, 'dados'))}
           >
             Avançar
             <ArrowRight size={18} weight="bold" />

@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Copy, Check, ChatCircle, ArrowLeft } from '@phosphor-icons/react'
 
 import { useBooking } from '../../contexts/BookingContext'
+import { useBusiness } from '../../contexts/BusinessContext'
 import { bookAppointment } from '../../lib/appointments'
+import { bookingPath } from '../../lib/routes'
 
 const PIX_KEY = 'agendacd@conversao.digital'
 const WHATSAPP_URL =
@@ -15,7 +17,9 @@ type ErrorKind = 'slot_unavailable' | 'generic' | null
 
 export function BookingPayment() {
   const navigate = useNavigate()
+  const { slug } = useParams<{ slug: string }>()
   const { state, dispatch } = useBooking()
+  const { businessId } = useBusiness()
 
   const [booking, setBooking] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
   const [errorKind, setErrorKind] = useState<ErrorKind>(null)
@@ -23,17 +27,20 @@ export function BookingPayment() {
   const [paidConfirmed, setPaidConfirmed] = useState(false)
   const didBook = useRef(false)
 
+  const s = slug ?? ''
+
   // Guard
   useEffect(() => {
     if (!state.service || !state.date || !state.time || !state.clientName) {
-      navigate('/agendar', { replace: true })
+      navigate(bookingPath(s), { replace: true })
     }
-  }, [state.service, state.date, state.time, state.clientName, navigate])
+  }, [state.service, state.date, state.time, state.clientName, navigate, s])
 
   // Book appointment on mount if not already done
   useEffect(() => {
     if (didBook.current) return
     if (!state.service || !state.date || !state.time || !state.clientName) return
+    if (!businessId) return
     if (state.appointmentId) {
       setBooking('done')
       return
@@ -42,7 +49,7 @@ export function BookingPayment() {
     didBook.current = true
     setBooking('loading')
 
-    bookAppointment(state)
+    bookAppointment(state, businessId)
       .then(id => {
         dispatch({ type: 'SET_APPOINTMENT_ID', payload: id })
         setBooking('done')
@@ -56,7 +63,7 @@ export function BookingPayment() {
         }
         setBooking('error')
       })
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [businessId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleCopy() {
     try {
@@ -88,7 +95,7 @@ export function BookingPayment() {
               Este horário não está mais disponível. Escolha outro horário.
             </p>
             <Link
-              to="/agendar/horario"
+              to={bookingPath(s, 'horario')}
               className="inline-flex items-center gap-2 text-sm font-medium text-green-700 hover:underline"
             >
               <ArrowLeft size={16} />
@@ -105,7 +112,7 @@ export function BookingPayment() {
               Não foi possível concluir o agendamento. Tente novamente.
             </p>
             <Link
-              to="/agendar"
+              to={bookingPath(s)}
               className="inline-flex items-center gap-2 text-sm font-medium text-green-700 hover:underline"
             >
               <ArrowLeft size={16} />

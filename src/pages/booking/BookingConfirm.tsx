@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { CaretDown, CaretUp, ArrowRight } from '@phosphor-icons/react'
 
 import { useBooking } from '../../contexts/BookingContext'
+import { bookingPath } from '../../lib/routes'
 
 const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
 
@@ -18,18 +19,21 @@ function capitalize(str: string): string {
 
 export function BookingConfirm() {
   const navigate = useNavigate()
+  const { slug } = useParams<{ slug: string }>()
   const { state } = useBooking()
 
   const [openSections, setOpenSections] = useState<Set<string>>(new Set())
   const [chk1, setChk1] = useState(false)
   const [chk2, setChk2] = useState(false)
 
+  const s = slug ?? ''
+
   // Guard: booking must be reasonably complete
   useEffect(() => {
     if (!state.service || !state.date || !state.time || !state.clientName) {
-      navigate('/agendar', { replace: true })
+      navigate(bookingPath(s), { replace: true })
     }
-  }, [state.service, state.date, state.time, state.clientName, navigate])
+  }, [state.service, state.date, state.time, state.clientName, navigate, s])
 
   if (!state.service || !state.date || !state.time || !state.clientName) {
     return null
@@ -183,7 +187,7 @@ export function BookingConfirm() {
           <button
             type="button"
             disabled={!canConfirm}
-            onClick={() => navigate('/agendar/pagamento')}
+            onClick={() => navigate(bookingPath(s, 'pagamento'))}
             className="inline-flex items-center justify-center w-full gap-2 h-11 px-8 text-base rounded-lg font-medium transition-colors bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
           >
             Confirmar e Pagar

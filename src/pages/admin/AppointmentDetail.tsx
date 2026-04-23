@@ -20,6 +20,7 @@ import {
   confirmCautionPayment,
 } from '../../lib/appointments'
 import { supabase } from '../../lib/supabase'
+import { useBusiness } from '../../contexts/BusinessContext'
 import type { Appointment, AppointmentStatus } from '../../types/appointments'
 
 const BRL = (v: number) =>
@@ -42,6 +43,7 @@ const CAUTION_LABEL: Record<string, string> = {
 
 export function AppointmentDetail() {
   const { id } = useParams<{ id: string }>()
+  const { businessId } = useBusiness()
   const [appointment, setAppointment] = useState<Appointment | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -58,7 +60,7 @@ export function AppointmentDetail() {
       setLoading(true)
       setError(null)
       try {
-        const data = await fetchAppointmentById(id)
+        const data = await fetchAppointmentById(id, businessId ?? undefined)
         setAppointment(data)
         setAdminNotes(data?.admin_notes ?? '')
       } catch (err) {

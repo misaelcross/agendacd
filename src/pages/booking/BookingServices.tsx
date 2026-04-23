@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { CaretRight, Package } from '@phosphor-icons/react'
 import { fetchActiveServices } from '../../lib/appointments'
+import { useBusiness } from '../../contexts/BusinessContext'
+import { bookingPath } from '../../lib/routes'
 import type { Service, ServiceCategory } from '../../types/appointments'
 
 type CategoryFilter = 'todos' | ServiceCategory
@@ -43,22 +45,28 @@ function ServiceCardSkeleton() {
 
 export function BookingServices() {
   const navigate = useNavigate()
+  const { slug } = useParams<{ slug: string }>()
+  const { businessId } = useBusiness()
+
   const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [activeFilter, setActiveFilter] = useState<CategoryFilter>('todos')
 
   useEffect(() => {
-    fetchActiveServices()
+    if (!businessId) return
+    fetchActiveServices(businessId)
       .then(setServices)
       .catch(() => setError('Não foi possível carregar os serviços. Tente novamente.'))
       .finally(() => setLoading(false))
-  }, [])
+  }, [businessId])
 
   const filtered =
     activeFilter === 'todos'
       ? services
       : services.filter(s => s.category === activeFilter)
+
+  const s = slug ?? ''
 
   return (
     <div className="max-w-lg mx-auto px-4 py-6 pb-10">
@@ -118,7 +126,7 @@ export function BookingServices() {
           {filtered.map(service => (
             <button
               key={service.id}
-              onClick={() => navigate(`/agendar/servico/${service.id}`)}
+              onClick={() => navigate(bookingPath(s, `servico/${service.id}`))}
               className="w-full text-left bg-white border border-gray-200 rounded-xl p-4 flex items-center gap-4 hover:border-green-300 hover:shadow-sm transition-all group"
             >
               {/* Image / Emoji */}

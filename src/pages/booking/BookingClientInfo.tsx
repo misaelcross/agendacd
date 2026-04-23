@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { ArrowRight } from '@phosphor-icons/react'
 
 import { useBooking } from '../../contexts/BookingContext'
+import { bookingPath } from '../../lib/routes'
 import { Input } from '../../components/ui/Input'
 import { Button } from '../../components/ui/Button'
 import { Textarea } from '../../components/ui/Textarea'
@@ -21,12 +22,13 @@ type FormValues = z.infer<typeof schema>
 
 export function BookingClientInfo() {
   const navigate = useNavigate()
+  const { slug } = useParams<{ slug: string }>()
   const { state, dispatch } = useBooking()
 
   // Guard
   useEffect(() => {
-    if (!state.service) navigate('/agendar', { replace: true })
-  }, [state.service, navigate])
+    if (!state.service) navigate(bookingPath(slug!), { replace: true })
+  }, [state.service, navigate, slug])
 
   const {
     register,
@@ -52,7 +54,7 @@ export function BookingClientInfo() {
         clientNotes: values.clientNotes ?? '',
       },
     })
-    navigate('/agendar/confirmar')
+    navigate(bookingPath(slug!, 'confirmar'))
   }
 
   return (

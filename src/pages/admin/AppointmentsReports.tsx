@@ -13,6 +13,7 @@ import { ChartBar, TrendUp } from '@phosphor-icons/react'
 import { AdminTopBar } from '../../components/layout/AdminTopBar'
 import { Input } from '../../components/ui/Input'
 import { fetchAppointments } from '../../lib/appointments'
+import { useBusiness } from '../../contexts/BusinessContext'
 import type { Appointment, AppointmentStatus } from '../../types/appointments'
 
 const BRL = (v: number) =>
@@ -29,6 +30,7 @@ const STATUS_CONFIG: Record<AppointmentStatus, { label: string; color: string; b
 }
 
 export function AppointmentsReports() {
+  const { businessId } = useBusiness()
   const [rangeMode, setRangeMode] = useState<RangeMode>('month')
   const [customFrom, setCustomFrom] = useState('')
   const [customTo, setCustomTo] = useState('')
@@ -65,7 +67,7 @@ export function AppointmentsReports() {
       const data = await fetchAppointments({
         dateFrom: from ?? undefined,
         dateTo:   to   ?? undefined,
-      })
+      }, businessId ?? undefined)
       setAppointments(data)
     } catch (err) {
       setError('Erro ao carregar dados.')

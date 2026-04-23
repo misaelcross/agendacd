@@ -4,6 +4,7 @@ export type ServiceCategory = string
 
 export interface Service {
   id: string
+  business_id: string
   name: string
   description: string | null
   emoji: string
@@ -22,6 +23,7 @@ export interface Service {
 
 export interface Staff {
   id: string
+  business_id: string
   name: string
   role: string | null
   initials: string | null
@@ -63,6 +65,7 @@ export type CautionStatus     = 'none' | 'pending' | 'paid' | 'refunded'
 
 export interface Appointment {
   id: string
+  business_id: string
   service_id: string | null
   staff_id: string | null
   client_name: string

@@ -28,22 +28,24 @@ import type {
 
 // ── Fetch helpers ─────────────────────────────────────────────
 
-export async function fetchActiveServices(): Promise<Service[]> {
+export async function fetchActiveServices(businessId: string): Promise<Service[]> {
   const { data, error } = await supabase
     .from('services')
     .select('*')
     .eq('is_active', true)
+    .eq('business_id', businessId)
     .order('sort_order', { ascending: true })
     .order('name', { ascending: true })
   if (error) throw error
   return data ?? []
 }
 
-export async function fetchServiceById(id: string): Promise<Service | null> {
+export async function fetchServiceById(id: string, businessId: string): Promise<Service | null> {
   const { data, error } = await supabase
     .from('services')
     .select('*')
     .eq('id', id)
+    .eq('business_id', businessId)
     .single()
   if (error) throw error
   return data
@@ -51,13 +53,14 @@ export async function fetchServiceById(id: string): Promise<Service | null> {
 
 /** Returns active staff that can perform a given service.
  *  If serviceId is omitted, returns all active staff. */
-export async function fetchStaffForService(serviceId?: string): Promise<Staff[]> {
+export async function fetchStaffForService(serviceId: string | undefined, businessId: string): Promise<Staff[]> {
   if (serviceId) {
     const { data, error } = await supabase
       .from('staff_services')
       .select('staff_id, staff!inner(*, staff_availability(*))')
       .eq('service_id', serviceId)
       .eq('staff.is_active', true)
+      .eq('staff.business_id', businessId)
     if (error) throw error
     return (data ?? []).map((row: any) => row.staff as Staff)
   }
@@ -66,6 +69,7 @@ export async function fetchStaffForService(serviceId?: string): Promise<Staff[]>
     .from('staff')
     .select('*, staff_availability(*)')
     .eq('is_active', true)
+    .eq('business_id', businessId)
     .order('sort_order', { ascending: true })
   if (error) throw error
   return data ?? []
@@ -87,13 +91,15 @@ export async function fetchBlockedSlots(
 }
 
 export async function fetchAppointments(
-  filters: AppointmentFilters = {}
+  filters: AppointmentFilters = {},
+  businessId?: string,
 ): Promise<Appointment[]> {
   let query = supabase
     .from('appointments')
     .select('*, services(*), staff(*)')
     .order('scheduled_at', { ascending: false })
 
+  if (businessId) query = query.eq('business_id', businessId)
   if (filters.status && filters.status !== 'all') {
     query = query.eq('status', filters.status)
   }
@@ -112,12 +118,15 @@ export async function fetchAppointments(
   return data ?? []
 }
 
-export async function fetchAppointmentById(id: string): Promise<Appointment | null> {
-  const { data, error } = await supabase
+export async function fetchAppointmentById(id: string, businessId?: string): Promise<Appointment | null> {
+  let query = supabase
     .from('appointments')
     .select('*, services(*), staff(*)')
     .eq('id', id)
-    .single()
+
+  if (businessId) query = query.eq('business_id', businessId)
+
+  const { data, error } = await query.single()
   if (error) throw error
   return data
 }
@@ -148,7 +157,8 @@ export async function confirmCautionPayment(id: string): Promise<void> {
 // ── Booking RPC ───────────────────────────────────────────────
 
 export async function bookAppointment(
-  state: BookingState
+  state: BookingState,
+  businessId: string
 ): Promise<string> {
   if (!state.service || !state.date || !state.time) {
     throw new Error('Dados de agendamento incompletos')
@@ -163,6 +173,7 @@ export async function bookAppointment(
   const cautionAmount = Math.round(state.service.price * (state.service.caution_pct / 100) * 100) / 100
 
   const { data, error } = await supabase.rpc('book_appointment', {
+    p_business_id:    businessId,
     p_service_id:     state.service.id,
     p_staff_id:       state.staff?.id ?? null,
     p_scheduled_at:   scheduledAt.toISOString(),
@@ -195,12 +206,6 @@ function parseTime(t: string): { hours: number; minutes: number } {
 
 /**
  * Computes available time slots for a given staff member on a single date.
- * Takes into account:
- *   - Weekly availability grid
- *   - Blocked slots (vacations, holidays)
- *   - Existing confirmed/pending appointments
- *   - Service duration
- *   - Past times (slots before now are excluded)
  */
 export function computeSlotsForDay(
   date: Date,
@@ -233,10 +238,7 @@ export function computeSlotsForDay(
     while (isBefore(cursor, endBoundary)) {
       const slotEnd = addMinutes(cursor, durationMin)
 
-      // Can't exceed the availability window
       if (isAfter(slotEnd, endBoundary)) break
-
-      // Skip past slots
       if (isBefore(cursor, now)) {
         cursor = addMinutes(cursor, slotIntervalMin)
         continue
@@ -246,12 +248,10 @@ export function computeSlotsForDay(
       const cursorIso = cursor.toISOString()
       const slotEndIso = slotEnd.toISOString()
 
-      // Check blocked slots
       const isBlocked = blockedSlots.some(
         b => b.blocked_at < slotEndIso && b.blocked_until > cursorIso
       )
 
-      // Check existing appointments
       const hasConflict = existingAppointments.some(
         appt =>
           appt.status !== 'cancelled' &&
@@ -269,7 +269,6 @@ export function computeSlotsForDay(
     }
   }
 
-  // Deduplicate (multiple availability windows can overlap)
   const seen = new Set<string>()
   return slots.filter(s => {
     if (seen.has(s.time)) return false
@@ -280,26 +279,25 @@ export function computeSlotsForDay(
 
 /**
  * Builds a 7-day window of DaySlots starting from `startDate`.
- * Used to power the WeekStrip component.
  */
 export async function computeWeekSlots(
   startDate: Date,
   durationMin: number,
   staffId: string,
   availability: StaffAvailability[],
+  businessId?: string,
 ): Promise<DaySlots[]> {
   const days = eachDayOfInterval({ start: startDate, end: addDays(startDate, 6) })
   const fromIso = startDate.toISOString()
   const toIso   = addDays(startDate, 7).toISOString()
 
-  // Single round-trip for blocked slots and appointments
   const [blocked, existing] = await Promise.all([
     fetchBlockedSlots(staffId, fromIso, toIso),
     fetchAppointments({
       staffId,
       dateFrom: fromIso,
       dateTo: toIso,
-    }),
+    }, businessId),
   ])
 
   return days.map(day => {

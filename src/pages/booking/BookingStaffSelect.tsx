@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Users, CheckCircle, CaretRight } from '@phosphor-icons/react'
 import { fetchStaffForService } from '../../lib/appointments'
 import { useBooking } from '../../contexts/BookingContext'
+import { useBusiness } from '../../contexts/BusinessContext'
+import { bookingPath } from '../../lib/routes'
 import { StaffAvatar } from '../../components/ui/StaffAvatar'
 import { Button } from '../../components/ui/Button'
 import type { Staff } from '../../types/appointments'
@@ -24,7 +26,9 @@ function StaffCardSkeleton() {
 
 export function BookingStaffSelect() {
   const navigate = useNavigate()
+  const { slug } = useParams<{ slug: string }>()
   const { state, dispatch } = useBooking()
+  const { businessId } = useBusiness()
 
   const [staffList, setStaffList] = useState<Staff[]>([])
   const [loading, setLoading] = useState(true)
@@ -33,7 +37,6 @@ export function BookingStaffSelect() {
   // selectedId: either a staff UUID, NO_PREFERENCE, or null (nothing chosen yet)
   const [selectedId, setSelectedId] = useState<string | null>(() => {
     if (state.staff === null && state.date !== null) {
-      // staff was explicitly set to null (no preference) in a previous visit
       return NO_PREFERENCE
     }
     return state.staff?.id ?? null
@@ -42,17 +45,17 @@ export function BookingStaffSelect() {
   // Guard: redirect if no service selected
   useEffect(() => {
     if (!state.service) {
-      navigate('/agendar', { replace: true })
+      navigate(bookingPath(slug!), { replace: true })
     }
-  }, [state.service, navigate])
+  }, [state.service, navigate, slug])
 
   useEffect(() => {
-    if (!state.service) return
-    fetchStaffForService(state.service.id)
+    if (!state.service || !businessId) return
+    fetchStaffForService(state.service.id, businessId)
       .then(setStaffList)
       .catch(() => setError('Não foi possível carregar os profissionais. Tente novamente.'))
       .finally(() => setLoading(false))
-  }, [state.service])
+  }, [state.service, businessId])
 
   function selectNoPreference() {
     setSelectedId(NO_PREFERENCE)
@@ -69,7 +72,7 @@ export function BookingStaffSelect() {
       const chosen = staffList.find(s => s.id === selectedId)
       if (chosen) dispatch({ type: 'SET_STAFF', payload: chosen })
     }
-    navigate('/agendar/horario')
+    navigate(bookingPath(slug!, 'horario'))
   }
 
   const canAdvance = selectedId !== null
