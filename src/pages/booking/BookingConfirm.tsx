@@ -57,7 +57,9 @@ export function BookingConfirm() {
       {/* Service summary card */}
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 mb-4">
         <div className="flex items-start gap-3 mb-4">
-          <span className="text-3xl leading-none">{service.emoji}</span>
+          {service.image_url
+            ? <img src={service.image_url} alt={service.name} className="w-10 h-10 rounded-lg object-cover shrink-0" />
+            : <span className="text-3xl leading-none">{service.emoji}</span>}
           <div>
             <h2 className="font-display font-bold text-gray-900 text-lg leading-tight">
               {service.name}

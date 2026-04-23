@@ -10,6 +10,7 @@ import { SearchableSelect } from './ui/SearchableSelect'
 import { DeliveryTimeInput } from './ui/DeliveryTimeInput'
 import { CurrencyInput } from './ui/CurrencyInput'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { Plus, Trash, CaretUp, CaretDown, DotsSixVertical } from '@phosphor-icons/react'
 import type { CompanyProfile } from './SettingsModal'
 
@@ -53,6 +54,7 @@ interface CreateProposalModalProps {
 }
 
 export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }: CreateProposalModalProps) {
+    const { user } = useAuth()
     const [companyProfiles, setCompanyProfiles] = useState<CompanyProfile[]>([])
     const [selectedProfileId, setSelectedProfileId] = useState<string>('')
 
@@ -151,7 +153,8 @@ export function CreateProposalModal({ isOpen, initialData, onClose, onSuccess }:
                 items: data.items,
                 value: totalValue,
                 status: 'pending',
-                company_profile: profile || null
+                company_profile: profile || null,
+                owner_id: user!.id,
             }
 
             console.log('Payload for Supabase:', payload)

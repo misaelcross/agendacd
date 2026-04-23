@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Plus, X, CaretDown, CaretUp, Users } from '@phosphor-icons/react'
-import { AdminShell } from '../../components/layout/AdminShell'
 import { AdminTopBar } from '../../components/layout/AdminTopBar'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
@@ -183,7 +182,7 @@ export function StaffConfig() {
     setForm(prev => ({ ...prev, [key]: value }))
 
   return (
-    <AdminShell>
+    <>
       <AdminTopBar
         title="Equipe"
         actions={
@@ -427,6 +426,6 @@ export function StaffConfig() {
           </div>
         </>
       )}
-    </AdminShell>
+    </>
   )
 }

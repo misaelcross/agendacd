@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { format, parseISO } from 'date-fns'
 import { MagnifyingGlass, Eye, X, CalendarBlank } from '@phosphor-icons/react'
-import { AdminShell } from '../../components/layout/AdminShell'
 import { AdminTopBar } from '../../components/layout/AdminTopBar'
 import { Badge } from '../../components/ui/Badge'
 import { Input } from '../../components/ui/Input'
@@ -94,7 +93,7 @@ export function AppointmentsList() {
   })
 
   return (
-    <AdminShell>
+    <>
       <AdminTopBar title="Lista de Agendamentos" />
 
       <div className="flex-1 overflow-auto p-6 space-y-5">
@@ -175,7 +174,7 @@ export function AppointmentsList() {
                       </td>
                       <td className="px-4 py-3 text-gray-700">
                         {apt.services ? (
-                          <span>{apt.services.emoji} {apt.services.name}</span>
+                          <span>{apt.services.name}</span>
                         ) : '–'}
                       </td>
                       <td className="px-4 py-3 text-gray-700">
@@ -235,6 +234,6 @@ export function AppointmentsList() {
           )}
         </div>
       </div>
-    </AdminShell>
+    </>
   )
 }

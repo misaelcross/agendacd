@@ -9,6 +9,7 @@ import { SettingsModal } from '../components/SettingsModal'
 import { ExportModal } from '../components/ExportModal'
 import { NewProposalSelectionModal } from '../components/NewProposalSelectionModal'
 import { format } from 'date-fns'
+import { useAuth } from '../contexts/AuthContext'
 
 interface ProposalItem {
     title: string
@@ -68,6 +69,7 @@ interface ResendEmailLog {
 }
 
 export function Dashboard() {
+    const { user } = useAuth()
     const [proposals, setProposals] = useState<Proposal[]>([])
     const [loading, setLoading] = useState(true)
     const [isSelectionModalOpen, setIsSelectionModalOpen] = useState(false)
@@ -275,6 +277,7 @@ export function Dashboard() {
                     )
                 )
             `)
+            .eq('owner_id', user!.id)
             .order('created_at', { ascending: false })
 
         if (queryWithLogs.error) {
@@ -299,6 +302,7 @@ export function Dashboard() {
                         )
                     )
                 `)
+                .eq('owner_id', user!.id)
                 .order('created_at', { ascending: false })
 
             if (fallbackQuery.error) {

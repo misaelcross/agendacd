@@ -10,12 +10,13 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     label?: string
     error?: string
     icon?: React.ReactNode
+    containerClassName?: string
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-    ({ className, type, label, error, icon, ...props }, ref) => {
+    ({ className, type, label, error, icon, containerClassName, ...props }, ref) => {
         return (
-            <div className="w-full">
+            <div className={cn('w-full', containerClassName)}>
                 {label && (
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                         {label}

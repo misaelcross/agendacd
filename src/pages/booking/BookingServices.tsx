@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CaretRight } from '@phosphor-icons/react'
+import { CaretRight, Package } from '@phosphor-icons/react'
 import { fetchActiveServices } from '../../lib/appointments'
 import type { Service, ServiceCategory } from '../../types/appointments'
 
@@ -121,16 +121,26 @@ export function BookingServices() {
               onClick={() => navigate(`/agendar/servico/${service.id}`)}
               className="w-full text-left bg-white border border-gray-200 rounded-xl p-4 flex items-center gap-4 hover:border-green-300 hover:shadow-sm transition-all group"
             >
-              {/* Emoji */}
-              <div className="bg-green-50 rounded-xl w-12 h-12 flex items-center justify-center text-2xl shrink-0">
-                {service.emoji}
+              {/* Image / Emoji */}
+              <div className="bg-green-50 rounded-xl w-12 h-12 flex items-center justify-center text-2xl shrink-0 overflow-hidden">
+                {service.image_url
+                  ? <img src={service.image_url} alt={service.name} className="w-full h-full object-cover" />
+                  : service.emoji}
               </div>
 
               {/* Info */}
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-gray-900 truncate">
-                  {service.name}
-                </p>
+                <div className="flex items-center gap-1.5">
+                  <p className="font-semibold text-gray-900 truncate">
+                    {service.name}
+                  </p>
+                  {service.is_combo && (
+                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-violet-100 text-violet-700 shrink-0">
+                      <Package size={9} />
+                      combo
+                    </span>
+                  )}
+                </div>
                 {service.description && (
                   <p className="text-sm text-gray-500 truncate mt-0.5">
                     {service.description}

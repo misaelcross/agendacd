@@ -12,7 +12,6 @@ import {
 } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { CaretLeft, CaretRight, CalendarBlank, LockSimple } from '@phosphor-icons/react'
-import { AdminShell } from '../../components/layout/AdminShell'
 import { AdminTopBar } from '../../components/layout/AdminTopBar'
 import { Button } from '../../components/ui/Button'
 import { Badge } from '../../components/ui/Badge'
@@ -70,7 +69,7 @@ export function AppointmentsCalendar() {
       .sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at))
 
   return (
-    <AdminShell>
+    <>
       <AdminTopBar
         title="Agendamentos"
         actions={
@@ -185,6 +184,6 @@ export function AppointmentsCalendar() {
           </div>
         </div>
       </div>
-    </AdminShell>
+    </>
   )
 }

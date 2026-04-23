@@ -10,7 +10,6 @@ import {
   Warning,
   CheckCircle,
 } from '@phosphor-icons/react'
-import { AdminShell } from '../../components/layout/AdminShell'
 import { AdminTopBar } from '../../components/layout/AdminTopBar'
 import { Badge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
@@ -139,30 +138,30 @@ export function AppointmentDetail() {
 
   if (loading) {
     return (
-      <AdminShell>
+      <>
         <AdminTopBar title="Detalhe do Agendamento" backTo="/agenda/lista" />
         <div className="flex-1 flex items-center justify-center text-gray-400 text-sm">
           Carregando…
         </div>
-      </AdminShell>
+      </>
     )
   }
 
   if (error || !appointment) {
     return (
-      <AdminShell>
+      <>
         <AdminTopBar title="Detalhe do Agendamento" backTo="/agenda/lista" />
         <div className="flex-1 flex items-center justify-center text-red-500 text-sm">
           {error ?? 'Agendamento não encontrado.'}
         </div>
-      </AdminShell>
+      </>
     )
   }
 
   const apt = appointment
 
   return (
-    <AdminShell>
+    <>
       <AdminTopBar
         title="Detalhe do Agendamento"
         subtitle={`#${apt.id.slice(0, 8).toUpperCase()}`}
@@ -185,7 +184,7 @@ export function AppointmentDetail() {
                 <div>
                   <p className="text-xs text-gray-500 mb-0.5">Serviço</p>
                   <p className="text-gray-900 font-medium">
-                    {apt.services ? `${apt.services.emoji} ${apt.services.name}` : '–'}
+                    {apt.services ? apt.services.name : '–'}
                   </p>
                 </div>
                 <div>
@@ -355,6 +354,6 @@ export function AppointmentDetail() {
           </div>
         </div>
       </div>
-    </AdminShell>
+    </>
   )
 }

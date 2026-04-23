@@ -1,17 +1,21 @@
 // ── Domain types for the Appointments module ──────────────────
 
-export type ServiceCategory = 'facial' | 'massagem' | 'corporal' | 'outro'
+export type ServiceCategory = string
 
 export interface Service {
   id: string
   name: string
   description: string | null
   emoji: string
+  image_url: string | null
   category: ServiceCategory
   duration_min: number
   price: number
   caution_pct: number
+  is_combo: boolean
+  combo_service_ids: string[] | null
   is_active: boolean
+  is_featured: boolean
   sort_order: number
   created_at: string
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, Clock, CurrencyCircleDollar, Warning } from '@phosphor-icons/react'
-import { fetchServiceById, calcCautionAmount } from '../../lib/appointments'
+import { ArrowLeft, Clock, CurrencyCircleDollar, Warning, Package } from '@phosphor-icons/react'
+import { fetchServiceById, fetchActiveServices, calcCautionAmount } from '../../lib/appointments'
 import { useBooking } from '../../contexts/BookingContext'
 import { Button } from '../../components/ui/Button'
 import type { Service, ServiceCategory } from '../../types/appointments'
@@ -53,6 +53,7 @@ export function BookingServiceDetail() {
   const [service, setService] = useState<Service | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
+  const [comboNames, setComboNames] = useState<string[]>([])
 
   useEffect(() => {
     if (!serviceId) {
@@ -61,9 +62,17 @@ export function BookingServiceDetail() {
       return
     }
     fetchServiceById(serviceId)
-      .then(data => {
-        if (!data) setNotFound(true)
-        else setService(data)
+      .then(async data => {
+        if (!data) { setNotFound(true); return }
+        setService(data)
+        if (data.is_combo && data.combo_service_ids?.length) {
+          const all = await fetchActiveServices()
+          setComboNames(
+            data.combo_service_ids
+              .map(id => all.find(s => s.id === id)?.name)
+              .filter(Boolean) as string[]
+          )
+        }
       })
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false))
@@ -110,8 +119,10 @@ export function BookingServiceDetail() {
         <>
           {/* Hero */}
           <div className="flex flex-col items-center text-center mb-8">
-            <div className="bg-green-50 rounded-2xl w-20 h-20 flex items-center justify-center text-4xl mb-4">
-              {service.emoji}
+            <div className="bg-green-50 rounded-2xl w-20 h-20 flex items-center justify-center text-4xl mb-4 overflow-hidden">
+              {service.image_url
+                ? <img src={service.image_url} alt={service.name} className="w-full h-full object-cover rounded-2xl" />
+                : service.emoji}
             </div>
             <h1 className="font-display text-2xl font-bold text-gray-900 leading-tight">
               {service.name}
@@ -126,6 +137,23 @@ export function BookingServiceDetail() {
             <p className="text-gray-600 text-sm leading-relaxed mb-8 text-center">
               {service.description}
             </p>
+          )}
+
+          {/* Combo composition */}
+          {service.is_combo && comboNames.length > 0 && (
+            <div className="bg-violet-50 border border-violet-200 rounded-xl p-4 mb-8">
+              <div className="flex items-center gap-2 mb-2">
+                <Package size={16} className="text-violet-600" weight="fill" />
+                <span className="text-sm font-semibold text-violet-700">Serviços inclusos</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {comboNames.map((name, i) => (
+                  <span key={i} className="inline-flex items-center gap-1 px-2.5 py-1 bg-white text-violet-700 rounded-lg text-xs font-medium border border-violet-200">
+                    {name}
+                  </span>
+                ))}
+              </div>
+            </div>
           )}
 
           {/* Info cards */}

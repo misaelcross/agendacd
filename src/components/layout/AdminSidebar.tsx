@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import {
   FileText,
@@ -6,6 +7,9 @@ import {
   Wrench,
   Users,
   ChartBar,
+  LinkSimple,
+  Check,
+  Copy,
 } from '@phosphor-icons/react'
 
 interface NavItem {
@@ -40,6 +44,16 @@ const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
 ]
 
 export function AdminSidebar() {
+  const [copied, setCopied] = useState(false)
+  const bookingUrl = `${window.location.origin}/agendar`
+
+  function handleCopyLink() {
+    navigator.clipboard.writeText(bookingUrl).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
   return (
     <aside className="w-56 shrink-0 hidden md:flex flex-col bg-white border-r border-gray-200 min-h-screen">
       {/* Logo */}
@@ -80,6 +94,37 @@ export function AdminSidebar() {
           </div>
         ))}
       </nav>
+
+      {/* Shareable booking link */}
+      <div className="px-3 pb-4 pt-2 border-t border-gray-100">
+        <p className="px-2 mb-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+          Link de agendamento
+        </p>
+        <div className="mx-1 p-2.5 bg-green-50 rounded-lg">
+          <div className="flex items-center gap-1.5 mb-2">
+            <LinkSimple size={13} className="text-green-600 shrink-0" />
+            <span className="text-[11px] text-green-700 font-medium truncate" title={bookingUrl}>
+              {bookingUrl}
+            </span>
+          </div>
+          <button
+            onClick={handleCopyLink}
+            className="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-md text-xs font-medium transition-colors bg-green-600 text-white hover:bg-green-700"
+          >
+            {copied ? (
+              <>
+                <Check size={12} />
+                Copiado!
+              </>
+            ) : (
+              <>
+                <Copy size={12} />
+                Copiar link
+              </>
+            )}
+          </button>
+        </div>
+      </div>
     </aside>
   )
 }

@@ -10,7 +10,6 @@ import {
 } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { ChartBar, TrendUp } from '@phosphor-icons/react'
-import { AdminShell } from '../../components/layout/AdminShell'
 import { AdminTopBar } from '../../components/layout/AdminTopBar'
 import { Input } from '../../components/ui/Input'
 import { fetchAppointments } from '../../lib/appointments'
@@ -113,7 +112,7 @@ export function AppointmentsReports() {
   )
 
   return (
-    <AdminShell>
+    <>
       <AdminTopBar title="Relatórios" />
 
       <div className="flex-1 overflow-auto p-6 space-y-6">
@@ -277,6 +276,6 @@ export function AppointmentsReports() {
           )}
         </div>
       </div>
-    </AdminShell>
+    </>
   )
 }
